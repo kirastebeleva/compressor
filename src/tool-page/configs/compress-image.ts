@@ -26,7 +26,7 @@ export const compressImagePageConfig: ToolPageConfig = {
   tool: {
     title: "Image Compressor Tool",
     subtitle:
-      "Upload a file, choose a preset, run compression, and download the optimized image.",
+      "Choose your image, pick the best preset, and get a smaller file in seconds.",
     mode: "browser-compression",
     outputNameSuffix: "-compressed",
     acceptedFormats: SUPPORTED_FORMATS,
@@ -35,23 +35,23 @@ export const compressImagePageConfig: ToolPageConfig = {
       { id: PRESETS.balanced.id, label: PRESETS.balanced.label },
       { id: PRESETS.max.id, label: PRESETS.max.label },
     ],
-    limitsText: "Single file mode. Max file size 10MB. Max total size 25MB.",
+    limitsText: "Single file mode. Maximum file size: 10 MB.",
     labels: {
-      fileInput: "Upload image",
+      fileInput: "Image file",
       presetSelect: "Compression preset",
-      compressButton: "Compress",
-      compressingButton: "Compressing...",
-      downloadButton: "Download compressed image",
+      compressButton: "Compress now",
+      compressingButton: "Compressing your image...",
+      downloadButton: "Download optimized image",
       selectedFilePrefix: "Selected file",
-      selectedPresetPrefix: "Selected preset",
+      selectedPresetPrefix: "Preset",
     },
     messages: {
-      fileTooLarge: "File is too large. Maximum size is 10MB.",
-      totalLimitExceeded: "Total size limit exceeded.",
-      compressionFailed: "Compression failed.",
-      noFileSelected: "Select a file to continue.",
+      fileTooLarge: "This image is too large. Please choose a file up to 10 MB.",
+      totalLimitExceeded: "The selected file exceeds the allowed size limit.",
+      compressionFailed: "We could not compress this image. Please try another file.",
+      noFileSelected: "Choose an image first to start compression.",
       stubModeNotice:
-        "Compression engine is not connected yet. Preview uses placeholder result values.",
+        "Preview mode is active. Current results use placeholder values.",
     },
     stubResult: {
       ratio: 0.64,
@@ -60,7 +60,7 @@ export const compressImagePageConfig: ToolPageConfig = {
   },
   results: {
     title: "Results",
-    emptyState: "Upload an image and run compression to see before and after sizes.",
+    emptyState: "Choose an image and click Compress now to view your size savings.",
     labels: {
       input: "Before",
       output: "After",
@@ -104,11 +104,12 @@ export const compressImagePageConfig: ToolPageConfig = {
       {
         question: "Are my images uploaded to a server?",
         answer:
-          "This page uses browser-side processing for the current tool mode, so files are handled locally on your device.",
+          "No. Your image files are not uploaded to our server. Compression runs locally in your browser on your device.",
       },
       {
         question: "Which formats are supported?",
-        answer: "Supported formats are JPG, PNG, and WebP.",
+        answer:
+          "Supported formats are JPG, PNG, and WebP, all processed locally in your browser without server upload.",
       },
     ],
   },

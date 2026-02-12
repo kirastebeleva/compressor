@@ -11,10 +11,10 @@ export function ToolPage({ config }: ToolPageProps) {
     <main>
       <header className="card">
         <div className="row">
-          <strong>{config.header.brandLabel}</strong>
+          <strong className="brand-label">{config.header.brandLabel}</strong>
           <nav aria-label={config.header.navAriaLabel} className="row">
             {config.header.links.map((link) => (
-              <Link href={link.href} key={link.href}>
+              <Link className="text-link" href={link.href} key={link.href}>
                 {link.label}
               </Link>
             ))}
@@ -23,7 +23,7 @@ export function ToolPage({ config }: ToolPageProps) {
       </header>
 
       <section className="card">
-        <h1>{config.hero.title}</h1>
+        <h1 className="page-title">{config.hero.title}</h1>
         <p className="muted">{config.hero.subtitle}</p>
       </section>
 
@@ -31,7 +31,7 @@ export function ToolPage({ config }: ToolPageProps) {
 
       {config.contentSections.map((section) => (
         <section className="card" id={section.id} key={section.id}>
-          <h2>{section.title}</h2>
+          <h2 className="section-title">{section.title}</h2>
           {section.paragraphs.map((paragraph, index) => (
             <p className="muted" key={`${section.id}-${index}`}>
               {paragraph}
@@ -41,17 +41,22 @@ export function ToolPage({ config }: ToolPageProps) {
       ))}
 
       <section className="card">
-        <h2>{config.faq.title}</h2>
+        <h2 className="section-title">{config.faq.title}</h2>
         {config.faq.items.map((item) => (
           <details className="faq-item" key={item.question}>
-            <summary>{item.question}</summary>
+            <summary>
+              <span>{item.question}</span>
+              <span aria-hidden="true" className="faq-icon">
+                +
+              </span>
+            </summary>
             <p className="muted">{item.answer}</p>
           </details>
         ))}
       </section>
 
       <section className="card">
-        <h2>{config.relatedTools.title}</h2>
+        <h2 className="section-title">{config.relatedTools.title}</h2>
         <div className="related-list">
           {config.relatedTools.links.map((link) => (
             <Link className="related-link" href={link.href} key={link.href}>
@@ -66,7 +71,7 @@ export function ToolPage({ config }: ToolPageProps) {
         <p className="muted">{config.footer.text}</p>
         <nav className="row" aria-label={config.footer.linksAriaLabel}>
           {config.footer.links.map((link) => (
-            <Link href={link.href} key={link.href}>
+            <Link className="text-link" href={link.href} key={link.href}>
               {link.label}
             </Link>
           ))}

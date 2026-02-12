@@ -6,8 +6,8 @@ type AdSlotProps = {
 
 export function AdSlot({ config }: AdSlotProps) {
   return (
-    <section className="card">
-      <h2>{config.title}</h2>
+    <section className="card ad-slot-card">
+      <h2 className="section-title">{config.title}</h2>
       <div className="ad-slot-placeholder">{config.placeholder}</div>
     </section>
   );

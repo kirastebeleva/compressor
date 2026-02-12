@@ -34,9 +34,16 @@ main {
   gap: 12px;
 }
 
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .muted {
   color: #6b7280;
   font-size: 14px;
+  line-height: 1.5;
 }
 
 button,
@@ -60,4 +67,45 @@ button:disabled {
 
 .error {
   color: #b91c1c;
+}
+
+.faq-item {
+  padding: 10px 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.faq-item:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.faq-item summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.related-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.related-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.footer {
+  margin-bottom: 0;
+}
+
+.ad-slot-placeholder {
+  min-height: 120px;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

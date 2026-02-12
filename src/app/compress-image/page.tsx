@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { CompressionPlayground } from "@/components/compression-playground";
+import {
+  buildToolPageMetadata,
+  compressImagePageConfig,
+  ToolPage,
+} from "@/tool-page";
 
-export const metadata: Metadata = {
-  title: "Compress Image",
-  description: "Compress JPG, PNG and WebP directly in your browser.",
-  alternates: {
-    canonical: "/compress-image",
-  },
-};
+export const metadata: Metadata = buildToolPageMetadata(compressImagePageConfig);
 
 export default function CompressImagePage() {
-  return <CompressionPlayground />;
+  return <ToolPage config={compressImagePageConfig} />;
 }

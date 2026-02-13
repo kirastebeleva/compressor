@@ -1,4 +1,3 @@
-export { ToolPage } from "@/tool-page/tool-page";
+export { UniversalLandingTemplate as ToolPage } from "@/features/landing-page/ui/UniversalLandingTemplate";
 export { buildToolPageMetadata } from "@/tool-page/metadata";
-export { compressImagePageConfig } from "@/tool-page/configs/compress-image";
-export type { ToolPageConfig } from "@/tool-page/types";
+export type { PageConfig, ToolExecutionResult } from "@/tool-page/types";

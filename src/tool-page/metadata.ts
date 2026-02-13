@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import type { ToolPageConfig } from "@/tool-page/types";
+import type { PageConfig } from "@/core/types";
 
-export function buildToolPageMetadata(config: ToolPageConfig): Metadata {
+export function buildToolPageMetadata(config: PageConfig): Metadata {
   return {
-    title: config.seo.title,
-    description: config.seo.description,
+    title: config.meta.title,
+    description: config.meta.description,
     alternates: {
-      canonical: config.seo.canonical,
+      canonical: config.meta.canonical ?? `/${config.slug}`,
     },
   };
 }

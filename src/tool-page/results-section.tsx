@@ -1,61 +1,99 @@
-import type { ToolExecutionResult, ToolPageConfig } from "@/tool-page/types";
+import type { ToolExecutionResult, PageConfig } from "@/tool-page/types";
 
 type ResultsSectionProps = {
-  config: ToolPageConfig["results"];
-  toolLabels: Pick<ToolPageConfig["tool"]["labels"], "downloadButton">;
+  config: PageConfig["results"];
+  toolLabels: Pick<PageConfig["tool"]["labels"], "downloadButton">;
   result: ToolExecutionResult | null;
+  onReset: () => void;
 };
 
-export function ResultsSection({ config, toolLabels, result }: ResultsSectionProps) {
+export function ResultsSection({
+  config,
+  toolLabels,
+  result,
+  onReset,
+}: ResultsSectionProps) {
   if (!result) {
     return (
-      <section className="card">
+      <section className="card results-empty">
         <h2 className="section-title">{config.title}</h2>
-        <p className="muted">{config.emptyState}</p>
+        <p className="body-text">{config.emptyState}</p>
       </section>
     );
   }
 
-  const savedBytes = Math.max(0, result.stats.inputBytes - result.stats.outputBytes);
+  const savedBytes = Math.max(
+    0,
+    result.stats.inputBytes - result.stats.outputBytes
+  );
   const savedPercent =
     result.stats.inputBytes > 0
       ? (savedBytes / result.stats.inputBytes) * 100
       : 0;
 
   return (
-    <section className="card results-card">
+    <section className="card results-card results-appear">
       <h2 className="section-title">{config.title}</h2>
-      <p className="result-highlight">
-        Saved {savedPercent.toFixed(1)}% ({formatBytes(savedBytes, config.labels)})
-      </p>
-      <div aria-label={`Saved ${savedPercent.toFixed(1)} percent`} className="savings-visual">
+
+      <div className="savings-banner">
+        <span className="savings-percent">{savedPercent.toFixed(1)}%</span>
+        <span className="savings-label">
+          smaller &mdash; saved {formatBytes(savedBytes, config.labels)}
+        </span>
+      </div>
+
+      <div
+        aria-label={`Saved ${savedPercent.toFixed(1)} percent`}
+        className="savings-visual"
+      >
         <div className="savings-track">
           <span
-            className="savings-fill"
-            style={{ width: `${Math.min(100, Math.max(0, savedPercent))}%` }}
+            className="savings-fill savings-fill-animate"
+            style={{
+              "--savings-width": `${Math.min(100, Math.max(0, savedPercent))}%`,
+            } as React.CSSProperties}
           />
         </div>
       </div>
+
       <div className="results-grid">
-        <p className="muted result-item">
-          <span>{config.labels.input}</span>
-          <strong>{formatBytes(result.stats.inputBytes, config.labels)}</strong>
-        </p>
-        <p className="muted result-item">
-          <span>{config.labels.output}</span>
-          <strong>{formatBytes(result.stats.outputBytes, config.labels)}</strong>
-        </p>
+        <div className="result-item">
+          <span className="result-item-label">{config.labels.input}</span>
+          <strong className="result-item-value">
+            {formatBytes(result.stats.inputBytes, config.labels)}
+          </strong>
+        </div>
+        <div className="result-item result-item-after">
+          <span className="result-item-label">{config.labels.output}</span>
+          <strong className="result-item-value">
+            {formatBytes(result.stats.outputBytes, config.labels)}
+          </strong>
+        </div>
       </div>
-      <a className="btn btn-download" download={result.downloadName} href={result.downloadUrl}>
-        {toolLabels.downloadButton}
-      </a>
+
+      <div className="results-actions">
+        <a
+          className="btn btn-download"
+          download={result.downloadName}
+          href={result.downloadUrl}
+        >
+          {toolLabels.downloadButton}
+        </a>
+        <button
+          className="btn btn-secondary"
+          onClick={onReset}
+          type="button"
+        >
+          Compress another image
+        </button>
+      </div>
     </section>
   );
 }
 
 function formatBytes(
   bytes: number,
-  labels: ToolPageConfig["results"]["labels"]
+  labels: PageConfig["results"]["labels"]
 ): string {
   if (bytes < 1024) {
     return `${bytes} ${labels.byteUnit}`;

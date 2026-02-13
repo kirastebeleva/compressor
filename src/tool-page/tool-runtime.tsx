@@ -1,10 +1,18 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ResultsSection } from "@/tool-page/results-section";
 import { ToolBlock } from "@/tool-page/tool-block";
-import type { ToolExecutionResult, ToolPageConfig } from "@/tool-page/types";
+import type { ToolExecutionResult, PageConfig } from "@/tool-page/types";
+
+/**
+ * Feature flag: advertising slot.
+ * Currently disabled — the ad placeholder adds visual noise with no revenue.
+ * Flip to `true` (or wire to NEXT_PUBLIC_ADS_ENABLED) when traffic
+ * justifies enabling ad placements.
+ */
+const ADS_ENABLED = false;
 
 const LazyAdSlot = dynamic(
   () => import("@/tool-page/ad-slot").then((module) => module.AdSlot),
@@ -12,15 +20,22 @@ const LazyAdSlot = dynamic(
 );
 
 type ToolRuntimeProps = {
-  config: ToolPageConfig;
+  config: PageConfig;
 };
 
 export function ToolRuntime({ config }: ToolRuntimeProps) {
   const [result, setResult] = useState<ToolExecutionResult | null>(null);
+  const [toolKey, setToolKey] = useState(0);
+
+  const handleReset = useCallback(() => {
+    setResult(null);
+    setToolKey((k) => k + 1);
+  }, []);
 
   return (
     <>
       <ToolBlock
+        key={toolKey}
         byteLabels={config.results.labels}
         config={config.tool}
         onResult={setResult}
@@ -29,8 +44,9 @@ export function ToolRuntime({ config }: ToolRuntimeProps) {
         config={config.results}
         result={result}
         toolLabels={{ downloadButton: config.tool.labels.downloadButton }}
+        onReset={handleReset}
       />
-      <LazyAdSlot config={config.adSlot} />
+      {ADS_ENABLED && <LazyAdSlot config={config.adSlot} />}
     </>
   );
 }

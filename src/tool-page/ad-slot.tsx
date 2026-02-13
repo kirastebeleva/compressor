@@ -1,7 +1,7 @@
-import type { ToolPageConfig } from "@/tool-page/types";
+import type { PageConfig } from "@/tool-page/types";
 
 type AdSlotProps = {
-  config: ToolPageConfig["adSlot"];
+  config: PageConfig["adSlot"];
 };
 
 export function AdSlot({ config }: AdSlotProps) {

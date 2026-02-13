@@ -8,24 +8,26 @@ import {
   type SupportedFormat,
   type CompressionPresetId,
 } from "@/compression";
-import type { ToolExecutionResult, ToolPageConfig } from "@/tool-page/types";
+import type { ToolExecutionResult, PageConfig } from "@/tool-page/types";
 
 type ViewState = "idle" | "compressing" | "ready";
 
 type ToolBlockProps = {
-  config: ToolPageConfig["tool"];
+  config: PageConfig["tool"];
   byteLabels: Pick<
-    ToolPageConfig["results"]["labels"],
+    PageConfig["results"]["labels"],
     "byteUnit" | "kilobyteUnit" | "megabyteUnit"
   >;
   onResult: (result: ToolExecutionResult | null) => void;
 };
 
-const PRESET_HELP_TEXT: Record<CompressionPresetId, string> = {
-  fast: "Fast: best for quick uploads and light compression.",
-  balanced: "Balanced: recommended for most images with good quality-size tradeoff.",
-  max: "Max: strongest size reduction, may reduce visual quality.",
+const PRESET_HELP: Record<CompressionPresetId, string> = {
+  fast: "Smaller size, lower quality",
+  balanced: "Recommended for most images",
+  max: "Strongest compression",
 };
+
+const RECOMMENDED_PRESET: CompressionPresetId = "balanced";
 
 export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
   const [file, setFile] = useState<File | null>(null);
@@ -33,18 +35,17 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
   const [state, setState] = useState<ViewState>("idle");
   const [result, setResult] = useState<ToolExecutionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const disableCompress = !file || state === "compressing";
   const accept = config.acceptedFormats.join(",");
   const presets = useMemo(() => config.presets, [config.presets]);
-  const selectedPresetLabel =
-    presets.find((entry) => entry.id === preset)?.label ?? preset;
-  const selectedPresetHelp = PRESET_HELP_TEXT[preset];
-  const supportedFormatsLabel = config.acceptedFormats
-    .map((format) => formatToDisplayLabel(format))
-    .join(", ");
-  const compressActionLabel = file ? "Compress image" : "Compress now";
+  const selectedPresetHelp = PRESET_HELP[preset];
+  const formatBadges = useMemo(
+    () => config.acceptedFormats.map(formatToDisplayLabel),
+    [config.acceptedFormats]
+  );
 
   useEffect(() => {
     return () => {
@@ -62,7 +63,6 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
     if (result?.downloadUrl) {
       URL.revokeObjectURL(result.downloadUrl);
     }
-
     setResult(null);
     setState("idle");
     setError(null);
@@ -79,18 +79,14 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
     if (next.size > LIMITS.maxFileSizeBytes) {
       setError(config.messages.fileTooLarge);
       setFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
 
     if (next.size > LIMITS.maxTotalSizeBytes) {
       setError(config.messages.totalLimitExceeded);
       setFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
 
@@ -106,8 +102,25 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
     resetResult();
     setFile(null);
     setError(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const droppedFile = e.dataTransfer.files[0] ?? null;
+    if (droppedFile) {
+      onFileChange(droppedFile);
     }
   };
 
@@ -125,16 +138,10 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
         const ratio = config.stubResult?.ratio ?? 0.65;
         const elapsedMs = config.stubResult?.elapsedMs ?? 140;
         const outputBytes = Math.max(1, Math.round(file.size * ratio));
-        const resultStats = {
-          inputBytes: file.size,
-          outputBytes,
-          ratio,
-          elapsedMs,
-        };
         const url = URL.createObjectURL(file);
 
         setResult({
-          stats: resultStats,
+          stats: { inputBytes: file.size, outputBytes, ratio, elapsedMs },
           downloadUrl: url,
           downloadName: buildOutputName(file.name, config.outputNameSuffix),
         });
@@ -142,14 +149,14 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
         return;
       }
 
-      const result = await compress(file, {
+      const compressionResult = await compress(file, {
         preset,
         keepFormat: true,
       });
 
-      const nextUrl = URL.createObjectURL(result.outputBlob);
+      const nextUrl = URL.createObjectURL(compressionResult.outputBlob);
       setResult({
-        stats: result.stats,
+        stats: compressionResult.stats,
         downloadUrl: nextUrl,
         downloadName: buildOutputName(file.name, config.outputNameSuffix),
       });
@@ -165,49 +172,138 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
   };
 
   return (
-    <>
-      <section className="card">
-        <h2 className="section-title">{config.title}</h2>
-        <p className="muted">{config.subtitle}</p>
+    <section className="card tool-card">
+      <h2 className="section-title">{config.title}</h2>
+      <p className="body-text tool-subtitle">{config.subtitle}</p>
 
-        <div className="tool-action-area">
-          <label className="control action-control">
-            <input
-              accept={accept}
-              className="visually-hidden-file-input"
-              onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
-              ref={fileInputRef}
-              type="file"
-            />
-            {file ? (
-              <div className="file-chip">
-                <span className="file-chip-name" title={file.name}>
-                  {file.name} ({formatBytes(file.size, byteLabels)})
-                </span>
-                <button
-                  aria-label="Remove selected file"
-                  className="file-chip-remove"
-                  onClick={clearSelectedFile}
-                  type="button"
-                >
-                  ×
-                </button>
-              </div>
-            ) : (
-              <button
-                className="btn btn-file-picker"
-                onClick={openFilePicker}
-                type="button"
+      <input
+        accept={accept}
+        className="visually-hidden-file-input"
+        onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
+        ref={fileInputRef}
+        type="file"
+      />
+
+      {!file ? (
+        <div
+          className={`dropzone${dragOver ? " dropzone-active" : ""}`}
+          onClick={openFilePicker}
+          onDragLeave={handleDragLeave}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") openFilePicker();
+          }}
+          role="button"
+          tabIndex={0}
+        >
+          <div className="dropzone-icon">
+            <svg
+              fill="none"
+              height="48"
+              viewBox="0 0 48 48"
+              width="48"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                fill="#eff6ff"
+                height="32"
+                rx="4"
+                stroke="#93c5fd"
+                strokeWidth="2"
+                width="40"
+                x="4"
+                y="10"
+              />
+              <path
+                d="M16 34L22 26L26 31L30 25L34 34"
+                stroke="#3b82f6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+              />
+              <circle cx="18" cy="20" fill="#3b82f6" opacity="0.4" r="3" />
+              <path
+                d="M24 2V12M24 2L20 6M24 2L28 6"
+                stroke="#2563eb"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+              />
+            </svg>
+          </div>
+          <span className="dropzone-label">Choose image</span>
+          <span className="dropzone-hint">or drag and drop</span>
+          <div className="dropzone-badges">
+            {formatBadges.map((label) => (
+              <span className="format-badge" key={label}>
+                {label}
+              </span>
+            ))}
+            <span className="format-badge format-badge-muted">
+              Max 10 MB
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="tool-flow">
+          <div className="file-info-card">
+            <div className="file-info-left">
+              <svg
+                className="file-info-icon"
+                fill="none"
+                height="20"
+                viewBox="0 0 20 20"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                Choose image
-              </button>
-            )}
-          </label>
+                <rect
+                  fill="#eff6ff"
+                  height="16"
+                  rx="3"
+                  stroke="#3b82f6"
+                  strokeWidth="1.5"
+                  width="16"
+                  x="2"
+                  y="2"
+                />
+                <path
+                  d="M6 14L9 10L11 12.5L13 9.5L15 14"
+                  stroke="#3b82f6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                />
+              </svg>
+              <div className="file-info-text">
+                <span className="file-info-name" title={file.name}>
+                  {file.name}
+                </span>
+                <span className="file-info-size">
+                  {formatBytes(file.size, byteLabels)}
+                </span>
+              </div>
+            </div>
+            <button
+              aria-label="Remove selected file"
+              className="file-remove-btn"
+              onClick={clearSelectedFile}
+              type="button"
+            >
+              &times;
+            </button>
+          </div>
 
-          <label className="control action-control">
+          <div className="preset-row">
+            <label className="preset-label" htmlFor="tool-preset-select">
+              Preset
+            </label>
             <select
-              className="input-control"
-              onChange={(event) => setPreset(event.target.value as CompressionPresetId)}
+              className="preset-select"
+              id="tool-preset-select"
+              onChange={(event) =>
+                setPreset(event.target.value as CompressionPresetId)
+              }
               value={preset}
             >
               {presets.map((entry) => (
@@ -216,56 +312,55 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
                 </option>
               ))}
             </select>
-            <p className="muted preset-help">{selectedPresetHelp}</p>
-          </label>
-
-          <div className="control action-control action-control-button">
-            <button
-              className="btn btn-download action-button"
-              disabled={disableCompress}
-              onClick={onCompress}
-              type="button"
-            >
-              {state === "compressing"
-                ? config.labels.compressingButton
-                : compressActionLabel}
-            </button>
-          </div>
-        </div>
-
-        {state === "compressing" ? (
-          <p aria-live="polite" className="processing-status" role="status">
-            Processing image locally in your browser…
-          </p>
-        ) : null}
-
-        <p className="muted">{config.limitsText}</p>
-        <p className="muted supported-formats-text">
-          Supported formats: <strong>{supportedFormatsLabel}</strong>
-        </p>
-
-        {file ? (
-          <>
-            <p className="muted">
-              {config.labels.selectedPresetPrefix}: {selectedPresetLabel}
+            <p className="preset-description">
+              {selectedPresetHelp}
+              {preset === RECOMMENDED_PRESET && (
+                <span className="preset-recommended-badge">Recommended</span>
+              )}
             </p>
-          </>
-        ) : null}
+          </div>
 
-        {config.mode === "stub" ? (
-          <p className="muted">{config.messages.stubModeNotice}</p>
-        ) : null}
+          <button
+            className="btn btn-compress"
+            disabled={disableCompress}
+            onClick={onCompress}
+            type="button"
+          >
+            {state === "compressing" ? (
+              <>
+                <span className="spinner" aria-hidden="true" />
+                Compressing…
+              </>
+            ) : (
+              "Compress image"
+            )}
+          </button>
+        </div>
+      )}
 
-        {error ? <p className="error">{error}</p> : null}
-      </section>
-    </>
+      <p className="tool-trust-note">
+        Your images are processed locally in your browser. Nothing is uploaded.
+      </p>
+
+      {state === "compressing" && (
+        <p aria-live="polite" className="processing-status" role="status">
+          Processing locally in your browser…
+        </p>
+      )}
+
+      {config.mode === "stub" && (
+        <p className="muted stub-notice">{config.messages.stubModeNotice}</p>
+      )}
+
+      {error && <p className="error-message">{error}</p>}
+    </section>
   );
 }
 
 function formatBytes(
   bytes: number,
   labels: Pick<
-    ToolPageConfig["results"]["labels"],
+    PageConfig["results"]["labels"],
     "byteUnit" | "kilobyteUnit" | "megabyteUnit"
   >
 ): string {
@@ -292,13 +387,7 @@ function buildOutputName(originalName: string, suffix: string): string {
 }
 
 function formatToDisplayLabel(format: SupportedFormat): string {
-  if (format === "image/jpeg") {
-    return "JPG";
-  }
-
-  if (format === "image/png") {
-    return "PNG";
-  }
-
+  if (format === "image/jpeg") return "JPG";
+  if (format === "image/png") return "PNG";
   return "WebP";
 }

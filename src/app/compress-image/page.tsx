@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import {
-  buildToolPageMetadata,
-  compressImagePageConfig,
-  ToolPage,
-} from "@/tool-page";
+import { getPageBySlug } from "@/core/config/pages.config";
+import { buildToolPageMetadata } from "@/tool-page/metadata";
+import { UniversalLandingTemplate } from "@/features/landing-page/ui/UniversalLandingTemplate";
 
-export const metadata: Metadata = buildToolPageMetadata(compressImagePageConfig);
+const config = getPageBySlug("compress-image")!;
+
+export const metadata: Metadata = buildToolPageMetadata(config);
 
 export default function CompressImagePage() {
-  return <ToolPage config={compressImagePageConfig} />;
+  return <UniversalLandingTemplate config={config} />;
 }

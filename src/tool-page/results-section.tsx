@@ -1,8 +1,11 @@
 import type { ToolExecutionResult, PageConfig } from "@/tool-page/types";
+import type { ToolKind } from "@/core/types";
 import { formatBytes } from "@/lib/format";
+import { trackDownloadResult, bytesToMb } from "@/lib/analytics";
 
 type ResultsSectionProps = {
   config: PageConfig["results"];
+  toolKind: ToolKind;
   toolLabels: Pick<PageConfig["tool"]["labels"], "downloadButton">;
   result: ToolExecutionResult | null;
   onReset: () => void;
@@ -10,6 +13,7 @@ type ResultsSectionProps = {
 
 export function ResultsSection({
   config,
+  toolKind,
   toolLabels,
   result,
   onReset,
@@ -77,6 +81,14 @@ export function ResultsSection({
           className="btn btn-download"
           download={result.downloadName}
           href={result.downloadUrl}
+          onClick={() =>
+            trackDownloadResult({
+              tool: toolKind,
+              file_type: result.downloadName.split(".").pop() ?? "unknown",
+              file_size_mb: bytesToMb(result.stats.outputBytes),
+              output_size_mb: bytesToMb(result.stats.outputBytes),
+            })
+          }
         >
           {toolLabels.downloadButton}
         </a>

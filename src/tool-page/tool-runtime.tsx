@@ -8,6 +8,7 @@ import type { ToolExecutionResult, PageConfig } from "@/tool-page/types";
 import {
   trackPageMeta,
   trackCompressionCompleted,
+  trackToolOpen,
 } from "@/lib/analytics";
 
 /**
@@ -38,7 +39,8 @@ export function ToolRuntime({ config }: ToolRuntimeProps) {
       intent: config.intent,
       toolMode: config.tool.mode,
     });
-  }, [config.slug, config.intent, config.tool.mode]);
+    trackToolOpen(config.tool.kind);
+  }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
 
   useEffect(() => {
     if (result && !trackedRef.current) {
@@ -70,11 +72,13 @@ export function ToolRuntime({ config }: ToolRuntimeProps) {
         key={toolKey}
         byteLabels={config.results.labels}
         config={config.tool}
+        toolKind={config.tool.kind}
         onResult={setResult}
       />
       <ResultsSection
         config={config.results}
         result={result}
+        toolKind={config.tool.kind}
         toolLabels={{ downloadButton: config.tool.labels.downloadButton }}
         onReset={handleReset}
       />

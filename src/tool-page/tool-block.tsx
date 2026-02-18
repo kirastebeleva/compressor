@@ -9,12 +9,21 @@ import {
   type CompressionPresetId,
 } from "@/compression";
 import type { ToolExecutionResult, PageConfig } from "@/tool-page/types";
+import type { ToolKind } from "@/core/types";
 import { formatBytes, buildOutputName } from "@/lib/format";
+import {
+  trackFileUploaded,
+  trackProcessingStarted,
+  trackProcessingCompleted,
+  trackErrorShown,
+  bytesToMb,
+} from "@/lib/analytics";
 
 type ViewState = "idle" | "compressing" | "ready";
 
 type ToolBlockProps = {
   config: PageConfig["tool"];
+  toolKind: ToolKind;
   byteLabels: Pick<
     PageConfig["results"]["labels"],
     "byteUnit" | "kilobyteUnit" | "megabyteUnit"
@@ -30,7 +39,7 @@ const PRESET_HELP: Record<CompressionPresetId, string> = {
 
 const RECOMMENDED_PRESET: CompressionPresetId = "balanced";
 
-export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
+export function ToolBlock({ config, toolKind, byteLabels, onResult }: ToolBlockProps) {
   const [file, setFile] = useState<File | null>(null);
   const [preset, setPreset] = useState<CompressionPresetId>(DEFAULT_PRESET);
   const [state, setState] = useState<ViewState>("idle");
@@ -77,8 +86,11 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
       return;
     }
 
+    const evtBase = { tool: toolKind, file_type: next.type, file_size_mb: bytesToMb(next.size) };
+
     if (next.size > LIMITS.maxFileSizeBytes) {
       setError(config.messages.fileTooLarge);
+      trackErrorShown({ ...evtBase, error_message: config.messages.fileTooLarge });
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
@@ -86,6 +98,7 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
 
     if (next.size > LIMITS.maxTotalSizeBytes) {
       setError(config.messages.totalLimitExceeded);
+      trackErrorShown({ ...evtBase, error_message: config.messages.totalLimitExceeded });
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
@@ -93,6 +106,7 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
 
     setError(null);
     setFile(next);
+    trackFileUploaded(evtBase);
   };
 
   const openFilePicker = () => {
@@ -131,11 +145,14 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
       return;
     }
 
+    const evtBase = { tool: toolKind, file_type: file.type, file_size_mb: bytesToMb(file.size) };
+
     setError(null);
     setState("compressing");
+    trackProcessingStarted({ ...evtBase, preset });
 
     try {
-      if (config.mode === "stub") {
+      if (config.mode === "stub" && config.kind !== "image-compress") {
         const ratio = config.stubResult?.ratio ?? 0.65;
         const elapsedMs = config.stubResult?.elapsedMs ?? 140;
         const outputBytes = Math.max(1, Math.round(file.size * ratio));
@@ -148,6 +165,13 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
           preset: "stub",
         });
         setState("ready");
+        trackProcessingCompleted({
+          ...evtBase,
+          preset: "stub",
+          output_size_mb: bytesToMb(outputBytes),
+          compression_ratio: Math.round(ratio * 100),
+          elapsed_ms: elapsedMs,
+        });
         return;
       }
 
@@ -164,12 +188,20 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
         preset,
       });
       setState("ready");
+      trackProcessingCompleted({
+        ...evtBase,
+        preset,
+        output_size_mb: bytesToMb(compressionResult.stats.outputBytes),
+        compression_ratio: Math.round(compressionResult.stats.ratio * 100),
+        elapsed_ms: compressionResult.stats.elapsedMs,
+      });
     } catch (compressionError) {
-      setError(
+      const msg =
         compressionError instanceof Error
           ? compressionError.message
-          : config.messages.compressionFailed
-      );
+          : config.messages.compressionFailed;
+      setError(msg);
+      trackErrorShown({ ...evtBase, error_message: msg });
       setState("idle");
     }
   };

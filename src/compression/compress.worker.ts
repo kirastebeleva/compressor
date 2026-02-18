@@ -227,11 +227,13 @@ async function encodePngWithPreset(
   let bestBlob: Blob = initial;
   let bestCanvas: OffscreenCanvas = canvas;
 
-  // Prefer downscaling before quantization: fewer color artifacts.
+  // Prefer mild downscaling first; keep visuals stable.
   const scaleSteps =
-    targetBytes <= 150 * 1024
-      ? [0.92, 0.84, 0.76, 0.68, 0.6, 0.52, 0.45]
-      : [0.94, 0.88, 0.82, 0.76, 0.7, 0.64];
+    preset.maxDimension >= 4000
+      ? [0.97, 0.94, 0.91, 0.88, 0.85]
+      : preset.maxDimension >= 3000
+      ? [0.96, 0.92, 0.88, 0.84, 0.8]
+      : [0.94, 0.88, 0.82, 0.76, 0.7];
 
   for (const scale of scaleSteps) {
     const nextWidth = Math.max(1, Math.round(width * scale));
@@ -249,7 +251,12 @@ async function encodePngWithPreset(
     }
   }
 
-  // Last resort: mild color quantization at the best scaled size.
+  // Last resort: very mild quantization, only for strongest preset.
+  // For fast/balanced we avoid color quantization entirely.
+  if (preset.maxDimension >= 3000) {
+    return bestBlob;
+  }
+
   const context = bestCanvas.getContext("2d", { alpha: true });
   if (!context) {
     throw new CompressionError("2D canvas context is unavailable for PNG encoding");
@@ -257,7 +264,7 @@ async function encodePngWithPreset(
 
   const sourceImageData = context.getImageData(0, 0, bestCanvas.width, bestCanvas.height);
   const sourcePixels = sourceImageData.data;
-  const quantizationLevels = targetBytes <= 150 * 1024 ? [16, 14, 12, 10] : [16, 14, 12];
+  const quantizationLevels = targetBytes <= 150 * 1024 ? [24, 20, 16] : [24, 20];
 
   for (const channelLevels of quantizationLevels) {
     const quantizedPixels = new Uint8ClampedArray(sourcePixels);

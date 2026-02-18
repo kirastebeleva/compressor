@@ -1,7 +1,6 @@
 import { compressImagePage } from "@/core/config/pages/compress-image";
 import {
   compressImageUnder1mbPage,
-  resizeImagePage,
   convertToWebpPage,
 } from "@/core/config/pages/image-tools";
 import {
@@ -44,7 +43,6 @@ export const allPages: readonly PageConfig[] = [
   // Image tools — base & existing
   compressImagePage,
   compressImageUnder1mbPage,
-  resizeImagePage,
   convertToWebpPage,
 
   // Image compression cluster — format

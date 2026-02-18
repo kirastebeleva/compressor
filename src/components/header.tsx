@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { NavSection } from "@/core/types";
 
 type HeaderProps = {
@@ -57,8 +58,14 @@ export function Header({ brandLabel, brandHref, navSections }: HeaderProps) {
     <header className="site-header" ref={headerRef}>
       <div className="header-inner">
         <Link className="header-brand" href={brandHref}>
-          <span className="brand-mark" aria-hidden="true">C</span>
-          {brandLabel}
+          <Image
+            src="/imgloo-logo.png"
+            alt={brandLabel}
+            width={120}
+            height={32}
+            className="brand-logo"
+            priority
+          />
         </Link>
 
         <nav aria-label="Main navigation" className="desktop-nav">

@@ -6,7 +6,7 @@ import { allPages } from "@/core/config/pages.config";
 // ---------------------------------------------------------------------------
 
 const SECTION_META: Record<NavSectionId, { label: string; order: number }> = {
-  "image-tools": { label: "Image Tools", order: 0 },
+  "image-tools": { label: "Compress Tools", order: 0 },
   "pdf-tools": { label: "PDF Tools", order: 1 },
   "converter-tools": { label: "Converter Tools", order: 2 },
 };
@@ -15,7 +15,7 @@ const SECTION_META: Record<NavSectionId, { label: string; order: number }> = {
 // Brand constants
 // ---------------------------------------------------------------------------
 
-export const BRAND = { label: "Compressor", href: "/" } as const;
+export const BRAND = { label: "imgloo", href: "/" } as const;
 
 // ---------------------------------------------------------------------------
 // Sections visible in the header navigation.

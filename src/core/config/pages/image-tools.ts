@@ -74,10 +74,10 @@ export const compressImageUnder1mbPage: PageConfig = {
           "General image compression with flexible presets.",
       },
       {
-        href: "/resize-image",
-        label: "Resize Image",
+        href: "/compress-image-under-500kb",
+        label: "Compress Under 500 KB",
         description:
-          "Resize image dimensions for web or print.",
+          "Hit a strict 500 KB limit for uploads and forms.",
       },
     ],
   },

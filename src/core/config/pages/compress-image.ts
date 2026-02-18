@@ -90,10 +90,10 @@ export const compressImagePage: PageConfig = {
           "Target a strict file size threshold for uploads and forms.",
       },
       {
-        href: "/resize-image",
-        label: "Resize Image",
+        href: "/compress-jpg",
+        label: "Compress JPG",
         description:
-          "Change image dimensions while preserving quality.",
+          "Format-focused JPG compression for photos and web.",
       },
     ],
   },

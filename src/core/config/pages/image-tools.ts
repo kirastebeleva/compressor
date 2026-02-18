@@ -1,6 +1,8 @@
 import type { PageConfig } from "@/core/types";
 import {
   IMAGE_COMPRESS_TOOL_DEFAULTS,
+  IMAGE_RESIZE_TOOL_DEFAULTS,
+  IMAGE_CONVERT_TOOL_DEFAULTS,
   RESULTS_DEFAULTS,
   AD_SLOT_DEFAULTS,
 } from "@/core/config/defaults";
@@ -108,8 +110,7 @@ export const resizeImagePage: PageConfig = {
   },
 
   tool: {
-    ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    ...IMAGE_RESIZE_TOOL_DEFAULTS,
     title: "Image Resizer",
     subtitle:
       "Upload an image and set your target dimensions.",
@@ -168,8 +169,7 @@ export const convertToWebpPage: PageConfig = {
   },
 
   tool: {
-    ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    ...IMAGE_CONVERT_TOOL_DEFAULTS,
     title: "WebP Converter",
     subtitle:
       "Upload a JPG or PNG image to convert it to WebP.",

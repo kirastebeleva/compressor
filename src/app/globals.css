@@ -7,8 +7,8 @@
 
 :root {
   color-scheme: light;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   --color-bg: #f8fafc;
   --color-surface: #ffffff;
   --color-border: #e2e8f0;
@@ -106,7 +106,7 @@ main {
 .brand-logo {
   display: block;
   width: auto;
-  height: 28px;
+  height: 36px;
   flex-shrink: 0;
   object-fit: contain;
 }
@@ -1019,7 +1019,52 @@ select {
 }
 
 /* ==========================================================================
-   FOOTER
+   BREADCRUMBS
+   ========================================================================== */
+
+.breadcrumbs {
+  margin-bottom: 4px;
+}
+
+.breadcrumb-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb-item {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.breadcrumb-link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--color-primary);
+}
+
+.breadcrumb-separator {
+  margin: 0 6px;
+  color: #cbd5e1;
+  font-size: 12px;
+  user-select: none;
+}
+
+.breadcrumb-current {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   FOOTER (legacy — used by not-found)
    ========================================================================== */
 
 .site-footer {
@@ -1047,6 +1092,56 @@ select {
 
 .footer-link:hover {
   color: var(--color-primary);
+}
+
+/* ==========================================================================
+   FOOTER V2 (expanded, grouped by section)
+   ========================================================================== */
+
+.site-footer-v2 {
+  margin-top: 24px;
+  padding: 32px 0 0;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.footer-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 28px;
+  margin-bottom: 28px;
+}
+
+.footer-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 12px;
+}
+
+.footer-section-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-bottom {
+  padding: 20px 0 0;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: 20px;
 }
 
 /* ==========================================================================
@@ -1127,6 +1222,16 @@ select {
   }
 
   .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer-sections {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
   }

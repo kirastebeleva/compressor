@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import Script from "next/script";
 import "@/app/globals.css";
 import CookieConsent from "@/components/cookie-consent";
+import { WebVitals } from "@/components/web-vitals";
+
+const inter = Inter({
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "imgloo — Free Online Image Compressor",
@@ -15,14 +23,48 @@ export const metadata: Metadata = {
 
 const GA_ID = "G-TYV3SP242Q";
 const YM_ID = 106822296;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "imgloo",
+  url: BASE_URL,
+  logo: `${BASE_URL}/icon.png`,
+  sameAs: [],
+};
+
+const webSiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "imgloo",
+  url: BASE_URL,
+  description:
+    "Free browser-based tools to compress, convert, and optimize images and PDFs.",
+  publisher: { "@type": "Organization", name: "imgloo" },
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className={inter.variable}>
+      <body className={inter.className}>
         {children}
+        <WebVitals />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(webSiteJsonLd),
+          }}
+        />
 
         {/* Google Analytics */}
         <Script

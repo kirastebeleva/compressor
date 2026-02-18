@@ -20,13 +20,20 @@ export type ToolIntent =
   | `batch-${string}`
   | "resize"
   | "convert"
+  | `convert-${string}`
   | "merge"
   | "split"
   | "pdf-compress"
   | "pdf-to-image"
   | `generic-${string}`;
 
-export type ToolKind = "image-compress";
+export type ToolKind =
+  | "image-compress"
+  | "image-resize"
+  | "image-convert"
+  | "pdf-compress"
+  | "pdf-merge"
+  | "pdf-to-image";
 
 export type ToolMode = "browser-compression" | "stub";
 
@@ -53,6 +60,8 @@ export type PageConfig = {
   section: NavSectionId;
   /** Short label shown in navigation dropdowns */
   navLabel: string;
+  /** BCP-47 locale code. Defaults to "en" when omitted. */
+  locale?: string;
 
   h1: string;
 
@@ -146,4 +155,5 @@ export type ToolExecutionResult = {
   stats: CompressionStats;
   downloadUrl: string;
   downloadName: string;
+  preset: string;
 };

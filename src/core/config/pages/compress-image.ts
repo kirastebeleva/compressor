@@ -81,19 +81,57 @@ export const compressImagePage: PageConfig = {
   },
 
   related: {
-    title: "Related Tools",
+    title: "All Compression Tools",
     links: [
-      {
-        href: "/compress-image-under-1mb",
-        label: "Compress Image Under 1 MB",
-        description:
-          "Target a strict file size threshold for uploads and forms.",
-      },
       {
         href: "/compress-jpg",
         label: "Compress JPG",
-        description:
-          "Format-focused JPG compression for photos and web.",
+        description: "Format-focused JPG compression for photos and web.",
+      },
+      {
+        href: "/compress-png",
+        label: "Compress PNG",
+        description: "Compress PNG files while preserving transparency.",
+      },
+      {
+        href: "/compress-webp",
+        label: "Compress WebP",
+        description: "Push WebP images to even smaller sizes.",
+      },
+      {
+        href: "/compress-image-under-1mb",
+        label: "Compress Under 1 MB",
+        description: "Target a strict file size threshold for uploads.",
+      },
+      {
+        href: "/compress-image-under-500kb",
+        label: "Compress Under 500 KB",
+        description: "Hit a strict 500 KB limit for forms and platforms.",
+      },
+      {
+        href: "/compress-image-for-email",
+        label: "Compress for Email",
+        description: "Get images ready for email attachment limits.",
+      },
+      {
+        href: "/compress-image-for-website",
+        label: "Compress for Website",
+        description: "Speed up your site with lighter images.",
+      },
+      {
+        href: "/compress-image-for-instagram",
+        label: "Compress for Instagram",
+        description: "Prepare posts and stories for Instagram uploads.",
+      },
+      {
+        href: "/compress-image-batch",
+        label: "Batch Compress",
+        description: "Compress multiple images in a single session.",
+      },
+      {
+        href: "/free-image-compressor",
+        label: "Free Image Compressor",
+        description: "No signup, no fees — just fast compression.",
       },
     ],
   },

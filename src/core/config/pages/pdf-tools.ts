@@ -1,6 +1,8 @@
 import type { PageConfig } from "@/core/types";
 import {
-  IMAGE_COMPRESS_TOOL_DEFAULTS,
+  PDF_COMPRESS_TOOL_DEFAULTS,
+  PDF_MERGE_TOOL_DEFAULTS,
+  PDF_TO_IMAGE_TOOL_DEFAULTS,
   RESULTS_DEFAULTS,
   AD_SLOT_DEFAULTS,
 } from "@/core/config/defaults";
@@ -29,8 +31,7 @@ export const compressPdfPage: PageConfig = {
   },
 
   tool: {
-    ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    ...PDF_COMPRESS_TOOL_DEFAULTS,
     title: "PDF Compressor",
     subtitle:
       "Upload a PDF file and reduce its size instantly.",
@@ -94,8 +95,7 @@ export const mergePdfPage: PageConfig = {
   },
 
   tool: {
-    ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    ...PDF_MERGE_TOOL_DEFAULTS,
     title: "PDF Merger",
     subtitle:
       "Upload PDF files and merge them into one document.",
@@ -145,8 +145,7 @@ export const pdfToJpgPage: PageConfig = {
   },
 
   tool: {
-    ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    ...PDF_TO_IMAGE_TOOL_DEFAULTS,
     title: "PDF to JPG Converter",
     subtitle:
       "Upload a PDF and get JPG images of each page.",

@@ -1,6 +1,6 @@
 import type { PageConfig } from "@/core/types";
 import {
-  IMAGE_COMPRESS_TOOL_DEFAULTS,
+  IMAGE_CONVERT_TOOL_DEFAULTS,
   RESULTS_DEFAULTS,
   AD_SLOT_DEFAULTS,
 } from "@/core/config/defaults";
@@ -11,7 +11,7 @@ import {
 
 export const jpgToPngPage: PageConfig = {
   slug: "jpg-to-png",
-  intent: "format",
+  intent: "convert-jpg-png",
   section: "converter-tools",
   navLabel: "JPG to PNG",
 
@@ -29,8 +29,7 @@ export const jpgToPngPage: PageConfig = {
   },
 
   tool: {
-    ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    ...IMAGE_CONVERT_TOOL_DEFAULTS,
     title: "JPG to PNG Converter",
     subtitle: "Upload a JPG image and get a PNG file.",
   },
@@ -61,7 +60,7 @@ export const jpgToPngPage: PageConfig = {
 
 export const pngToWebpPage: PageConfig = {
   slug: "png-to-webp",
-  intent: "quality",
+  intent: "convert-png-webp",
   section: "converter-tools",
   navLabel: "PNG to WebP",
 
@@ -80,8 +79,7 @@ export const pngToWebpPage: PageConfig = {
   },
 
   tool: {
-    ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    ...IMAGE_CONVERT_TOOL_DEFAULTS,
     title: "PNG to WebP Converter",
     subtitle: "Upload a PNG image and convert it to WebP.",
   },
@@ -98,9 +96,9 @@ export const pngToWebpPage: PageConfig = {
         description: "Convert JPG images to PNG.",
       },
       {
-        href: "/convert-to-webp",
-        label: "Convert to WebP",
-        description: "Convert any image to WebP.",
+        href: "/compress-webp",
+        label: "Compress WebP",
+        description: "Compress WebP images for smaller files.",
       },
     ],
   },
@@ -112,7 +110,7 @@ export const pngToWebpPage: PageConfig = {
 
 export const heicToJpgPage: PageConfig = {
   slug: "heic-to-jpg",
-  intent: "device",
+  intent: "convert-heic-jpg",
   section: "converter-tools",
   navLabel: "HEIC to JPG",
 
@@ -131,8 +129,7 @@ export const heicToJpgPage: PageConfig = {
   },
 
   tool: {
-    ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    ...IMAGE_CONVERT_TOOL_DEFAULTS,
     title: "HEIC to JPG Converter",
     subtitle: "Upload a HEIC photo and get a JPG file.",
   },

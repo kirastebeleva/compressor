@@ -61,8 +61,8 @@ export function Header({ brandLabel, brandHref, navSections }: HeaderProps) {
           <Image
             src="/imgloo-logo.png"
             alt={brandLabel}
-            width={120}
-            height={32}
+            width={160}
+            height={40}
             className="brand-logo"
             priority
           />

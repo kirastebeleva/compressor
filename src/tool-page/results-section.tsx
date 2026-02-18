@@ -1,4 +1,5 @@
 import type { ToolExecutionResult, PageConfig } from "@/tool-page/types";
+import { formatBytes } from "@/lib/format";
 
 type ResultsSectionProps = {
   config: PageConfig["results"];
@@ -89,19 +90,4 @@ export function ResultsSection({
       </div>
     </section>
   );
-}
-
-function formatBytes(
-  bytes: number,
-  labels: PageConfig["results"]["labels"]
-): string {
-  if (bytes < 1024) {
-    return `${bytes} ${labels.byteUnit}`;
-  }
-
-  if (bytes < 1024 * 1024) {
-    return `${(bytes / 1024).toFixed(1)} ${labels.kilobyteUnit}`;
-  }
-
-  return `${(bytes / (1024 * 1024)).toFixed(2)} ${labels.megabyteUnit}`;
 }

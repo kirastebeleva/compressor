@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { allPages, getPageBySlug } from "@/core/config/pages.config";
+import { buildToolPageMetadata } from "@/tool-page/metadata";
 import { UniversalLandingTemplate } from "@/features/landing-page/ui/UniversalLandingTemplate";
+import { LandingErrorBoundary } from "@/features/landing-page/ui/ErrorBoundary";
 
 /**
  * The "compress-image" slug is served by the static route
@@ -33,13 +35,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const config = getPageBySlug(slug);
   if (!config) return {};
 
-  return {
-    title: config.meta.title,
-    description: config.meta.description,
-    alternates: {
-      canonical: config.meta.canonical ?? `/${config.slug}`,
-    },
-  };
+  return buildToolPageMetadata(config);
 }
 
 // ---------------------------------------------------------------------------
@@ -51,5 +47,9 @@ export default async function SeoPage(props: PageProps) {
   const config = getPageBySlug(slug);
   if (!config) notFound();
 
-  return <UniversalLandingTemplate config={config} />;
+  return (
+    <LandingErrorBoundary slug={config.slug}>
+      <UniversalLandingTemplate config={config} />
+    </LandingErrorBoundary>
+  );
 }

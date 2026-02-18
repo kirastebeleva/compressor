@@ -9,6 +9,7 @@ import {
   type CompressionPresetId,
 } from "@/compression";
 import type { ToolExecutionResult, PageConfig } from "@/tool-page/types";
+import { formatBytes, buildOutputName } from "@/lib/format";
 
 type ViewState = "idle" | "compressing" | "ready";
 
@@ -144,6 +145,7 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
           stats: { inputBytes: file.size, outputBytes, ratio, elapsedMs },
           downloadUrl: url,
           downloadName: buildOutputName(file.name, config.outputNameSuffix),
+          preset: "stub",
         });
         setState("ready");
         return;
@@ -159,6 +161,7 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
         stats: compressionResult.stats,
         downloadUrl: nextUrl,
         downloadName: buildOutputName(file.name, config.outputNameSuffix),
+        preset,
       });
       setState("ready");
     } catch (compressionError) {
@@ -355,35 +358,6 @@ export function ToolBlock({ config, byteLabels, onResult }: ToolBlockProps) {
       {error && <p className="error-message">{error}</p>}
     </section>
   );
-}
-
-function formatBytes(
-  bytes: number,
-  labels: Pick<
-    PageConfig["results"]["labels"],
-    "byteUnit" | "kilobyteUnit" | "megabyteUnit"
-  >
-): string {
-  if (bytes < 1024) {
-    return `${bytes} ${labels.byteUnit}`;
-  }
-
-  if (bytes < 1024 * 1024) {
-    return `${(bytes / 1024).toFixed(1)} ${labels.kilobyteUnit}`;
-  }
-
-  return `${(bytes / (1024 * 1024)).toFixed(2)} ${labels.megabyteUnit}`;
-}
-
-function buildOutputName(originalName: string, suffix: string): string {
-  const dotIndex = originalName.lastIndexOf(".");
-  if (dotIndex === -1) {
-    return `${originalName}${suffix}`;
-  }
-
-  const baseName = originalName.slice(0, dotIndex);
-  const extension = originalName.slice(dotIndex);
-  return `${baseName}${suffix}${extension}`;
 }
 
 function formatToDisplayLabel(format: SupportedFormat): string {

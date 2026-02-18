@@ -1,7 +1,6 @@
 import { compressImagePage } from "@/core/config/pages/compress-image";
 import {
   compressImageUnder1mbPage,
-  convertToWebpPage,
 } from "@/core/config/pages/image-tools";
 import {
   compressPdfPage,
@@ -14,63 +13,38 @@ import {
   heicToJpgPage,
 } from "@/core/config/pages/converter-tools";
 import {
-  compressJpgPage,
-  compressPngPage,
-  compressWebpPage,
-  compressJpegPage,
-  compressImageUnder500kbPage,
-  compressImageTo100kbPage,
-  compressImageForEmailPage,
-  compressImageForWebsitePage,
-  compressImageForWebPage,
-  compressImageForInstagramPage,
-  compressImageForWhatsappPage,
-  compressImageForShopifyPage,
-  compressImageForDiscordPage,
-  compressImageForLinkedinPage,
-  freeImageCompressorPage,
-  onlineImageCompressorPage,
-  compressImageBatchPage,
-} from "@/core/config/pages/image-compress-cluster";
+  formatPages,
+  sizePages,
+  platformPages,
+  genericPages,
+  batchPages,
+} from "@/core/config/pages/image-compress";
 import { validatePageConfigs } from "@/core/config/validate";
+import { hydrateRelatedLinks } from "@/core/config/related-links";
 import type { PageConfig } from "@/core/types";
 
 // ---------------------------------------------------------------------------
 // All registered pages — single source of truth for routing, sitemap, and nav.
+//
+// Adding a new image-compress page?
+//   1. Create or edit a file under pages/image-compress/
+//   2. Export the config + add it to the file's `pages` array
+//   3. That's it — the barrel re-exports it here automatically.
 // ---------------------------------------------------------------------------
 
-export const allPages: readonly PageConfig[] = [
-  // Image tools — base & existing
+const rawPages: readonly PageConfig[] = [
+  // Hub
   compressImagePage,
+
+  // Standalone image tools
   compressImageUnder1mbPage,
-  convertToWebpPage,
 
-  // Image compression cluster — format
-  compressJpgPage,
-  compressPngPage,
-  compressWebpPage,
-  compressJpegPage,
-
-  // Image compression cluster — size
-  compressImageUnder500kbPage,
-  compressImageTo100kbPage,
-
-  // Image compression cluster — platform / use-case
-  compressImageForEmailPage,
-  compressImageForWebsitePage,
-  compressImageForWebPage,
-  compressImageForInstagramPage,
-  compressImageForWhatsappPage,
-  compressImageForShopifyPage,
-  compressImageForDiscordPage,
-  compressImageForLinkedinPage,
-
-  // Image compression cluster — generic
-  freeImageCompressorPage,
-  onlineImageCompressorPage,
-
-  // Image compression cluster — batch
-  compressImageBatchPage,
+  // Image compression cluster (auto-collected from barrel)
+  ...formatPages,
+  ...sizePages,
+  ...platformPages,
+  ...genericPages,
+  ...batchPages,
 
   // PDF tools
   compressPdfPage,
@@ -84,7 +58,10 @@ export const allPages: readonly PageConfig[] = [
 ];
 
 // Validate at module load — build fails immediately on config errors.
-validatePageConfigs(allPages);
+validatePageConfigs(rawPages);
+
+// Fill in auto-generated related links for pages that don't define them.
+export const allPages: readonly PageConfig[] = hydrateRelatedLinks(rawPages);
 
 /** Lookup a page config by slug. Returns undefined when slug is unknown. */
 export function getPageBySlug(slug: string): PageConfig | undefined {

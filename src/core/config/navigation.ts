@@ -1,11 +1,11 @@
-import type { NavSection, NavSectionId } from "@/core/types";
+import type { NavSection, NavSectionId, PageConfig } from "@/core/types";
 import { allPages } from "@/core/config/pages.config";
 
 // ---------------------------------------------------------------------------
 // Section metadata
 // ---------------------------------------------------------------------------
 
-const SECTION_META: Record<NavSectionId, { label: string; order: number }> = {
+export const SECTION_META: Record<NavSectionId, { label: string; order: number }> = {
   "image-tools": { label: "Compress Tools", order: 0 },
   "pdf-tools": { label: "PDF Tools", order: 1 },
   "converter-tools": { label: "Converter Tools", order: 2 },
@@ -53,5 +53,55 @@ function buildNavSections(): NavSection[] {
       id,
       label: meta.label,
       items: grouped.get(id)!,
+    }));
+}
+
+// ---------------------------------------------------------------------------
+// Footer links — top pages per section for site-wide footer
+// ---------------------------------------------------------------------------
+
+export type FooterSection = {
+  label: string;
+  links: readonly { href: string; label: string }[];
+};
+
+const MAX_FOOTER_LINKS_PER_SECTION = 5;
+
+/** Active (browser-compression) pages rank higher than stubs. */
+function footerScore(page: PageConfig): number {
+  let s = 0;
+  if (page.intent === "base") s += 10;
+  if (page.tool.mode === "browser-compression") s += 5;
+  if (page.intent.startsWith("format")) s += 3;
+  if (page.intent.startsWith("platform")) s += 2;
+  return s;
+}
+
+export const footerSections: readonly FooterSection[] = buildFooterSections();
+
+function buildFooterSections(): FooterSection[] {
+  const grouped = new Map<NavSectionId, PageConfig[]>();
+
+  for (const page of allPages) {
+    const arr = grouped.get(page.section) ?? [];
+    arr.push(page);
+    grouped.set(page.section, arr);
+  }
+
+  return (
+    Object.entries(SECTION_META) as [
+      NavSectionId,
+      (typeof SECTION_META)[NavSectionId],
+    ][]
+  )
+    .sort(([, a], [, b]) => a.order - b.order)
+    .filter(([id]) => grouped.has(id))
+    .map(([id, meta]) => ({
+      label: meta.label,
+      links: grouped
+        .get(id)!
+        .sort((a, b) => footerScore(b) - footerScore(a))
+        .slice(0, MAX_FOOTER_LINKS_PER_SECTION)
+        .map((p) => ({ href: `/${p.slug}`, label: p.navLabel })),
     }));
 }

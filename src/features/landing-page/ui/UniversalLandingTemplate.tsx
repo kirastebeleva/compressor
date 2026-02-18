@@ -1,9 +1,13 @@
 import Link from "next/link";
 import type { PageConfig } from "@/core/types";
-import { navSections, BRAND } from "@/core/config/navigation";
-import { FOOTER_DEFAULTS } from "@/core/config/defaults";
+import { navSections, BRAND, SECTION_META } from "@/core/config/navigation";
 import { ToolRuntime } from "@/tool-page/tool-runtime";
 import { Header } from "@/components/header";
+import { SiteFooter } from "@/components/site-footer";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+
+const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
 
 type Props = {
   config: PageConfig;
@@ -19,6 +23,8 @@ export function UniversalLandingTemplate({ config }: Props) {
       />
 
       <main>
+        <Breadcrumbs config={config} />
+
         {/* Hero */}
         <section className="hero">
           <h1 className="page-title">{config.h1}</h1>
@@ -95,24 +101,7 @@ export function UniversalLandingTemplate({ config }: Props) {
           </section>
         )}
 
-        {/* Footer */}
-        <footer className="site-footer">
-          <p className="muted">{FOOTER_DEFAULTS.text}</p>
-          <nav
-            className="footer-links"
-            aria-label={FOOTER_DEFAULTS.linksAriaLabel}
-          >
-            {FOOTER_DEFAULTS.links.map((link) => (
-              <Link
-                className="footer-link"
-                href={link.href}
-                key={link.href}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </footer>
+        <SiteFooter />
 
         {/* FAQ structured data */}
         {config.faq && (
@@ -123,6 +112,22 @@ export function UniversalLandingTemplate({ config }: Props) {
             type="application/ld+json"
           />
         )}
+
+        {/* BreadcrumbList structured data */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(buildBreadcrumbSchema(config)),
+          }}
+          type="application/ld+json"
+        />
+
+        {/* WebApplication structured data */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(buildWebAppSchema(config)),
+          }}
+          type="application/ld+json"
+        />
       </main>
     </>
   );
@@ -141,5 +146,50 @@ function buildFaqSchema(config: PageConfig): Record<string, unknown> {
         text: item.answer,
       },
     })),
+  };
+}
+
+function buildBreadcrumbSchema(config: PageConfig): Record<string, unknown> {
+  const sectionLabel = SECTION_META[config.section]?.label ?? config.section;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: BASE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: sectionLabel,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: config.h1,
+        item: `${BASE_URL}/${config.slug}`,
+      },
+    ],
+  };
+}
+
+function buildWebAppSchema(config: PageConfig): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: config.tool.title,
+    description: config.meta.description,
+    url: `${BASE_URL}/${config.slug}`,
+    applicationCategory: "MultimediaApplication",
+    operatingSystem: "Any",
+    browserRequirements: "Requires a modern web browser with JavaScript enabled",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
   };
 }

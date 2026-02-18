@@ -35,31 +35,44 @@ export function ResultsSection({
     result.stats.inputBytes > 0
       ? (savedBytes / result.stats.inputBytes) * 100
       : 0;
+  const alreadyOptimized = savedBytes === 0;
 
   return (
     <section className="card results-card results-appear">
       <h2 className="section-title">{config.title}</h2>
 
-      <div className="savings-banner">
-        <span className="savings-percent">{savedPercent.toFixed(1)}%</span>
-        <span className="savings-label">
-          smaller &mdash; saved {formatBytes(savedBytes, config.labels)}
-        </span>
-      </div>
-
-      <div
-        aria-label={`Saved ${savedPercent.toFixed(1)} percent`}
-        className="savings-visual"
-      >
-        <div className="savings-track">
-          <span
-            className="savings-fill savings-fill-animate"
-            style={{
-              "--savings-width": `${Math.min(100, Math.max(0, savedPercent))}%`,
-            } as React.CSSProperties}
-          />
+      {alreadyOptimized ? (
+        <div className="savings-banner savings-banner-optimized">
+          <span className="savings-label">
+            Already well-optimized &mdash; no further reduction possible
+          </span>
         </div>
-      </div>
+      ) : (
+        <>
+          <div className="savings-banner">
+            <span className="savings-percent">
+              {savedPercent.toFixed(1)}%
+            </span>
+            <span className="savings-label">
+              smaller &mdash; saved {formatBytes(savedBytes, config.labels)}
+            </span>
+          </div>
+
+          <div
+            aria-label={`Saved ${savedPercent.toFixed(1)} percent`}
+            className="savings-visual"
+          >
+            <div className="savings-track">
+              <span
+                className="savings-fill savings-fill-animate"
+                style={{
+                  "--savings-width": `${Math.min(100, Math.max(0, savedPercent))}%`,
+                } as React.CSSProperties}
+              />
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="results-grid">
         <div className="result-item">

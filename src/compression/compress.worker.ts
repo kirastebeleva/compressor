@@ -139,7 +139,13 @@ async function compressImageInWorker(
 
     context.drawImage(bitmap, 0, 0, width, height);
 
-    return await encodeWithPreset(canvas, fileType, preset, targetBytes);
+    const encoded = await encodeWithPreset(canvas, fileType, preset, targetBytes);
+
+    if (encoded.size >= file.size) {
+      return new Blob([file], { type: file.type });
+    }
+
+    return encoded;
   } finally {
     bitmap.close();
   }
@@ -218,16 +224,56 @@ async function encodePngWithPreset(
   const width = canvas.width;
   const height = canvas.height;
 
-  // Baseline: keep PNG lossless whenever possible.
-  const initial = await canvas.convertToBlob({ type: "image/png" });
-  if (!targetBytes || initial.size <= targetBytes) {
-    return initial;
+  const lossless = await canvas.convertToBlob({ type: "image/png" });
+  let bestBlob: Blob = lossless;
+
+  if (targetBytes && lossless.size <= targetBytes) {
+    return lossless;
   }
 
-  let bestBlob: Blob = initial;
+  const quantizationLevels = selectPngQuantizationLevels(preset, targetBytes);
+
+  if (quantizationLevels.length > 0) {
+    const context = canvas.getContext("2d", { alpha: true });
+    if (!context) {
+      throw new CompressionError("2D canvas context is unavailable for PNG encoding");
+    }
+
+    const sourceImageData = context.getImageData(0, 0, width, height);
+    const sourcePixels = sourceImageData.data;
+
+    for (const channelLevels of quantizationLevels) {
+      const quantizedPixels = new Uint8ClampedArray(sourcePixels);
+      quantizeRgbInPlace(quantizedPixels, channelLevels);
+
+      const tempCanvas = new OffscreenCanvas(width, height);
+      const tempContext = tempCanvas.getContext("2d", { alpha: true });
+      if (!tempContext) {
+        throw new CompressionError("2D canvas context is unavailable for PNG quantization");
+      }
+
+      tempContext.putImageData(
+        new ImageData(quantizedPixels, width, height),
+        0,
+        0
+      );
+
+      const encoded = await tempCanvas.convertToBlob({ type: "image/png" });
+      if (encoded.size < bestBlob.size) {
+        bestBlob = encoded;
+      }
+      if (targetBytes && encoded.size <= targetBytes) {
+        return encoded;
+      }
+    }
+  }
+
+  if (!targetBytes) {
+    return bestBlob;
+  }
+
   let bestCanvas: OffscreenCanvas = canvas;
 
-  // Prefer mild downscaling first; keep visuals stable.
   const scaleSteps =
     preset.maxDimension >= 4000
       ? [0.97, 0.94, 0.91, 0.88, 0.85]
@@ -251,47 +297,19 @@ async function encodePngWithPreset(
     }
   }
 
-  // Last resort: very mild quantization, only for strongest preset.
-  // For fast/balanced we avoid color quantization entirely.
-  if (preset.maxDimension >= 3000) {
-    return bestBlob;
-  }
-
-  const context = bestCanvas.getContext("2d", { alpha: true });
-  if (!context) {
-    throw new CompressionError("2D canvas context is unavailable for PNG encoding");
-  }
-
-  const sourceImageData = context.getImageData(0, 0, bestCanvas.width, bestCanvas.height);
-  const sourcePixels = sourceImageData.data;
-  const quantizationLevels = targetBytes <= 150 * 1024 ? [24, 20, 16] : [24, 20];
-
-  for (const channelLevels of quantizationLevels) {
-    const quantizedPixels = new Uint8ClampedArray(sourcePixels);
-    quantizeRgbInPlace(quantizedPixels, channelLevels);
-
-    const tempCanvas = new OffscreenCanvas(bestCanvas.width, bestCanvas.height);
-    const tempContext = tempCanvas.getContext("2d", { alpha: true });
-    if (!tempContext) {
-      throw new CompressionError("2D canvas context is unavailable for PNG quantization");
-    }
-
-    tempContext.putImageData(
-      new ImageData(quantizedPixels, bestCanvas.width, bestCanvas.height),
-      0,
-      0
-    );
-
-    const encoded = await tempCanvas.convertToBlob({ type: "image/png" });
-    if (encoded.size < bestBlob.size) {
-      bestBlob = encoded;
-    }
-    if (encoded.size <= targetBytes) {
-      return encoded;
-    }
-  }
-
   return bestBlob;
+}
+
+function selectPngQuantizationLevels(
+  preset: CompressionPreset,
+  targetBytes: number | undefined
+): number[] {
+  if (targetBytes) {
+    return targetBytes <= 150 * 1024 ? [24, 20, 16] : [24, 20];
+  }
+  if (preset.maxDimension >= 4000) return [32];
+  if (preset.maxDimension >= 3000) return [28, 24];
+  return [24, 20, 16];
 }
 
 function resizeCanvas(

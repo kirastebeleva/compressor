@@ -33,7 +33,8 @@ export const compressImageUnder1mbPage: PageConfig = {
 
   tool: {
     ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    mode: "browser-compression",
+    targetBytes: 1024 * 1024,
     title: "Compress to Under 1 MB",
     subtitle:
       "Upload your image and we will reduce it below 1 MB.",

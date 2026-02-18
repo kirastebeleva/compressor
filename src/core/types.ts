@@ -80,6 +80,8 @@ export type PageConfig = {
   tool: {
     kind: ToolKind;
     mode: ToolMode;
+    /** Optional strict output size target for size-specific pages. */
+    targetBytes?: number;
     title: string;
     subtitle: string;
     outputNameSuffix: string;

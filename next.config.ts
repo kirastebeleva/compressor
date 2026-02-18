@@ -144,7 +144,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
+const sentryConfig = withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
   silent: !process.env.CI,
@@ -152,3 +152,6 @@ export default withSentryConfig(nextConfig, {
   tunnelRoute: "/monitoring",
   sourcemaps: { deleteSourcemapsAfterUpload: true },
 });
+
+// Keep local DX stable: Sentry's webpack integration can break dev HMR/cache.
+export default process.env.NODE_ENV === "production" ? sentryConfig : nextConfig;

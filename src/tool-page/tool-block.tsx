@@ -152,7 +152,12 @@ export function ToolBlock({ config, toolKind, byteLabels, onResult }: ToolBlockP
     trackProcessingStarted({ ...evtBase, preset });
 
     try {
-      if (config.mode === "stub" && config.kind !== "image-compress") {
+      const isImageTool =
+        config.kind === "image-compress" ||
+        config.kind === "image-resize" ||
+        config.kind === "image-convert";
+
+      if (config.mode === "stub" && !isImageTool) {
         const ratio = config.stubResult?.ratio ?? 0.65;
         const elapsedMs = config.stubResult?.elapsedMs ?? 140;
         const outputBytes = Math.max(1, Math.round(file.size * ratio));
@@ -177,6 +182,7 @@ export function ToolBlock({ config, toolKind, byteLabels, onResult }: ToolBlockP
 
       const compressionResult = await compress(file, {
         preset,
+        targetBytes: config.targetBytes,
         keepFormat: true,
       });
 

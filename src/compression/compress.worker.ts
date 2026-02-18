@@ -40,33 +40,33 @@ const DEFAULT_PRESET: CompressionPresetId = "balanced";
 const SOFT_PIXEL_LIMIT = 30_000_000;
 const PRESETS: Record<CompressionPresetId, CompressionPreset> = {
   fast: {
-    maxDimension: 2200,
-    initialQuality: 0.82,
-    minQuality: 0.72,
-    qualityStep: 0.07,
+    maxDimension: 4096,
+    initialQuality: 0.9,
+    minQuality: 0.82,
+    qualityStep: 0.04,
     maxIterations: 2,
-    pngMaxColors: 192,
-    pngMinColors: 128,
+    pngMaxColors: 256,
+    pngMinColors: 224,
     pngColorStep: 32,
   },
   balanced: {
-    maxDimension: 2000,
-    initialQuality: 0.74,
-    minQuality: 0.55,
-    qualityStep: 0.06,
+    maxDimension: 3200,
+    initialQuality: 0.86,
+    minQuality: 0.72,
+    qualityStep: 0.04,
     maxIterations: 5,
-    pngMaxColors: 128,
-    pngMinColors: 64,
+    pngMaxColors: 256,
+    pngMinColors: 160,
     pngColorStep: 16,
   },
   max: {
-    maxDimension: 1600,
-    initialQuality: 0.6,
-    minQuality: 0.35,
+    maxDimension: 2400,
+    initialQuality: 0.78,
+    minQuality: 0.6,
     qualityStep: 0.05,
     maxIterations: 8,
-    pngMaxColors: 64,
-    pngMinColors: 16,
+    pngMaxColors: 192,
+    pngMinColors: 96,
     pngColorStep: 16,
   },
 };
@@ -174,16 +174,28 @@ async function encodeWithPreset(
   }
 
   let quality = preset.initialQuality;
-  let best = await canvas.convertToBlob({ type, quality });
-  let bestBytes = best.size;
+  const initial = await canvas.convertToBlob({ type, quality });
+
+  // No strict target: preserve quality and avoid over-compressing.
+  if (!targetBytes) {
+    return initial;
+  }
+
+  if (initial.size <= targetBytes) {
+    return initial;
+  }
+
+  let best = initial;
+  let bestBytes = initial.size;
 
   for (let i = 0; i < preset.maxIterations; i += 1) {
-    if (targetBytes && bestBytes <= targetBytes) {
-      break;
-    }
-
     quality = Math.max(preset.minQuality, quality - preset.qualityStep);
     const candidate = await canvas.convertToBlob({ type, quality });
+
+    // First candidate under target is the highest quality that satisfies it.
+    if (candidate.size <= targetBytes) {
+      return candidate;
+    }
 
     if (candidate.size <= bestBytes) {
       best = candidate;
@@ -203,59 +215,94 @@ async function encodePngWithPreset(
   preset: CompressionPreset,
   targetBytes: number | undefined
 ): Promise<Blob> {
-  const context = canvas.getContext("2d", { alpha: true });
+  const width = canvas.width;
+  const height = canvas.height;
 
+  // Baseline: keep PNG lossless whenever possible.
+  const initial = await canvas.convertToBlob({ type: "image/png" });
+  if (!targetBytes || initial.size <= targetBytes) {
+    return initial;
+  }
+
+  let bestBlob: Blob = initial;
+  let bestCanvas: OffscreenCanvas = canvas;
+
+  // Prefer downscaling before quantization: fewer color artifacts.
+  const scaleSteps =
+    targetBytes <= 150 * 1024
+      ? [0.92, 0.84, 0.76, 0.68, 0.6, 0.52, 0.45]
+      : [0.94, 0.88, 0.82, 0.76, 0.7, 0.64];
+
+  for (const scale of scaleSteps) {
+    const nextWidth = Math.max(1, Math.round(width * scale));
+    const nextHeight = Math.max(1, Math.round(height * scale));
+    const resized = resizeCanvas(bestCanvas, nextWidth, nextHeight);
+    const encoded = await resized.convertToBlob({ type: "image/png" });
+
+    if (encoded.size < bestBlob.size) {
+      bestBlob = encoded;
+      bestCanvas = resized;
+    }
+
+    if (encoded.size <= targetBytes) {
+      return encoded;
+    }
+  }
+
+  // Last resort: mild color quantization at the best scaled size.
+  const context = bestCanvas.getContext("2d", { alpha: true });
   if (!context) {
     throw new CompressionError("2D canvas context is unavailable for PNG encoding");
   }
 
-  const width = canvas.width;
-  const height = canvas.height;
-  const sourceImageData = context.getImageData(0, 0, width, height);
+  const sourceImageData = context.getImageData(0, 0, bestCanvas.width, bestCanvas.height);
   const sourcePixels = sourceImageData.data;
+  const quantizationLevels = targetBytes <= 150 * 1024 ? [16, 14, 12, 10] : [16, 14, 12];
 
-  let colorCount = preset.pngMaxColors;
-  let best: Blob | null = null;
-
-  while (colorCount >= preset.pngMinColors) {
-    const level = toChannelLevels(colorCount);
+  for (const channelLevels of quantizationLevels) {
     const quantizedPixels = new Uint8ClampedArray(sourcePixels);
-    quantizeRgbInPlace(quantizedPixels, level);
+    quantizeRgbInPlace(quantizedPixels, channelLevels);
 
-    const tempCanvas = new OffscreenCanvas(width, height);
+    const tempCanvas = new OffscreenCanvas(bestCanvas.width, bestCanvas.height);
     const tempContext = tempCanvas.getContext("2d", { alpha: true });
-
     if (!tempContext) {
       throw new CompressionError("2D canvas context is unavailable for PNG quantization");
     }
 
-    tempContext.putImageData(new ImageData(quantizedPixels, width, height), 0, 0);
+    tempContext.putImageData(
+      new ImageData(quantizedPixels, bestCanvas.width, bestCanvas.height),
+      0,
+      0
+    );
+
     const encoded = await tempCanvas.convertToBlob({ type: "image/png" });
-
-    if (!best || encoded.size < best.size) {
-      best = encoded;
+    if (encoded.size < bestBlob.size) {
+      bestBlob = encoded;
     }
-
-    if (targetBytes && encoded.size <= targetBytes) {
-      break;
+    if (encoded.size <= targetBytes) {
+      return encoded;
     }
-
-    if (colorCount === preset.pngMinColors) {
-      break;
-    }
-
-    colorCount = Math.max(preset.pngMinColors, colorCount - preset.pngColorStep);
   }
 
-  if (!best) {
-    throw new CompressionError("PNG encoding failed");
-  }
-
-  return best;
+  return bestBlob;
 }
 
-function toChannelLevels(colorCount: number): number {
-  return Math.max(2, Math.min(16, Math.round(Math.cbrt(colorCount))));
+function resizeCanvas(
+  source: OffscreenCanvas,
+  width: number,
+  height: number
+): OffscreenCanvas {
+  const output = new OffscreenCanvas(width, height);
+  const context = output.getContext("2d", { alpha: true });
+
+  if (!context) {
+    throw new CompressionError("2D canvas context is unavailable for resizing");
+  }
+
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = "high";
+  context.drawImage(source, 0, 0, width, height);
+  return output;
 }
 
 function quantizeRgbInPlace(pixels: Uint8ClampedArray, channelLevels: number): void {

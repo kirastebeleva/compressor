@@ -21,7 +21,8 @@ export const compressImageUnder500kbPage: PageConfig = {
   },
   tool: {
     ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    mode: "browser-compression",
+    targetBytes: 500 * 1024,
     title: "Compress to Under 500 KB",
     subtitle: "Upload your image and reduce it below 500 KB using quality presets.",
   },
@@ -73,7 +74,8 @@ export const compressImageTo100kbPage: PageConfig = {
   },
   tool: {
     ...IMAGE_COMPRESS_TOOL_DEFAULTS,
-    mode: "stub",
+    mode: "browser-compression",
+    targetBytes: 100 * 1024,
     title: "Compress to 100 KB",
     subtitle: "Upload your image and aim for a 100 KB result using the Max preset.",
   },

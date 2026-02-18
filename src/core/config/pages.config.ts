@@ -3,16 +3,6 @@ import {
   compressImageUnder1mbPage,
 } from "@/core/config/pages/image-tools";
 import {
-  compressPdfPage,
-  mergePdfPage,
-  pdfToJpgPage,
-} from "@/core/config/pages/pdf-tools";
-import {
-  jpgToPngPage,
-  pngToWebpPage,
-  heicToJpgPage,
-} from "@/core/config/pages/converter-tools";
-import {
   formatPages,
   sizePages,
   platformPages,
@@ -30,6 +20,10 @@ import type { PageConfig } from "@/core/types";
 //   1. Create or edit a file under pages/image-compress/
 //   2. Export the config + add it to the file's `pages` array
 //   3. That's it — the barrel re-exports it here automatically.
+//
+// Hidden pages (configs preserved, re-add when functionality is ready):
+//   - PDF tools: compressPdfPage, mergePdfPage, pdfToJpgPage
+//   - Converter tools: jpgToPngPage, pngToWebpPage, heicToJpgPage
 // ---------------------------------------------------------------------------
 
 const rawPages: readonly PageConfig[] = [
@@ -45,16 +39,6 @@ const rawPages: readonly PageConfig[] = [
   ...platformPages,
   ...genericPages,
   ...batchPages,
-
-  // PDF tools
-  compressPdfPage,
-  mergePdfPage,
-  pdfToJpgPage,
-
-  // Converter tools
-  jpgToPngPage,
-  pngToWebpPage,
-  heicToJpgPage,
 ];
 
 // Validate at module load — build fails immediately on config errors.

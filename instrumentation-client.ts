@@ -1,4 +1,17 @@
-// Sentry client init — activated when NEXT_PUBLIC_SENTRY_DSN is set.
-// Kept minimal to avoid dev-mode Fast Refresh issues.
+import * as Sentry from "@sentry/nextjs";
 
-export {};
+const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
+
+if (dsn) {
+  Sentry.init({
+    dsn,
+    tracesSampleRate: 0.1,
+    replaysSessionSampleRate: 0,
+    replaysOnErrorSampleRate: 1.0,
+    integrations: [
+      Sentry.replayIntegration({ maskAllText: true, blockAllMedia: true }),
+    ],
+  });
+}
+
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

@@ -188,10 +188,10 @@ export const convertToWebpPage: PageConfig = {
           "Compress images without format conversion.",
       },
       {
-        href: "/png-to-webp",
-        label: "PNG to WebP",
+        href: "/compress-webp",
+        label: "Compress WebP",
         description:
-          "Convert PNG images to WebP specifically.",
+          "Compress WebP images in your browser.",
       },
     ],
   },

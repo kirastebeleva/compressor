@@ -22,6 +22,8 @@ export function generateStaticParams() {
     .map((p) => ({ slug: p.slug }));
 }
 
+export const dynamicParams = false;
+
 // ---------------------------------------------------------------------------
 // Metadata
 // ---------------------------------------------------------------------------

@@ -16,6 +16,7 @@ const SYNONYM_VERBS = [
 ];
 
 const SYNONYM_NOUNS = ["photo", "picture", "pic"];
+const ENABLE_CUSTOM_ROUTES_FOR_SERVER_RUNTIME = false;
 
 function buildSynonymRedirects() {
   const redirects: {
@@ -51,97 +52,103 @@ function buildSynonymRedirects() {
 }
 
 const nextConfig: NextConfig = {
+  output: "export",
   reactStrictMode: true,
-  trailingSlash: false,
-
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
-        ],
-      },
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-      {
-        source: "/icon.png",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-      {
-        source: "/apple-icon.png",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-    ];
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
   },
+  ...(ENABLE_CUSTOM_ROUTES_FOR_SERVER_RUNTIME
+    ? {
+        async headers() {
+          return [
+            {
+              source: "/:path*",
+              headers: [
+                {
+                  key: "X-Content-Type-Options",
+                  value: "nosniff",
+                },
+                {
+                  key: "X-Frame-Options",
+                  value: "DENY",
+                },
+                {
+                  key: "Referrer-Policy",
+                  value: "strict-origin-when-cross-origin",
+                },
+              ],
+            },
+            {
+              source: "/_next/static/:path*",
+              headers: [
+                {
+                  key: "Cache-Control",
+                  value: "public, max-age=31536000, immutable",
+                },
+              ],
+            },
+            {
+              source: "/icon.png",
+              headers: [
+                {
+                  key: "Cache-Control",
+                  value: "public, max-age=31536000, immutable",
+                },
+              ],
+            },
+            {
+              source: "/apple-icon.png",
+              headers: [
+                {
+                  key: "Cache-Control",
+                  value: "public, max-age=31536000, immutable",
+                },
+              ],
+            },
+          ];
+        },
+        async redirects() {
+          return [
+            ...buildSynonymRedirects(),
 
-  async redirects() {
-    return [
-      ...buildSynonymRedirects(),
+            // Cannibalization merges (Phase 7)
+            {
+              source: "/compress-image-for-web",
+              destination: "/compress-image-for-website",
+              permanent: true,
+            },
 
-      // Cannibalization merges (Phase 7)
-      {
-        source: "/compress-image-for-web",
-        destination: "/compress-image-for-website",
-        permanent: true,
-      },
-
-      // Common misspellings / alternative patterns
-      {
-        source: "/image-compressor",
-        destination: "/compress-image",
-        permanent: true,
-      },
-      {
-        source: "/image-compression",
-        destination: "/compress-image",
-        permanent: true,
-      },
-      {
-        source: "/jpg-compressor",
-        destination: "/compress-jpg",
-        permanent: true,
-      },
-      {
-        source: "/png-compressor",
-        destination: "/compress-png",
-        permanent: true,
-      },
-      {
-        source: "/webp-compressor",
-        destination: "/compress-webp",
-        permanent: true,
-      },
-    ];
-  },
+            // Common misspellings / alternative patterns
+            {
+              source: "/image-compressor",
+              destination: "/compress-image",
+              permanent: true,
+            },
+            {
+              source: "/image-compression",
+              destination: "/compress-image",
+              permanent: true,
+            },
+            {
+              source: "/jpg-compressor",
+              destination: "/compress-jpg",
+              permanent: true,
+            },
+            {
+              source: "/png-compressor",
+              destination: "/compress-png",
+              permanent: true,
+            },
+            {
+              source: "/webp-compressor",
+              destination: "/compress-webp",
+              permanent: true,
+            },
+          ];
+        },
+      }
+    : {}),
 };
 
 const sentryConfig = withSentryConfig(nextConfig, {
@@ -149,7 +156,6 @@ const sentryConfig = withSentryConfig(nextConfig, {
   project: process.env.SENTRY_PROJECT,
   silent: !process.env.CI,
   widenClientFileUpload: true,
-  tunnelRoute: "/monitoring",
   sourcemaps: { deleteSourcemapsAfterUpload: true },
 });
 

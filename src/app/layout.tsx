@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import Script from "next/script";
 import "@/app/globals.css";
 import CookieConsent from "@/components/cookie-consent";
 import { WebVitals } from "@/components/web-vitals";
-
-const inter = Inter({
-  subsets: ["latin", "cyrillic"],
-  display: "swap",
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "imgloo — Free Online Image Compressor",
@@ -48,8 +41,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className={inter.className}>
+    <html lang="en">
+      <body>
         {children}
         <WebVitals />
 

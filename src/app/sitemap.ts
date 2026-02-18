@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { allPages } from "@/core/config/pages.config";
 import type { ToolIntent } from "@/core/types";
 
+export const dynamic = "force-static";
+
 const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
 

@@ -33,8 +33,7 @@ export async function compress(file: File, options: CompressOptions): Promise<Co
       keepFormat: options.keepFormat,
     });
 
-    const outputBlob =
-      workerResult.outputBytes <= file.size ? workerResult.outputBlob : file.slice(0, file.size, file.type);
+    const outputBlob = workerResult.outputBlob;
 
     const elapsedMs = Math.round(performance.now() - startedAt);
 

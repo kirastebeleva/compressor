@@ -5,10 +5,13 @@ import { allPages } from "@/core/config/pages.config";
 // Section metadata
 // ---------------------------------------------------------------------------
 
-export const SECTION_META: Record<NavSectionId, { label: string; order: number }> = {
-  "image-tools": { label: "Compress Tools", order: 0 },
-  "pdf-tools": { label: "PDF Tools", order: 1 },
-  "converter-tools": { label: "Converter Tools", order: 2 },
+export const SECTION_META: Record<
+  NavSectionId,
+  { label: string; order: number; slug: string }
+> = {
+  "image-tools": { label: "Compress Tools", order: 0, slug: "compress-image" },
+  "pdf-tools": { label: "PDF Tools", order: 1, slug: "pdf-tools" },
+  "converter-tools": { label: "Converter Tools", order: 2, slug: "converter-tools" },
 };
 
 // ---------------------------------------------------------------------------

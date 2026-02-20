@@ -150,7 +150,10 @@ function buildFaqSchema(config: PageConfig): Record<string, unknown> {
 }
 
 function buildBreadcrumbSchema(config: PageConfig): Record<string, unknown> {
-  const sectionLabel = SECTION_META[config.section]?.label ?? config.section;
+  const sectionMeta = SECTION_META[config.section];
+  const sectionLabel = sectionMeta?.label ?? config.section;
+  const sectionSlug = sectionMeta?.slug ?? config.section;
+
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -165,6 +168,7 @@ function buildBreadcrumbSchema(config: PageConfig): Record<string, unknown> {
         "@type": "ListItem",
         position: 2,
         name: sectionLabel,
+        item: `${BASE_URL}/${sectionSlug}`,
       },
       {
         "@type": "ListItem",

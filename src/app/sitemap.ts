@@ -7,7 +7,7 @@ export const dynamic = "force-static";
 const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
 
-const BUILD_DATE = new Date().toISOString();
+const BUILD_DATE = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
 function intentPriority(intent: ToolIntent, mode: string): number {
   if (mode === "stub") return 0.5;
@@ -20,10 +20,19 @@ function intentPriority(intent: ToolIntent, mode: string): number {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return allPages.map((page) => ({
-    url: `${BASE_URL}/${page.slug}`,
+  const homepage: MetadataRoute.Sitemap[number] = {
+    url: `${BASE_URL}/`,
     lastModified: BUILD_DATE,
     changeFrequency: "weekly",
+    priority: 1.0,
+  };
+
+  const pages = allPages.map((page) => ({
+    url: `${BASE_URL}/${page.slug}/`,
+    lastModified: BUILD_DATE,
+    changeFrequency: "weekly" as const,
     priority: intentPriority(page.intent, page.tool.mode),
   }));
+
+  return [homepage, ...pages];
 }

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import type { PageConfig } from "@/core/types";
 import { navSections, BRAND, SECTION_META } from "@/core/config/navigation";
@@ -8,6 +9,30 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
+
+const INLINE_LINK_RE = /\[([^\]]+)]\(([^)]+)\)/g;
+
+function renderInlineLinks(text: string): ReactNode {
+  if (!INLINE_LINK_RE.test(text)) return text;
+
+  INLINE_LINK_RE.lastIndex = 0;
+  const parts: ReactNode[] = [];
+  let last = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = INLINE_LINK_RE.exec(text)) !== null) {
+    if (match.index > last) parts.push(text.slice(last, match.index));
+    parts.push(
+      <Link href={match[2]} key={match.index}>
+        {match[1]}
+      </Link>,
+    );
+    last = match.index + match[0].length;
+  }
+
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
 
 type Props = {
   config: PageConfig;
@@ -58,7 +83,7 @@ export function UniversalLandingTemplate({ config }: Props) {
             <h2 className="section-title">{section.title}</h2>
             {section.paragraphs.map((paragraph, index) => (
               <p className="body-text" key={`${section.id}-${index}`}>
-                {paragraph}
+                {renderInlineLinks(paragraph)}
               </p>
             ))}
           </section>

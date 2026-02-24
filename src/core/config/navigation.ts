@@ -7,11 +7,11 @@ import { allPages } from "@/core/config/pages.config";
 
 export const SECTION_META: Record<
   NavSectionId,
-  { label: string; order: number; slug: string }
+  { label: string; footerLabel: string; order: number; slug: string }
 > = {
-  "image-tools": { label: "Compress Tools", order: 0, slug: "compress-image" },
-  "pdf-tools": { label: "PDF Tools", order: 1, slug: "pdf-tools" },
-  "converter-tools": { label: "Converter Tools", order: 2, slug: "converter-tools" },
+  "image-tools": { label: "Image Tools", footerLabel: "Optimize Tools", order: 0, slug: "compress-image" },
+  "pdf-tools": { label: "PDF Tools", footerLabel: "PDF Tools", order: 1, slug: "pdf-tools" },
+  "converter-tools": { label: "Converter Tools", footerLabel: "Convert Tools", order: 2, slug: "converter-tools" },
 };
 
 // ---------------------------------------------------------------------------
@@ -27,6 +27,13 @@ export const BRAND = { label: "imgloo", href: "/" } as const;
 
 const VISIBLE_SECTIONS: readonly NavSectionId[] = ["image-tools"];
 
+/**
+ * Core tool slugs shown in the header dropdown.
+ * Only add tools here that are fully functional (not stubs).
+ * Format-specific and long-tail pages belong in the footer only.
+ */
+const HEADER_SLUGS = new Set(["compress-image", "resize-image"]);
+
 // ---------------------------------------------------------------------------
 // Navigation sections built from page configs
 // ---------------------------------------------------------------------------
@@ -39,6 +46,7 @@ function buildNavSections(): NavSection[] {
 
   for (const page of allPages) {
     if (!visibleSet.has(page.section)) continue;
+    if (!HEADER_SLUGS.has(page.slug)) continue;
     const items = grouped.get(page.section) ?? [];
     items.push({ href: `/${page.slug}`, label: page.navLabel });
     grouped.set(page.section, items);
@@ -100,7 +108,7 @@ function buildFooterSections(): FooterSection[] {
     .sort(([, a], [, b]) => a.order - b.order)
     .filter(([id]) => grouped.has(id))
     .map(([id, meta]) => ({
-      label: meta.label,
+      label: meta.footerLabel,
       links: grouped
         .get(id)!
         .sort((a, b) => footerScore(b) - footerScore(a))

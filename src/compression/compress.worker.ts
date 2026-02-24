@@ -1,4 +1,5 @@
 /// <reference lib="webworker" />
+export {};
 
 type SupportedFormat = "image/jpeg" | "image/png" | "image/webp";
 type CompressionPresetId = "fast" | "balanced" | "max";

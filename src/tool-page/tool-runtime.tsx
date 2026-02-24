@@ -24,11 +24,41 @@ const LazyAdSlot = dynamic(
   { ssr: false }
 );
 
+const LazyResizeTool = dynamic(
+  () =>
+    import("@/components/resize-tool").then((module) => ({
+      default: module.ResizeTool,
+    })),
+  { ssr: false },
+);
+
 type ToolRuntimeProps = {
   config: PageConfig;
 };
 
 export function ToolRuntime({ config }: ToolRuntimeProps) {
+  // Resize tool has its own self-contained UI
+  if (config.tool.kind === "image-resize") {
+    return <ResizeToolRuntime config={config} />;
+  }
+
+  return <CompressionToolRuntime config={config} />;
+}
+
+function ResizeToolRuntime({ config }: { config: PageConfig }) {
+  useEffect(() => {
+    trackPageMeta({
+      pageSlug: config.slug,
+      intent: config.intent,
+      toolMode: config.tool.mode,
+    });
+    trackToolOpen(config.tool.kind);
+  }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
+
+  return <LazyResizeTool config={config} />;
+}
+
+function CompressionToolRuntime({ config }: { config: PageConfig }) {
   const [result, setResult] = useState<ToolExecutionResult | null>(null);
   const [toolKey, setToolKey] = useState(0);
   const trackedRef = useRef(false);

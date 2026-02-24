@@ -99,22 +99,22 @@ export const resizeImagePage: PageConfig = {
   h1: "Resize Image Online",
 
   meta: {
-    title: "Resize Image Online - Free Browser Tool",
+    title: "Resize Image Online Free — Change Size in Pixels or %",
     description:
-      "Resize images to exact dimensions directly in your browser. No upload required.",
+      "Resize JPG, PNG and WebP images to exact pixel dimensions or by percentage. Free, private, no upload — runs entirely in your browser.",
   },
 
   hero: {
     subtitle:
-      "Change image dimensions for web, social media, or print.",
-    trustBadges: ["Free", "No signup", "Browser-based"],
+      "Change image dimensions for web, social media, or print — instantly and privately in your browser.",
+    trustBadges: ["Free", "No signup", "Browser-based", "Batch up to 10"],
   },
 
   tool: {
     ...IMAGE_RESIZE_TOOL_DEFAULTS,
     title: "Image Resizer",
     subtitle:
-      "Upload an image and set your target dimensions.",
+      "Upload up to 10 images, set your target dimensions, and download resized files instantly.",
   },
 
   results: RESULTS_DEFAULTS,
@@ -123,11 +123,58 @@ export const resizeImagePage: PageConfig = {
   seoContent: {
     blocks: [
       {
-        id: "how-resize-works",
-        title: "How image resizing works",
+        id: "about-tool",
+        title: "About this tool",
         paragraphs: [
-          "Select your target width and height, and the tool will scale your image proportionally.",
+          "This free online image resizer lets you resize images by pixels or percentage directly in your browser. All processing happens locally using HTML Canvas — your files are never uploaded to a server.",
+          "Choose exact pixel dimensions, pick a common preset like 1920×1080 or 1080×1080, or scale by percentage. The tool preserves the original file format and maintains quality during resizing.",
         ],
+      },
+      {
+        id: "how-it-works",
+        title: "How it works",
+        paragraphs: [
+          "1. Upload one or more images (up to 10 at a time, max 10 MB each).",
+          "2. Choose a resize mode — enter exact pixel dimensions or select a percentage.",
+          "3. Click \"Resize now\" and download your resized images individually or as a ZIP archive.",
+          "The resizing algorithm uses high-quality bicubic interpolation to keep your images sharp. Aspect ratio is preserved by default so your photos never look stretched. If you also need to reduce file size, try our [Compress Image](/compress-image) tool.",
+        ],
+      },
+    ],
+  },
+
+  faq: {
+    title: "Frequently Asked Questions",
+    items: [
+      {
+        question: "Is this tool really free?",
+        answer:
+          "Yes, 100% free with no limits on usage. There are no watermarks, no sign-up required, and no hidden fees.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. All resizing happens directly in your browser using HTML Canvas. Your images never leave your device.",
+      },
+      {
+        question: "What image formats are supported?",
+        answer:
+          "The tool supports JPG/JPEG, PNG, and WebP. The output format is always the same as the input — no conversion happens.",
+      },
+      {
+        question: "Can I resize multiple images at once?",
+        answer:
+          "Yes, you can upload up to 10 images and resize them all with the same settings in one batch. Download them individually or as a single ZIP file.",
+      },
+      {
+        question: "Will resizing reduce image quality?",
+        answer:
+          "Downscaling (making images smaller) preserves quality well. The tool uses high-quality interpolation. Upscaling is disabled by default to avoid blurry results — uncheck \"Do not enlarge\" if you need it.",
+      },
+      {
+        question: "What is the maximum image size?",
+        answer:
+          "Each file can be up to 10 MB and up to 8000 pixels on the longest side. You can process up to 10 files per batch.",
       },
     ],
   },

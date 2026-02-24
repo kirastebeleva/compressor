@@ -1,6 +1,7 @@
 import { compressImagePage } from "@/core/config/pages/compress-image";
 import {
   compressImageUnder1mbPage,
+  resizeImagePage,
 } from "@/core/config/pages/image-tools";
 import {
   formatPages,
@@ -32,6 +33,7 @@ const rawPages: readonly PageConfig[] = [
 
   // Standalone image tools
   compressImageUnder1mbPage,
+  resizeImagePage,
 
   // Image compression cluster (auto-collected from barrel)
   ...formatPages,

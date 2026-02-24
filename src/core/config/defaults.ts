@@ -72,9 +72,10 @@ export const RESULTS_DEFAULTS: PageConfig["results"] = {
 export const IMAGE_RESIZE_TOOL_DEFAULTS: PageConfig["tool"] = {
   ...IMAGE_COMPRESS_TOOL_DEFAULTS,
   kind: "image-resize",
-  mode: "stub",
+  mode: "browser-compression",
   title: "Image Resizer",
-  subtitle: "Upload an image and set your target dimensions.",
+  subtitle:
+    "Upload up to 10 images, set your target dimensions, and download resized files instantly.",
   outputNameSuffix: "-resized",
   labels: {
     ...IMAGE_COMPRESS_TOOL_DEFAULTS.labels,
@@ -85,7 +86,7 @@ export const IMAGE_RESIZE_TOOL_DEFAULTS: PageConfig["tool"] = {
   messages: {
     ...IMAGE_COMPRESS_TOOL_DEFAULTS.messages,
     noFileSelected: "Choose an image first to start resizing.",
-    stubModeNotice: "Preview mode is active. Resizing is coming soon.",
+    stubModeNotice: "",
   },
 };
 

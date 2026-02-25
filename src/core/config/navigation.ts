@@ -32,7 +32,7 @@ const VISIBLE_SECTIONS: readonly NavSectionId[] = ["image-tools"];
  * Only add tools here that are fully functional (not stubs).
  * Format-specific and long-tail pages belong in the footer only.
  */
-const HEADER_SLUGS = new Set(["compress-image", "resize-image"]);
+const HEADER_SLUGS = new Set(["compress-image", "resize-image", "crop-image"]);
 
 // ---------------------------------------------------------------------------
 // Navigation sections built from page configs

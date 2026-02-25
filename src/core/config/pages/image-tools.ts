@@ -2,6 +2,7 @@ import type { PageConfig } from "@/core/types";
 import {
   IMAGE_COMPRESS_TOOL_DEFAULTS,
   IMAGE_RESIZE_TOOL_DEFAULTS,
+  IMAGE_CROP_TOOL_DEFAULTS,
   IMAGE_CONVERT_TOOL_DEFAULTS,
   RESULTS_DEFAULTS,
   AD_SLOT_DEFAULTS,
@@ -81,6 +82,12 @@ export const compressImageUnder1mbPage: PageConfig = {
         label: "Compress Under 500 KB",
         description:
           "Hit a strict 500 KB limit for uploads and forms.",
+      },
+      {
+        href: "/crop-image",
+        label: "Crop Image",
+        description:
+          "Trim your image before compressing to hit the target.",
       },
     ],
   },
@@ -183,10 +190,134 @@ export const resizeImagePage: PageConfig = {
     title: "Related Tools",
     links: [
       {
+        href: "/crop-image",
+        label: "Crop Image",
+        description:
+          "Trim or reframe your image before resizing.",
+      },
+      {
         href: "/compress-image",
         label: "Compress Image",
         description:
           "Reduce file size without changing dimensions.",
+      },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
+// /crop-image
+// ---------------------------------------------------------------------------
+
+export const cropImagePage: PageConfig = {
+  slug: "crop-image",
+  intent: "crop",
+  section: "image-tools",
+  navLabel: "Crop Image",
+
+  h1: "Crop Image Online",
+
+  meta: {
+    title: "Crop Image Online Free — Trim & Reframe Photos Instantly",
+    description:
+      "Crop JPG, PNG and WebP images to exact dimensions or aspect ratio presets. Free, private, no upload — runs entirely in your browser.",
+  },
+
+  hero: {
+    subtitle:
+      "Trim, reframe, or resize your images for any platform — instantly and privately in your browser.",
+    trustBadges: ["Free", "No signup", "Browser-based", "Aspect ratio presets"],
+  },
+
+  tool: {
+    ...IMAGE_CROP_TOOL_DEFAULTS,
+    title: "Image Cropper",
+    subtitle:
+      "Upload an image, adjust the crop area, and download the result.",
+  },
+
+  results: RESULTS_DEFAULTS,
+  adSlot: AD_SLOT_DEFAULTS,
+
+  seoContent: {
+    blocks: [
+      {
+        id: "about-tool",
+        title: "About this tool",
+        paragraphs: [
+          "This free online image cropper lets you trim and reframe images directly in your browser. All processing happens locally — your files are never uploaded to a server.",
+          "Select a custom crop area or choose from common aspect ratio presets like 1:1, 4:3, or 16:9. The tool preserves the original file format and maintains quality during cropping.",
+        ],
+      },
+      {
+        id: "how-it-works",
+        title: "How it works",
+        paragraphs: [
+          "1. Upload an image (max 10 MB).",
+          "2. Drag the crop area or choose an aspect ratio preset.",
+          "3. Click \"Crop now\" and download your cropped image.",
+          "The crop is performed at full resolution on the original image, so you get the best possible quality. If you also need to reduce file size, try our [Compress Image](/compress-image) tool.",
+        ],
+      },
+    ],
+  },
+
+  faq: {
+    title: "Frequently Asked Questions",
+    items: [
+      {
+        question: "Is this tool really free?",
+        answer:
+          "Yes, 100% free with no limits on usage. There are no watermarks, no sign-up required, and no hidden fees.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. All cropping happens directly in your browser using HTML Canvas. Your images never leave your device.",
+      },
+      {
+        question: "What image formats are supported?",
+        answer:
+          "The tool supports JPG/JPEG, PNG, and WebP. The output format is always the same as the input.",
+      },
+      {
+        question: "Can I crop to a specific aspect ratio?",
+        answer:
+          "Yes, choose from presets like 1:1, 4:3, 16:9, or 3:2. You can also enter exact pixel dimensions for the crop area.",
+      },
+      {
+        question: "Will cropping reduce image quality?",
+        answer:
+          "No. The tool crops from the original full-resolution image. For JPEG and WebP, a quality setting of 92% is used, which is visually identical to the original.",
+      },
+      {
+        question: "What is the maximum image size?",
+        answer:
+          "Each file can be up to 10 MB. There is no pixel dimension limit beyond what your browser can handle.",
+      },
+    ],
+  },
+
+  related: {
+    title: "Related Tools",
+    links: [
+      {
+        href: "/resize-image",
+        label: "Resize Image",
+        description:
+          "Change image dimensions without cropping.",
+      },
+      {
+        href: "/compress-image",
+        label: "Compress Image",
+        description:
+          "Reduce file size after cropping.",
+      },
+      {
+        href: "/compress-image-under-1mb",
+        label: "Compress Under 1 MB",
+        description:
+          "Crop first, then compress to fit upload limits.",
       },
     ],
   },

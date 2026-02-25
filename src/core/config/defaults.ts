@@ -91,6 +91,31 @@ export const IMAGE_RESIZE_TOOL_DEFAULTS: PageConfig["tool"] = {
 };
 
 // ---------------------------------------------------------------------------
+// Image crop defaults
+// ---------------------------------------------------------------------------
+
+export const IMAGE_CROP_TOOL_DEFAULTS: PageConfig["tool"] = {
+  ...IMAGE_COMPRESS_TOOL_DEFAULTS,
+  kind: "image-crop",
+  mode: "browser-compression",
+  title: "Image Crop Tool",
+  subtitle:
+    "Upload an image, select the area you want to keep, and download the cropped result.",
+  outputNameSuffix: "-cropped",
+  labels: {
+    ...IMAGE_COMPRESS_TOOL_DEFAULTS.labels,
+    compressButton: "Crop now",
+    compressingButton: "Cropping your image…",
+    downloadButton: "Download cropped image",
+  },
+  messages: {
+    ...IMAGE_COMPRESS_TOOL_DEFAULTS.messages,
+    noFileSelected: "Choose an image first to start cropping.",
+    stubModeNotice: "",
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Image convert defaults
 // ---------------------------------------------------------------------------
 

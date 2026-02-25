@@ -32,17 +32,57 @@ const LazyResizeTool = dynamic(
   { ssr: false },
 );
 
+const LazyBatchCompressTool = dynamic(
+  () =>
+    import("@/components/batch-compress-tool").then((module) => ({
+      default: module.BatchCompressTool,
+    })),
+  { ssr: false },
+);
+
+const LazyCropTool = dynamic(
+  () =>
+    import("@/components/crop-tool").then((module) => ({
+      default: module.CropTool,
+    })),
+  { ssr: false },
+);
+
 type ToolRuntimeProps = {
   config: PageConfig;
 };
 
+function isBatchIntent(intent: string): boolean {
+  return intent === "batch" || intent.startsWith("batch-");
+}
+
 export function ToolRuntime({ config }: ToolRuntimeProps) {
-  // Resize tool has its own self-contained UI
+  if (config.tool.kind === "image-crop") {
+    return <CropToolRuntime config={config} />;
+  }
+
   if (config.tool.kind === "image-resize") {
     return <ResizeToolRuntime config={config} />;
   }
 
+  if (isBatchIntent(config.intent)) {
+    return <BatchCompressRuntime config={config} />;
+  }
+
   return <CompressionToolRuntime config={config} />;
+}
+
+function CropToolRuntime({ config }: { config: PageConfig }) {
+  useEffect(() => {
+    trackPageMeta({
+      pageSlug: config.slug,
+      intent: config.intent,
+      toolMode: config.tool.mode,
+    });
+    trackToolOpen(config.tool.kind);
+  }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
+
+  return <LazyCropTool config={config} />;
 }
 
 function ResizeToolRuntime({ config }: { config: PageConfig }) {
@@ -56,6 +96,19 @@ function ResizeToolRuntime({ config }: { config: PageConfig }) {
   }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
 
   return <LazyResizeTool config={config} />;
+}
+
+function BatchCompressRuntime({ config }: { config: PageConfig }) {
+  useEffect(() => {
+    trackPageMeta({
+      pageSlug: config.slug,
+      intent: config.intent,
+      toolMode: config.tool.mode,
+    });
+    trackToolOpen(config.tool.kind);
+  }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
+
+  return <LazyBatchCompressTool config={config} />;
 }
 
 function CompressionToolRuntime({ config }: { config: PageConfig }) {

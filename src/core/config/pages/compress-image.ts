@@ -81,8 +81,18 @@ export const compressImagePage: PageConfig = {
   },
 
   related: {
-    title: "All Compression Tools",
+    title: "All Image Tools",
     links: [
+      {
+        href: "/resize-image",
+        label: "Resize Image",
+        description: "Change image dimensions by pixels or percentage.",
+      },
+      {
+        href: "/crop-image",
+        label: "Crop Image",
+        description: "Trim and reframe images with aspect ratio presets.",
+      },
       {
         href: "/compress-jpg",
         label: "Compress JPG",

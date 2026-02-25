@@ -1532,6 +1532,156 @@ select {
 }
 
 /* ==========================================================================
+   CROP TOOL
+   ========================================================================== */
+
+.crop-aspect-bar {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.crop-aspect-btn {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  min-height: auto;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.crop-aspect-btn:hover:not(:disabled) {
+  color: var(--color-text);
+}
+
+.crop-aspect-btn-active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+.crop-aspect-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Canvas wrapper */
+
+.crop-canvas-wrap {
+  position: relative;
+  display: inline-flex;
+  user-select: none;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #1e1e1e;
+  width: 100%;
+  justify-content: center;
+}
+
+.crop-image {
+  display: block;
+  max-width: 100%;
+  max-height: 500px;
+  height: auto;
+  pointer-events: none;
+}
+
+/* Selection */
+
+.crop-selection {
+  position: absolute;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.crop-grid {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgba(255,255,255,0.2) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.2) 1px, transparent 1px);
+  background-size: 33.333% 33.333%;
+  background-position: 33.333% 33.333%;
+  pointer-events: none;
+}
+
+.crop-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border: 1.5px solid rgba(0, 0, 0, 0.25);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Dims section */
+
+.crop-dims-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.crop-dims-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* Result previews */
+
+.crop-result-previews {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  justify-content: center;
+}
+
+.crop-result-preview-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.crop-result-preview-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.crop-result-img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.crop-result-preview-meta {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
    RESPONSIVE
    ========================================================================== */
 
@@ -1643,6 +1793,24 @@ select {
 
   .resize-presets-row {
     gap: 6px;
+  }
+
+  .crop-aspect-bar {
+    flex-wrap: wrap;
+  }
+
+  .crop-aspect-btn {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .crop-result-previews {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .crop-result-previews .resize-arrow {
+    transform: rotate(90deg);
   }
 }
 

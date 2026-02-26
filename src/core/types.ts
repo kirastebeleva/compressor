@@ -20,6 +20,7 @@ export type ToolIntent =
   | `batch-${string}`
   | "resize"
   | "crop"
+  | "rotate"
   | "convert"
   | `convert-${string}`
   | "merge"
@@ -32,6 +33,7 @@ export type ToolKind =
   | "image-compress"
   | "image-resize"
   | "image-crop"
+  | "image-rotate"
   | "image-convert"
   | "pdf-compress"
   | "pdf-merge"

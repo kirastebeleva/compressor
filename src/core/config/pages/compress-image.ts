@@ -94,6 +94,11 @@ export const compressImagePage: PageConfig = {
         description: "Trim and reframe images with aspect ratio presets.",
       },
       {
+        href: "/rotate-image",
+        label: "Rotate Image",
+        description: "Fix orientation or turn images to any angle.",
+      },
+      {
         href: "/compress-jpg",
         label: "Compress JPG",
         description: "Format-focused JPG compression for photos and web.",

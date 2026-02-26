@@ -3,6 +3,7 @@ import {
   IMAGE_COMPRESS_TOOL_DEFAULTS,
   IMAGE_RESIZE_TOOL_DEFAULTS,
   IMAGE_CROP_TOOL_DEFAULTS,
+  IMAGE_ROTATE_TOOL_DEFAULTS,
   IMAGE_CONVERT_TOOL_DEFAULTS,
   RESULTS_DEFAULTS,
   AD_SLOT_DEFAULTS,
@@ -88,6 +89,12 @@ export const compressImageUnder1mbPage: PageConfig = {
         label: "Crop Image",
         description:
           "Trim your image before compressing to hit the target.",
+      },
+      {
+        href: "/rotate-image",
+        label: "Rotate Image",
+        description:
+          "Fix orientation before compressing.",
       },
     ],
   },
@@ -196,6 +203,12 @@ export const resizeImagePage: PageConfig = {
           "Trim or reframe your image before resizing.",
       },
       {
+        href: "/rotate-image",
+        label: "Rotate Image",
+        description:
+          "Fix image orientation before resizing.",
+      },
+      {
         href: "/compress-image",
         label: "Compress Image",
         description:
@@ -302,6 +315,12 @@ export const cropImagePage: PageConfig = {
     title: "Related Tools",
     links: [
       {
+        href: "/rotate-image",
+        label: "Rotate Image",
+        description:
+          "Fix orientation before or after cropping.",
+      },
+      {
         href: "/resize-image",
         label: "Resize Image",
         description:
@@ -313,11 +332,134 @@ export const cropImagePage: PageConfig = {
         description:
           "Reduce file size after cropping.",
       },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
+// /rotate-image
+// ---------------------------------------------------------------------------
+
+export const rotateImagePage: PageConfig = {
+  slug: "rotate-image",
+  intent: "rotate",
+  section: "image-tools",
+  navLabel: "Rotate Image",
+
+  h1: "Rotate Image Online",
+
+  meta: {
+    title: "Rotate Image Online Free — Batch Rotate Up to 10",
+    description:
+      "Rotate up to 10 JPG, PNG or WebP images by 90° or 180°. Rotate all at once or fine-tune each image. EXIF fix, ZIP download. Free, browser-based.",
+  },
+
+  hero: {
+    subtitle:
+      "Rotate all images at once or fine-tune each one individually — fix EXIF orientation, download as ZIP.",
+    trustBadges: ["Free", "No signup", "EXIF auto-fix", "Per-image control"],
+  },
+
+  tool: {
+    ...IMAGE_ROTATE_TOOL_DEFAULTS,
+    title: "Image Rotator",
+    subtitle:
+      "Upload up to 10 images. Rotate them all at once or adjust each individually, then export as a ZIP.",
+  },
+
+  results: RESULTS_DEFAULTS,
+  adSlot: AD_SLOT_DEFAULTS,
+
+  seoContent: {
+    blocks: [
       {
-        href: "/compress-image-under-1mb",
-        label: "Compress Under 1 MB",
+        id: "about-tool",
+        title: "About this tool",
+        paragraphs: [
+          "This free batch image rotator lets you rotate up to 10 images at once by 90° or 180° directly in your browser. Apply a global rotation to all images, then fine-tune each one individually if needed.",
+          "JPEG images with EXIF orientation data are automatically normalized — the tool reads the EXIF tag, physically corrects the pixels, and strips the tag so your images look right everywhere. All processing happens locally — your files never leave your device.",
+        ],
+      },
+      {
+        id: "how-it-works",
+        title: "How it works",
+        paragraphs: [
+          "1. Upload up to 10 images (max 10 MB each).",
+          "2. Use \"Rotate All\" buttons to rotate the entire batch at once.",
+          "3. Fine-tune individual images using per-image controls in the grid.",
+          "4. Click \"Export\" to process and download — individually or as a ZIP.",
+          "Use keyboard shortcuts for speed: select an image in the grid, then press ← → or R / L to rotate it. Rotation is performed at full resolution for the best quality.",
+        ],
+      },
+    ],
+  },
+
+  faq: {
+    title: "Frequently Asked Questions",
+    items: [
+      {
+        question: "Is this tool really free?",
+        answer:
+          "Yes, 100% free with no limits on usage. There are no watermarks, no sign-up required, and no hidden fees.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. All rotation happens directly in your browser using HTML Canvas. Your images never leave your device.",
+      },
+      {
+        question: "How many files can I rotate at once?",
+        answer:
+          "You can upload and rotate up to 10 images in a single batch. Results can be downloaded individually or all at once as a ZIP archive.",
+      },
+      {
+        question: "What is EXIF orientation and why does it matter?",
+        answer:
+          "Many cameras and phones store rotation as metadata (EXIF) instead of physically rotating the pixels. This causes images to appear rotated in some apps but not others. Our tool reads the EXIF tag, applies the correction to the actual pixels, and strips the tag — so your images display correctly everywhere.",
+      },
+      {
+        question: "Can I rotate individual images differently?",
+        answer:
+          "Yes. Use the \"Rotate All\" buttons for global rotation, then fine-tune any image using the per-image controls in the grid. Per-image settings override the global rotation.",
+      },
+      {
+        question: "What image formats are supported?",
+        answer:
+          "The tool supports JPG/JPEG, PNG, and WebP. The output format is always the same as the input.",
+      },
+      {
+        question: "Will rotating reduce image quality?",
+        answer:
+          "For 90° and 180° rotations, quality is fully preserved. JPEG and WebP output uses 92% quality, which is visually identical to the original.",
+      },
+      {
+        question: "Can I download only the images I changed?",
+        answer:
+          "Yes. Enable the \"Download only changed images\" toggle before exporting. Unchanged images will be skipped.",
+      },
+    ],
+  },
+
+  related: {
+    title: "Related Tools",
+    links: [
+      {
+        href: "/crop-image",
+        label: "Crop Image",
         description:
-          "Crop first, then compress to fit upload limits.",
+          "Trim your image after rotating.",
+      },
+      {
+        href: "/resize-image",
+        label: "Resize Image",
+        description:
+          "Change image dimensions without rotating.",
+      },
+      {
+        href: "/compress-image",
+        label: "Compress Image",
+        description:
+          "Reduce file size after rotation.",
       },
     ],
   },

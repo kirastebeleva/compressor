@@ -116,6 +116,31 @@ export const IMAGE_CROP_TOOL_DEFAULTS: PageConfig["tool"] = {
 };
 
 // ---------------------------------------------------------------------------
+// Image rotate defaults
+// ---------------------------------------------------------------------------
+
+export const IMAGE_ROTATE_TOOL_DEFAULTS: PageConfig["tool"] = {
+  ...IMAGE_COMPRESS_TOOL_DEFAULTS,
+  kind: "image-rotate",
+  mode: "browser-compression",
+  title: "Image Rotate Tool",
+  subtitle:
+    "Upload an image, choose your rotation angle, and download the result.",
+  outputNameSuffix: "-rotated",
+  labels: {
+    ...IMAGE_COMPRESS_TOOL_DEFAULTS.labels,
+    compressButton: "Rotate now",
+    compressingButton: "Rotating your image…",
+    downloadButton: "Download rotated image",
+  },
+  messages: {
+    ...IMAGE_COMPRESS_TOOL_DEFAULTS.messages,
+    noFileSelected: "Choose an image first to start rotating.",
+    stubModeNotice: "",
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Image convert defaults
 // ---------------------------------------------------------------------------
 

@@ -53,7 +53,7 @@ export const PRESETS: Record<CompressionPresetId, CompressionPreset> = {
 };
 
 export const LIMITS: CompressionLimits = {
-  maxFiles: 1,
+  maxFiles: 20,
   maxFileSizeBytes: 10 * 1024 * 1024,
   maxTotalSizeBytes: 25 * 1024 * 1024,
 };

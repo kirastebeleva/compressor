@@ -48,6 +48,14 @@ const LazyCropTool = dynamic(
   { ssr: false },
 );
 
+const LazyRotateTool = dynamic(
+  () =>
+    import("@/components/rotate-tool").then((module) => ({
+      default: module.RotateTool,
+    })),
+  { ssr: false },
+);
+
 type ToolRuntimeProps = {
   config: PageConfig;
 };
@@ -59,6 +67,10 @@ function isBatchIntent(intent: string): boolean {
 export function ToolRuntime({ config }: ToolRuntimeProps) {
   if (config.tool.kind === "image-crop") {
     return <CropToolRuntime config={config} />;
+  }
+
+  if (config.tool.kind === "image-rotate") {
+    return <RotateToolRuntime config={config} />;
   }
 
   if (config.tool.kind === "image-resize") {
@@ -83,6 +95,19 @@ function CropToolRuntime({ config }: { config: PageConfig }) {
   }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
 
   return <LazyCropTool config={config} />;
+}
+
+function RotateToolRuntime({ config }: { config: PageConfig }) {
+  useEffect(() => {
+    trackPageMeta({
+      pageSlug: config.slug,
+      intent: config.intent,
+      toolMode: config.tool.mode,
+    });
+    trackToolOpen(config.tool.kind);
+  }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
+
+  return <LazyRotateTool config={config} />;
 }
 
 function ResizeToolRuntime({ config }: { config: PageConfig }) {

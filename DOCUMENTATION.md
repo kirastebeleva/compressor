@@ -509,3 +509,282 @@ trustBadges:  ["Free", "No signup", "Browser-based", "Batch up to 10"]
 | Bounce rate | < 40% (для SEO-трафика) | GA / analytics |
 | H vs V usage | Отслеживать соотношение horizontal/vertical flip | trackEvent на выбор направления. Ожидание: ~75% horizontal (selfie fix — основной use case). |
 | Batch size distribution | Отслеживать среднее кол-во файлов за сессию | trackEvent на upload. Ожидание: ~60% single file, ~30% 2-5 files, ~10% 6-10 files. |
+
+---
+
+## Watermark Image
+
+| Параметр | Значение |
+|----------|----------|
+| **Название** | Watermark Image |
+| **URL** | `/watermark-image/` |
+| **ToolKind** | `image-watermark` |
+| **Intent** | `watermark` |
+
+### Краткое описание
+
+Batch-инструмент для наложения текстового или графического водяного знака на до 10 изображений (JPG, PNG, WebP) прямо в браузере. Поддерживает два режима: текстовый водяной знак (шрифт, цвет, тень) и логотип/изображение (загрузка собственного файла). Позиционирование — через визуальную 9-точечную сетку или перетаскиванием. Поддерживает как одиночное размещение, так и тайловый (repeating) паттерн.
+
+### Какую проблему решает
+
+Фотографы, дизайнеры и владельцы интернет-магазинов регулярно публикуют изображения, которые могут быть украдены или использованы без разрешения. Наложение водяного знака — стандартный способ защиты авторских прав. Профессиональный софт (Photoshop, Lightroom) избыточен для этой задачи, а бесплатные онлайн-инструменты часто требуют регистрацию, ограничивают функциональность или — ирония — накладывают свой watermark поверх пользовательского. Инструмент решает задачу мгновенно, конфиденциально и без ограничений.
+
+### Основное действие пользователя
+
+Загрузить изображения → настроить водяной знак (текст или логотип, позиция, прозрачность) → скачать результат (по одному или ZIP-архивом).
+
+---
+
+### 1. Основная задача пользователя (Job-to-be-Done)
+
+**«Я хочу быстро наложить свой водяной знак на изображения — защитить авторство или добавить бренд — без установки софта, без регистрации, прямо сейчас.»**
+
+Типичные сценарии:
+- Фотограф отправляет клиенту превью фотосессии с водяным знаком «© Studio Name» перед оплатой
+- Владелец интернет-магазина маркирует фото товаров логотипом перед публикацией на маркетплейсе
+- Дизайнер отправляет макет с watermark клиенту на согласование
+- Блогер / контент-мейкер защищает авторские изображения перед публикацией в соцсетях
+- HR / маркетолог накладывает корпоративный логотип на фото для презентации или пресс-релиза
+- Риэлтор маркирует фотографии объектов логотипом агентства
+
+---
+
+### 2. Ценностное предложение (1 предложение)
+
+> Add a text or logo watermark to up to 10 images — instantly, privately, and free in your browser.
+
+---
+
+### 3. Минимальный набор UI-элементов (MVP Surface)
+
+Структура следует существующему шаблону (`tool-page`): Hero → Tool Card → Results Card.
+
+**Ключевое архитектурное решение**: Watermark Image — batch-инструмент, по модели взаимодействия ближе к Rotate/Flip (глобальная настройка → apply to all), но с более развитой панелью настроек (аналог advanced-секции Crop). Водяной знак настраивается один раз и применяется ко всему batch единообразно — per-image override для позиции/текста не нужен (это выходит за рамки use case и усложняет UX).
+
+#### 3.1. Tool Card — основная рабочая область
+
+| # | Элемент | Описание |
+|---|---------|----------|
+| 1 | **Dropzone** | Drag-and-drop зона + кнопка «Choose images». Принимает JPG, PNG, WebP. До 10 файлов (batch mode). Идентична паттерну из `rotate-tool`. |
+| 2 | **Preview canvas** | Превью первого (или выбранного) изображения из batch с наложенным водяным знаком в реальном времени. Это **центральный элемент** — пользователь видит результат до обработки. При batch > 1 под превью — горизонтальный скролл миниатюр для переключения между изображениями. |
+| 3 | **Watermark type tabs** | Переключатель: `Text` / `Image`. По умолчанию — `Text` (минимальный friction — не нужно загружать файл). |
+| 4 | **Text input** (при type = Text) | Текстовое поле: placeholder «© Your Name». Максимум 100 символов. Изменения применяются к превью в реальном времени. |
+| 5 | **Logo upload** (при type = Image) | Компактная зона загрузки: «Upload logo (PNG, SVG)». Принимает PNG (с прозрачностью) и SVG. Максимум 2 MB. После загрузки — миниатюра логотипа с кнопкой «×» для удаления. |
+| 6 | **Position selector** | Визуальная сетка 3×3 (9 точек): TL, TC, TR, ML, MC, MR, BL, BC, BR. По умолчанию — **BR (bottom-right)**. Клик по точке — мгновенное перемещение watermark на превью. |
+| 7 | **Opacity slider** | Ползунок 0–100% с числовым значением рядом. По умолчанию — **50%**. Изменение — мгновенное обновление превью. |
+| 8 | **Size slider** | Ползунок: «Small – Medium – Large». Маппинг: Small = 10% от ширины изображения, Medium = 20%, Large = 35%. По умолчанию — **Medium**. |
+| 9 | **Apply button** | Главная CTA: «Apply watermark» (1 файл) или «Apply to N images» (batch). Состояния: idle → processing → done. |
+| 10 | **Trust note** | «Your images are processed locally in your browser. Nothing is uploaded.» |
+
+#### 3.2. Results Card
+
+| # | Элемент | Описание |
+|---|---------|----------|
+| 1 | **Results list** | Список результатов: миниатюра с watermark → имя файла → размер файла before → after → кнопка Download. Аналог results-list из rotate/flip-tool. |
+| 2 | **Download All as ZIP** | Кнопка, появляется при > 1 результате. Использует JSZip. |
+| 3 | **Reset button** | «Watermark more images (free)» — полный сброс в исходное состояние. |
+
+---
+
+### 4. Дополнительные опции (скрытые по умолчанию / Advanced)
+
+Эти опции НЕ показываются при первом входе. Появляются через раскрывающуюся секцию «More options».
+
+| Опция | Когда показывать | Default |
+|-------|-----------------|---------|
+| **Font family** (при type = Text) | Панель «More options» | Sans-serif (Inter / system sans). Варианты: Sans-serif, Serif, Monospace, Script/Handwritten (4 группы, по 2–3 конкретных шрифта в каждой) |
+| **Font weight** (при type = Text) | Панель «More options» | Bold. Варианты: Regular, Bold |
+| **Color picker** (при type = Text) | Панель «More options». Компактная полоска пресетов + custom picker | White (#FFFFFF). Пресеты: White, Black, Red, Blue, Custom |
+| **Text shadow / outline** (при type = Text) | Панель «More options» | Shadow ON (чёрная тень 50% opacity, 2px offset). Обеспечивает читаемость на светлых и тёмных фонах. Варианты: None, Shadow, Outline |
+| **Rotation** | Панель «More options» | 0°. Ползунок -45° … +45°. Популярный пресет: -30° (диагональный watermark) |
+| **Tile / Repeat pattern** | Панель «More options» | Off. Когда On — watermark повторяется по всему изображению сеткой с настраиваемым spacing (sparse / normal / dense). Позиция автоматически переключается на «Full image», position selector скрывается |
+| **Tile spacing** (при Tile = On) | Появляется когда Tile включён | Normal. Варианты: Sparse (большие промежутки), Normal, Dense (плотно) |
+| **Margin / padding** | Панель «More options» | 5% от ширины. Отступ watermark от краёв изображения при позиционировании в углах/по краям |
+| **Output format** | Панель «More options» | Same as input |
+| **Output quality** | Панель «More options», только для JPEG/WebP | 0.92 |
+
+**Что НЕ добавляем в этот инструмент** (и почему):
+- **Per-image watermark customization** — усложняет UI в разы, выходит за рамки типичного use case. Пользователь ожидает единообразный watermark на весь batch.
+- **Remove watermark** — отдельный (и этически спорный) инструмент, другой intent
+- **QR-code watermark** — нишевая функция, можно добавить позже как отдельный type
+- **Animated watermark / GIF** — не поддерживается существующей архитектурой, формат GIF не в scope
+
+---
+
+### 5. Оптимальные настройки по умолчанию
+
+| Параметр | Значение по умолчанию | Обоснование |
+|----------|----------------------|-------------|
+| Watermark type | **Text** | Минимальный friction: не нужно загружать файл. Пользователь вводит текст и сразу видит результат. Image/logo — второй таб для опытных пользователей. |
+| Text placeholder | **© Your Name** | Подсказывает формат; символ © сразу задаёт контекст «copyright». Пользователь заменяет на своё. |
+| Position | **Bottom-right (BR)** | Индустриальный стандарт: правый нижний угол — наименее мешает восприятию изображения, при этом видим. 60-70% стоковых фото, корпоративных и e-commerce изображений используют именно этот угол. |
+| Opacity | **50%** | Баланс между видимостью и ненавязчивостью. Слишком низкая (< 30%) — watermark не виден на пёстрых фонах. Слишком высокая (> 70%) — портит изображение. 50% — safe default, который работает на большинстве изображений. |
+| Size | **Medium (20% от ширины)** | Достаточно крупный, чтобы быть заметным; достаточно мелкий, чтобы не доминировать. Масштабируется пропорционально к размеру изображения, поэтому одинаково хорошо работает на 800px и 4000px фото. |
+| Font | **Sans-serif, Bold** | Максимальная читаемость на любом фоне. Serif выглядит элегантнее, но хуже читается на мелких размерах. |
+| Color | **White (#FFFFFF)** | Работает на большинстве фотографий (которые статистически имеют тёмный или средний фон). В сочетании с text shadow — читаем даже на белых участках. |
+| Text shadow | **On (чёрная, 50% opacity)** | Критически важно для читаемости белого текста на светлых фонах. Без тени белый текст «пропадает» на небе, снегу, светлых поверхностях. |
+| Rotation | **0°** | Прямой текст — наиболее профессиональный вид. Диагональный (–30°) — опция для продвинутых пользователей (чаще используется с тайлом). |
+| Tile pattern | **Off** | Single watermark — простой и предсказуемый результат. Тайл — мощная функция, но визуально агрессивен; пользователь включит осознанно. |
+| Margin | **5% от ширины** | Watermark не прилипает к краю, выглядит аккуратно. |
+| Output format | **Same as input** | Минимум сюрпризов. PNG → PNG (сохраняет прозрачность). |
+| Output quality (JPEG/WebP) | **0.92** | Визуально lossless, консистентно с другими инструментами. |
+| Max files | **10** | Консистентно с rotate-tool и flip-tool. |
+| Max file size | **10 MB** | Консистентно с существующими инструментами. |
+
+---
+
+### 6. User Flow (пошагово)
+
+```
+[Загрузка страницы]
+     │
+     ▼
+[Dropzone: "Choose images or drag and drop"]
+[Badges: JPG · PNG · WebP · Up to 10 files · Max 10 MB]
+     │  пользователь выбирает / перетаскивает файлы
+     ▼
+[Preview canvas: первое изображение с watermark-превью]
+[Thumbnail strip (если batch > 1): переключение между изображениями]
+     │
+     ▼
+[Tabs: Text ● | Image ○]
+[Text input: "© Your Name" (placeholder)]
+[Position grid: 3×3, выбран BR]
+[Opacity slider: 50%]
+[Size slider: Medium]
+     │
+     │  пользователь вводит текст, двигает ползунки
+     │  превью обновляется в реальном времени
+     │
+     ├── [опционально] More options → Font, Color, Shadow, Rotation, Tile
+     │
+     ▼
+[Кнопка "Apply to N images" → активна]
+     │  клик
+     ▼
+[Processing (< 2 сек для batch из 10)]
+     │
+     ▼
+[Results Card: список с превью, размерами, кнопками Download]
+[Download All as ZIP (если > 1)]
+[Reset: "Watermark more images (free)"]
+```
+
+---
+
+### 7. Типичные UX-ошибки, которых нужно избежать
+
+#### 7.1. Критические
+
+| Ошибка | Почему это проблема | Решение |
+|--------|-------------------|---------|
+| **Нет live-превью watermark на изображении** | Пользователь не может оценить размер, позицию, прозрачность до обработки. Единственный способ проверить — export → открыть → оценить → вернуться → подправить. Это убивает конверсию. | Canvas-превью с наложенным watermark обновляется при любом изменении настроек (текст, позиция, opacity, размер). Рендер через CSS overlay (для скорости) или lightweight canvas (для точности). |
+| **Watermark нечитаем на определённых фонах** | Белый текст на белом фоне; чёрный на тёмном. Пользователь замечает только после скачивания. | Text shadow ON по умолчанию. Тень противоположного цвета обеспечивает контраст на любом фоне. Для image-watermark — рекомендация в UI: «Use a logo with transparent background for best results.» |
+| **Инструмент накладывает свой watermark (или бренд) на результат** | Абсолютный deal-breaker. Пользователь пришёл наложить *свой* watermark — получил вдобавок чужой. Главная жалоба на конкурентов в freemium-модели. | Никогда не добавлять watermark платформы. Trust badge: «No platform watermarks — ever.» |
+| **Потеря прозрачности PNG при экспорте** | Пользователь загружает PNG с прозрачным фоном, результат — JPEG с белым фоном + watermark. Альфа-канал потерян. | Всегда сохранять исходный формат. PNG → PNG. Формат меняется только если пользователь явно выбрал другой в «More options». |
+
+#### 7.2. Важные
+
+| Ошибка | Почему это проблема | Решение |
+|--------|-------------------|---------|
+| **Слишком много настроек на первом экране** | Шрифты, цвета, тени, rotation, tile — всё сразу. Casual user, который хочет «просто накинуть copyright», теряется и уходит. | Progressive disclosure: основной flow — 5 элементов (text input, position, opacity, size, apply button). Font, color, shadow, rotation, tile — в «More options». |
+| **Position selector — dropdown вместо визуальной сетки** | «Bottom-right», «Top-center», «Middle-left» в текстовом списке — пользователь не может мгновенно соотнести позицию с изображением. | Визуальная сетка 3×3 (9 точек на мини-прямоугольнике). Клик по точке = мгновенный visual feedback на превью. |
+| **Size в пикселях вместо относительных значений** | «Font size 48px» ничего не значит для пользователя, пока он не увидит результат. На изображении 800px — это огромный текст; на 4000px — мелкий. | Относительный размер: Small / Medium / Large (% от ширины изображения). Автомасштабирование — watermark пропорционален на любом изображении. |
+| **При batch watermark отличается на разных изображениях** | Если размер watermark фиксирован в пикселях, на маленьком изображении он огромный, на большом — микроскопический. | Размер watermark — процент от ширины каждого конкретного изображения. Medium (20%) выглядит одинаково хорошо на 800px и 4000px. |
+| **Нет подтверждения при сбросе** | Пользователь настроил сложный watermark (загрузил логотип, подобрал opacity), случайно нажал «Reset» | Если есть несохранённый результат или загруженный логотип — confirm dialog: «Discard current watermark and start over?» |
+| **Logo upload не поддерживает PNG с прозрачностью нормально** | Логотип на белом фоне вместо прозрачного — белый квадрат поверх изображения | Подсказка при загрузке: «For best results, use a PNG with transparent background.» Визуально показать прозрачность шахматным паттерном в миниатюре логотипа. |
+
+#### 7.3. Тонкие, но заметные
+
+| Ошибка | Решение |
+|--------|---------|
+| Watermark «прыгает» при переключении position | Плавная CSS-анимация (transition 200ms) перемещения watermark при смене позиции. |
+| На мобильных ползунки opacity/size слишком мелкие | Минимальная высота ползунка — 44px touch target. Числовое значение рядом достаточно крупное для чтения. |
+| При tile-режиме превью тормозит | Для tile-превью использовать CSS `background-repeat` с растеризованным watermark как background-image, а не рисовать N элементов на canvas. Финальный рендер — через canvas. |
+| Text input не подсказывает, что можно использовать спецсимволы | Placeholder «© Your Name» + hint под полем: «Tip: use © for copyright, ™ for trademark.» |
+| Пользователь не понимает разницу между opacity и color alpha | Не предлагать оба. Только один ползунок opacity, который управляет прозрачностью всего watermark целиком. Color picker без alpha-канала. |
+| Batch-превью показывает только первое изображение | Thumbnail strip для навигации между изображениями. Все показывают watermark. Индикация: «Preview — watermark will be applied identically to all N images.» |
+
+---
+
+### 8. Технические рекомендации (для разработки)
+
+#### Архитектурное соответствие
+
+- **ToolKind**: добавить `"image-watermark"` в `ToolKind` union type
+- **ToolIntent**: использовать `"watermark"` как основной intent
+- **NavSection**: `"image-tools"`
+- **Component**: создать `WatermarkTool` в `src/components/watermark-tool.tsx`
+- **ToolRuntime**: добавить ветку `if (config.tool.kind === "image-watermark")` в `tool-runtime.tsx`
+- **Config**: создать `IMAGE_WATERMARK_TOOL_DEFAULTS` в `defaults.ts`, page config в `pages/image-tools.ts`
+
+#### Canvas-логика
+
+- **Text watermark**: `ctx.font`, `ctx.fillStyle`, `ctx.globalAlpha`, `ctx.fillText()`. Тень — `ctx.shadowColor`, `ctx.shadowBlur`, `ctx.shadowOffsetX/Y`.
+- **Image watermark**: загрузка логотипа через `createImageBitmap()`, затем `ctx.drawImage()` с нужными размерами и позицией. `ctx.globalAlpha` для прозрачности.
+- **Tile pattern**: цикл `drawImage` / `fillText` по сетке с заданным spacing. Для производительности — отрисовать один watermark на offscreen canvas, затем использовать `ctx.createPattern()` с `repeat`.
+- **Rotation**: `ctx.translate()` + `ctx.rotate()` перед отрисовкой watermark.
+- **Sizing**: вычислять font-size / logo dimensions как процент от `canvas.width` текущего изображения.
+
+#### Производительность
+
+- Live-превью: использовать downscaled версию (max 1200px). Watermark рисовать на preview canvas.
+- Финальный рендер: по оригиналу в полном разрешении.
+- Для batch из 10 файлов — ожидаемое время < 3 сек на среднем устройстве.
+- Всё client-side, как существующие инструменты.
+
+---
+
+### 9. SEO-страница (конфигурация)
+
+```
+slug:         watermark-image
+intent:       watermark
+h1:           Add Watermark to Image Online
+meta.title:   Add Watermark to Image Online Free — Text & Logo Watermarks
+meta.desc:    Add text or logo watermarks to up to 10 JPG, PNG and WebP images.
+              Free, private, no upload — runs entirely in your browser.
+hero.subtitle: Protect your photos with a custom text or logo watermark — instantly
+               and privately in your browser. Batch up to 10 images.
+trustBadges:  ["Free", "No signup", "Browser-based", "No platform watermarks"]
+```
+
+#### Рекомендованные SEO-блоки
+
+- «How to add a watermark to an image online» (step-by-step: upload → configure → apply → download)
+- «Why watermark your images?» (use cases: copyright, branding, proof galleries, e-commerce)
+- «Text watermark vs logo watermark — which to use?» (guidance for different scenarios)
+- «How to create an effective watermark» (tips: opacity, position, size — best practices)
+
+#### FAQ (минимум)
+
+1. Is this tool really free? → Yes, 100% free with no limits on usage. There are no hidden fees, no sign-up required, and — unlike many competitors — no platform watermarks added to your images.
+2. Are my images uploaded to a server? → No, all processing happens locally in your browser. Your images never leave your device.
+3. What formats are supported? → JPG, PNG, and WebP for images. PNG and SVG for logo uploads.
+4. Can I add a logo watermark? → Yes, switch to the «Image» tab and upload your logo (PNG with transparent background recommended).
+5. Can I watermark multiple images at once? → Yes, upload up to 10 images and the watermark will be applied identically to all of them.
+6. Will the watermark scale to different image sizes? → Yes, the watermark size is proportional to each image's width, so it looks consistent across images of different resolutions.
+7. Can I tile the watermark across the entire image? → Yes, enable «Tile pattern» in More Options to repeat the watermark across the full image — commonly used for proof galleries.
+8. What opacity should I use? → 50% is a good starting point. Lower (30%) for subtle branding, higher (70–80%) for strong copyright protection.
+
+#### Related links
+
+- /compress-image — «Reduce file size after watermarking.»
+- /resize-image — «Resize images before or after adding a watermark.»
+- /crop-image — «Crop your image before watermarking.»
+- /batch-compress-images — «Compress a batch of watermarked images.»
+
+---
+
+### 10. Метрики успеха
+
+| Метрика | Цель | Как измерять |
+|---------|------|-------------|
+| Time-to-first-apply | < 20 сек от загрузки страницы до клика «Apply watermark» | Analytics event timestamps. Watermark сложнее flip/rotate (нужно ввести текст), поэтому порог выше. |
+| Apply completion rate | > 70% из начавших upload завершают apply | Funnel: upload → configure → apply → download |
+| Download rate | > 85% из завершивших apply скачивают результат | Events: watermark_applied → download |
+| Bounce rate | < 40% (для SEO-трафика) | GA / analytics |
+| Text vs Image usage | Отслеживать соотношение tab-переключений | trackEvent на выбор типа. Ожидание: ~75% text, ~25% image/logo. |
+| Tile usage | Процент сессий с включённым тайлом | trackEvent. Ожидание: ~10–15% (proof galleries, stock photographers). |
+| Advanced options open rate | % сессий, где пользователь открывает «More options» | trackEvent. Если > 50% — часть опций стоит вынести в основной UI. |
+| Batch size distribution | Среднее кол-во файлов за сессию | trackEvent на upload. Ожидание: ~50% single, ~35% 2–5, ~15% 6–10. |

@@ -56,6 +56,14 @@ const LazyRotateTool = dynamic(
   { ssr: false },
 );
 
+const LazyFlipTool = dynamic(
+  () =>
+    import("@/components/flip-tool").then((module) => ({
+      default: module.FlipTool,
+    })),
+  { ssr: false },
+);
+
 type ToolRuntimeProps = {
   config: PageConfig;
 };
@@ -71,6 +79,10 @@ export function ToolRuntime({ config }: ToolRuntimeProps) {
 
   if (config.tool.kind === "image-rotate") {
     return <RotateToolRuntime config={config} />;
+  }
+
+  if (config.tool.kind === "image-flip") {
+    return <FlipToolRuntime config={config} />;
   }
 
   if (config.tool.kind === "image-resize") {
@@ -108,6 +120,19 @@ function RotateToolRuntime({ config }: { config: PageConfig }) {
   }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
 
   return <LazyRotateTool config={config} />;
+}
+
+function FlipToolRuntime({ config }: { config: PageConfig }) {
+  useEffect(() => {
+    trackPageMeta({
+      pageSlug: config.slug,
+      intent: config.intent,
+      toolMode: config.tool.mode,
+    });
+    trackToolOpen(config.tool.kind);
+  }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
+
+  return <LazyFlipTool config={config} />;
 }
 
 function ResizeToolRuntime({ config }: { config: PageConfig }) {

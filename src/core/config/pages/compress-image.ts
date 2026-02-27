@@ -99,6 +99,11 @@ export const compressImagePage: PageConfig = {
         description: "Fix orientation or turn images to any angle.",
       },
       {
+        href: "/flip-image",
+        label: "Flip Image",
+        description: "Mirror images horizontally or vertically.",
+      },
+      {
         href: "/compress-jpg",
         label: "Compress JPG",
         description: "Format-focused JPG compression for photos and web.",

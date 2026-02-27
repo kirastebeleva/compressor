@@ -4,6 +4,7 @@ import {
   IMAGE_RESIZE_TOOL_DEFAULTS,
   IMAGE_CROP_TOOL_DEFAULTS,
   IMAGE_ROTATE_TOOL_DEFAULTS,
+  IMAGE_FLIP_TOOL_DEFAULTS,
   IMAGE_CONVERT_TOOL_DEFAULTS,
   RESULTS_DEFAULTS,
   AD_SLOT_DEFAULTS,
@@ -209,6 +210,12 @@ export const resizeImagePage: PageConfig = {
           "Fix image orientation before resizing.",
       },
       {
+        href: "/flip-image",
+        label: "Flip Image",
+        description:
+          "Mirror images horizontally or vertically.",
+      },
+      {
         href: "/compress-image",
         label: "Compress Image",
         description:
@@ -319,6 +326,12 @@ export const cropImagePage: PageConfig = {
         label: "Rotate Image",
         description:
           "Fix orientation before or after cropping.",
+      },
+      {
+        href: "/flip-image",
+        label: "Flip Image",
+        description:
+          "Mirror images before or after cropping.",
       },
       {
         href: "/resize-image",
@@ -444,6 +457,12 @@ export const rotateImagePage: PageConfig = {
     title: "Related Tools",
     links: [
       {
+        href: "/flip-image",
+        label: "Flip Image",
+        description:
+          "Mirror images horizontally or vertically.",
+      },
+      {
         href: "/crop-image",
         label: "Crop Image",
         description:
@@ -460,6 +479,141 @@ export const rotateImagePage: PageConfig = {
         label: "Compress Image",
         description:
           "Reduce file size after rotation.",
+      },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
+// /flip-image
+// ---------------------------------------------------------------------------
+
+export const flipImagePage: PageConfig = {
+  slug: "flip-image",
+  intent: "flip",
+  section: "image-tools",
+  navLabel: "Flip Image",
+
+  h1: "Flip Image Online",
+
+  meta: {
+    title: "Flip Image Online Free — Mirror Photos Instantly",
+    description:
+      "Flip or mirror up to 10 JPG, PNG and WebP images horizontally or vertically. Free, private, no upload — runs entirely in your browser.",
+  },
+
+  hero: {
+    subtitle:
+      "Mirror your images horizontally or vertically — fix selfies, prepare for print, or unify product photo direction. Batch up to 10.",
+    trustBadges: ["Free", "No signup", "Browser-based", "Batch up to 10"],
+  },
+
+  tool: {
+    ...IMAGE_FLIP_TOOL_DEFAULTS,
+    title: "Image Flipper",
+    subtitle:
+      "Upload up to 10 images. Flip them all at once or adjust each individually, then export as a ZIP.",
+  },
+
+  results: RESULTS_DEFAULTS,
+  adSlot: AD_SLOT_DEFAULTS,
+
+  seoContent: {
+    blocks: [
+      {
+        id: "about-tool",
+        title: "About this tool",
+        paragraphs: [
+          "This free batch image flipper lets you mirror up to 10 images at once horizontally or vertically directly in your browser. Apply a global flip to all images, then fine-tune each one individually if needed.",
+          "All processing happens locally — your files never leave your device. The tool supports JPG, PNG, and WebP images up to 10 MB each.",
+        ],
+      },
+      {
+        id: "how-it-works",
+        title: "How it works",
+        paragraphs: [
+          "1. Upload up to 10 images (max 10 MB each).",
+          "2. Use the \"Flip Horizontal\" or \"Flip Vertical\" buttons to mirror the entire batch.",
+          "3. Fine-tune individual images using per-image controls in the grid.",
+          "4. Click \"Flip\" to process and download — individually or as a ZIP.",
+          "Use keyboard shortcuts for speed: select an image in the grid, then press H to flip horizontally or V to flip vertically.",
+        ],
+      },
+    ],
+  },
+
+  faq: {
+    title: "Frequently Asked Questions",
+    items: [
+      {
+        question: "Is this tool really free?",
+        answer:
+          "Yes, 100% free with no limits on usage. There are no watermarks, no sign-up required, and no hidden fees.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. All flipping happens directly in your browser using HTML Canvas. Your images never leave your device.",
+      },
+      {
+        question: "What is the difference between horizontal and vertical flip?",
+        answer:
+          "Horizontal flip mirrors the image left-to-right, like looking in a mirror. Vertical flip mirrors it top-to-bottom, like a reflection in water.",
+      },
+      {
+        question: "How do I fix a mirrored selfie?",
+        answer:
+          "Upload your selfie and click \"Flip Horizontal\" — this reverses the mirror effect from the front-facing camera so text and logos read correctly.",
+      },
+      {
+        question: "Can I flip multiple images at once?",
+        answer:
+          "Yes, upload up to 10 images and flip them all with one click. Download them individually or as a single ZIP file.",
+      },
+      {
+        question: "What image formats are supported?",
+        answer:
+          "The tool supports JPG/JPEG, PNG, and WebP. The output format is always the same as the input.",
+      },
+      {
+        question: "Will flipping reduce image quality?",
+        answer:
+          "Flip is a lossless pixel operation. JPEG and WebP output uses 92% quality, which is visually identical to the original.",
+      },
+      {
+        question: "Can I flip and rotate in one step?",
+        answer:
+          "This tool handles flipping. To rotate, use our Rotate Image tool — you can chain both operations.",
+      },
+    ],
+  },
+
+  related: {
+    title: "Related Tools",
+    links: [
+      {
+        href: "/rotate-image",
+        label: "Rotate Image",
+        description:
+          "Need to rotate instead of flip? Try Rotate Image.",
+      },
+      {
+        href: "/crop-image",
+        label: "Crop Image",
+        description:
+          "Crop your image after flipping.",
+      },
+      {
+        href: "/compress-image",
+        label: "Compress Image",
+        description:
+          "Reduce file size after processing.",
+      },
+      {
+        href: "/resize-image",
+        label: "Resize Image",
+        description:
+          "Change dimensions after flipping.",
       },
     ],
   },

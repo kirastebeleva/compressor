@@ -21,6 +21,7 @@ export type ToolIntent =
   | "resize"
   | "crop"
   | "rotate"
+  | "flip"
   | "convert"
   | `convert-${string}`
   | "merge"
@@ -34,6 +35,7 @@ export type ToolKind =
   | "image-resize"
   | "image-crop"
   | "image-rotate"
+  | "image-flip"
   | "image-convert"
   | "pdf-compress"
   | "pdf-merge"

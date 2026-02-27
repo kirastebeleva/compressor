@@ -4,6 +4,7 @@ import {
   resizeImagePage,
   cropImagePage,
   rotateImagePage,
+  flipImagePage,
 } from "@/core/config/pages/image-tools";
 import {
   formatPages,
@@ -38,6 +39,7 @@ const rawPages: readonly PageConfig[] = [
   resizeImagePage,
   cropImagePage,
   rotateImagePage,
+  flipImagePage,
 
   // Image compression cluster (auto-collected from barrel)
   ...formatPages,

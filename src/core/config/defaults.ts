@@ -141,6 +141,31 @@ export const IMAGE_ROTATE_TOOL_DEFAULTS: PageConfig["tool"] = {
 };
 
 // ---------------------------------------------------------------------------
+// Image flip defaults
+// ---------------------------------------------------------------------------
+
+export const IMAGE_FLIP_TOOL_DEFAULTS: PageConfig["tool"] = {
+  ...IMAGE_COMPRESS_TOOL_DEFAULTS,
+  kind: "image-flip",
+  mode: "browser-compression",
+  title: "Image Flip Tool",
+  subtitle:
+    "Upload up to 10 images, flip them horizontally or vertically, and download the result.",
+  outputNameSuffix: "-flipped",
+  labels: {
+    ...IMAGE_COMPRESS_TOOL_DEFAULTS.labels,
+    compressButton: "Flip now",
+    compressingButton: "Flipping your image…",
+    downloadButton: "Download flipped image",
+  },
+  messages: {
+    ...IMAGE_COMPRESS_TOOL_DEFAULTS.messages,
+    noFileSelected: "Choose an image first to start flipping.",
+    stubModeNotice: "",
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Image convert defaults
 // ---------------------------------------------------------------------------
 

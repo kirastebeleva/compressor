@@ -5,6 +5,7 @@ import {
   IMAGE_CROP_TOOL_DEFAULTS,
   IMAGE_ROTATE_TOOL_DEFAULTS,
   IMAGE_FLIP_TOOL_DEFAULTS,
+  IMAGE_WATERMARK_TOOL_DEFAULTS,
   IMAGE_CONVERT_TOOL_DEFAULTS,
   RESULTS_DEFAULTS,
   AD_SLOT_DEFAULTS,
@@ -221,6 +222,12 @@ export const resizeImagePage: PageConfig = {
         description:
           "Reduce file size without changing dimensions.",
       },
+      {
+        href: "/watermark-image",
+        label: "Watermark Image",
+        description:
+          "Add text or logo watermarks after resizing.",
+      },
     ],
   },
 };
@@ -344,6 +351,12 @@ export const cropImagePage: PageConfig = {
         label: "Compress Image",
         description:
           "Reduce file size after cropping.",
+      },
+      {
+        href: "/watermark-image",
+        label: "Watermark Image",
+        description:
+          "Add a watermark after cropping your image.",
       },
     ],
   },
@@ -480,6 +493,12 @@ export const rotateImagePage: PageConfig = {
         description:
           "Reduce file size after rotation.",
       },
+      {
+        href: "/watermark-image",
+        label: "Watermark Image",
+        description:
+          "Add a watermark after fixing orientation.",
+      },
     ],
   },
 };
@@ -614,6 +633,153 @@ export const flipImagePage: PageConfig = {
         label: "Resize Image",
         description:
           "Change dimensions after flipping.",
+      },
+      {
+        href: "/watermark-image",
+        label: "Watermark Image",
+        description:
+          "Protect your images with a watermark after flipping.",
+      },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
+// /watermark-image
+// ---------------------------------------------------------------------------
+
+export const watermarkImagePage: PageConfig = {
+  slug: "watermark-image",
+  intent: "watermark",
+  section: "image-tools",
+  navLabel: "Watermark Image",
+
+  h1: "Add Watermark to Image Online",
+
+  meta: {
+    title: "Add Watermark to Image Online Free — Text & Logo Watermarks",
+    description:
+      "Add text or logo watermarks to up to 10 JPG, PNG and WebP images. Free, private, no upload — runs entirely in your browser.",
+  },
+
+  hero: {
+    subtitle:
+      "Protect your photos with a custom text or logo watermark — instantly and privately in your browser. Batch up to 10 images.",
+    trustBadges: ["Free", "No signup", "Browser-based", "No platform watermarks"],
+  },
+
+  tool: {
+    ...IMAGE_WATERMARK_TOOL_DEFAULTS,
+    title: "Image Watermark Tool",
+    subtitle:
+      "Upload up to 10 images, configure your watermark, and download the results.",
+  },
+
+  results: RESULTS_DEFAULTS,
+  adSlot: AD_SLOT_DEFAULTS,
+
+  seoContent: {
+    blocks: [
+      {
+        id: "about-tool",
+        title: "About this tool",
+        paragraphs: [
+          "This free online watermark tool lets you add text or logo watermarks to up to 10 images at once directly in your browser. All processing happens locally — your files are never uploaded to a server.",
+          "Choose from text watermarks with customizable font, color, and shadow, or upload your own logo as a PNG with transparent background. Position your watermark precisely using a visual 9-point grid, adjust opacity and size, and download watermarked images individually or as a ZIP archive.",
+        ],
+      },
+      {
+        id: "how-it-works",
+        title: "How it works",
+        paragraphs: [
+          "1. Upload up to 10 images (max 10 MB each, JPG, PNG, or WebP).",
+          "2. Choose watermark type — enter text (e.g. © Your Name) or upload a logo.",
+          "3. Adjust position, opacity, and size using intuitive controls.",
+          "4. Click \"Apply watermark\" and download your images individually or as a ZIP.",
+          "The watermark size scales proportionally to each image, so it looks consistent across photos of different resolutions. Unlike many competitors, we never add our own branding to your images.",
+        ],
+      },
+    ],
+  },
+
+  faq: {
+    title: "Frequently Asked Questions",
+    items: [
+      {
+        question: "Is this tool really free?",
+        answer:
+          "Yes, 100% free with no limits on usage. There are no hidden fees, no sign-up required, and — unlike many competitors — no platform watermarks added to your images.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. All watermarking happens directly in your browser using HTML Canvas. Your images never leave your device.",
+      },
+      {
+        question: "What image formats are supported?",
+        answer:
+          "The tool supports JPG/JPEG, PNG, and WebP for source images. For logo uploads, use PNG with a transparent background for best results.",
+      },
+      {
+        question: "Can I add a logo watermark?",
+        answer:
+          "Yes, switch to the Image tab and upload your logo. PNG files with transparent backgrounds work best — the logo is overlaid on your images at the size and opacity you choose.",
+      },
+      {
+        question: "Can I watermark multiple images at once?",
+        answer:
+          "Yes, upload up to 10 images and the watermark will be applied identically to all of them. Download results individually or as a single ZIP file.",
+      },
+      {
+        question: "Will the watermark scale to different image sizes?",
+        answer:
+          "Yes, the watermark size is proportional to each image's width, so it looks consistent across images of different resolutions.",
+      },
+      {
+        question: "Can I tile the watermark across the entire image?",
+        answer:
+          "Yes, enable the Tile pattern option in the advanced settings to repeat the watermark across the full image — commonly used for proof galleries and stock photography.",
+      },
+      {
+        question: "What opacity should I use?",
+        answer:
+          "50% is a good starting point for most use cases. Use lower values (30%) for subtle branding, or higher values (70–80%) for stronger copyright protection.",
+      },
+    ],
+  },
+
+  related: {
+    title: "Related Tools",
+    links: [
+      {
+        href: "/compress-image",
+        label: "Compress Image",
+        description:
+          "Reduce file size after watermarking.",
+      },
+      {
+        href: "/resize-image",
+        label: "Resize Image",
+        description:
+          "Resize images before or after adding a watermark.",
+      },
+      {
+        href: "/crop-image",
+        label: "Crop Image",
+        description:
+          "Crop your image before watermarking.",
+      },
+      {
+        href: "/rotate-image",
+        label: "Rotate Image",
+        description:
+          "Fix image orientation before watermarking.",
+      },
+      {
+        href: "/flip-image",
+        label: "Flip Image",
+        description:
+          "Mirror images before adding a watermark.",
       },
     ],
   },

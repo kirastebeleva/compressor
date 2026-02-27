@@ -64,6 +64,14 @@ const LazyFlipTool = dynamic(
   { ssr: false },
 );
 
+const LazyWatermarkTool = dynamic(
+  () =>
+    import("@/components/watermark-tool").then((module) => ({
+      default: module.WatermarkTool,
+    })),
+  { ssr: false },
+);
+
 type ToolRuntimeProps = {
   config: PageConfig;
 };
@@ -83,6 +91,10 @@ export function ToolRuntime({ config }: ToolRuntimeProps) {
 
   if (config.tool.kind === "image-flip") {
     return <FlipToolRuntime config={config} />;
+  }
+
+  if (config.tool.kind === "image-watermark") {
+    return <WatermarkToolRuntime config={config} />;
   }
 
   if (config.tool.kind === "image-resize") {
@@ -133,6 +145,19 @@ function FlipToolRuntime({ config }: { config: PageConfig }) {
   }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
 
   return <LazyFlipTool config={config} />;
+}
+
+function WatermarkToolRuntime({ config }: { config: PageConfig }) {
+  useEffect(() => {
+    trackPageMeta({
+      pageSlug: config.slug,
+      intent: config.intent,
+      toolMode: config.tool.mode,
+    });
+    trackToolOpen(config.tool.kind);
+  }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
+
+  return <LazyWatermarkTool config={config} />;
 }
 
 function ResizeToolRuntime({ config }: { config: PageConfig }) {

@@ -32,7 +32,7 @@ const VISIBLE_SECTIONS: readonly NavSectionId[] = ["image-tools"];
  * Only add tools here that are fully functional (not stubs).
  * Format-specific and long-tail pages belong in the footer only.
  */
-const HEADER_SLUGS = new Set(["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image"]);
+const HEADER_SLUGS = new Set(["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image", "watermark-image"]);
 
 // ---------------------------------------------------------------------------
 // Navigation sections built from page configs
@@ -78,7 +78,7 @@ export type FooterSection = {
 
 const MAX_FOOTER_LINKS_PER_SECTION = 10;
 
-const CORE_TOOL_INTENTS = new Set(["resize", "crop", "rotate", "flip"]);
+const CORE_TOOL_INTENTS = new Set(["resize", "crop", "rotate", "flip", "watermark"]);
 
 /** Active (browser-compression) pages rank higher than stubs. */
 function footerScore(page: PageConfig): number {

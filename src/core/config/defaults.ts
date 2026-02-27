@@ -166,6 +166,31 @@ export const IMAGE_FLIP_TOOL_DEFAULTS: PageConfig["tool"] = {
 };
 
 // ---------------------------------------------------------------------------
+// Image watermark defaults
+// ---------------------------------------------------------------------------
+
+export const IMAGE_WATERMARK_TOOL_DEFAULTS: PageConfig["tool"] = {
+  ...IMAGE_COMPRESS_TOOL_DEFAULTS,
+  kind: "image-watermark",
+  mode: "browser-compression",
+  title: "Image Watermark Tool",
+  subtitle:
+    "Upload up to 10 images, add a text or logo watermark, and download the results.",
+  outputNameSuffix: "-watermarked",
+  labels: {
+    ...IMAGE_COMPRESS_TOOL_DEFAULTS.labels,
+    compressButton: "Apply watermark",
+    compressingButton: "Applying watermark…",
+    downloadButton: "Download watermarked image",
+  },
+  messages: {
+    ...IMAGE_COMPRESS_TOOL_DEFAULTS.messages,
+    noFileSelected: "Choose an image first to add a watermark.",
+    stubModeNotice: "",
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Image convert defaults
 // ---------------------------------------------------------------------------
 

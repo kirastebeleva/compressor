@@ -511,11 +511,15 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
 
   const handleLogoUpload = useCallback(async (file: File) => {
     if (!LOGO_TYPES.has(file.type)) {
-      setError("Logo must be a PNG or SVG file.");
+      const msg = "Logo must be a PNG or SVG file.";
+      trackErrorShown({ tool: TOOL_KIND, file_type: file.type, error_message: msg });
+      setError(msg);
       return;
     }
     if (file.size > MAX_LOGO_SIZE) {
-      setError("Logo file is too large. Maximum size is 2 MB.");
+      const msg = "Logo file is too large. Maximum size is 2 MB.";
+      trackErrorShown({ tool: TOOL_KIND, file_type: file.type, file_size_mb: bytesToMb(file.size), error_message: msg });
+      setError(msg);
       return;
     }
     setError(null);
@@ -525,8 +529,11 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
     try {
       const bmp = await createImageBitmap(file);
       setLogoBitmap(bmp);
+      trackEvent("logo_uploaded", { tool: TOOL_KIND, file_type: file.type, file_size_mb: bytesToMb(file.size) });
     } catch {
-      setError("Could not load logo image.");
+      const msg = "Could not load logo image.";
+      trackErrorShown({ tool: TOOL_KIND, file_type: file.type, error_message: msg });
+      setError(msg);
     }
   }, [logoPreviewUrl]);
 
@@ -537,6 +544,7 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
     if (logoPreviewUrl) URL.revokeObjectURL(logoPreviewUrl);
     setLogoPreviewUrl(null);
     if (logoInputRef.current) logoInputRef.current.value = "";
+    trackEvent("logo_removed", { tool: TOOL_KIND });
   }, [logoBitmap, logoPreviewUrl]);
 
   // ---- File handling ----
@@ -565,8 +573,11 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
 
       const remaining = MAX_FILES - files.length;
       const toAdd = valid.slice(0, remaining);
-      if (valid.length > remaining)
-        setError(`Maximum ${MAX_FILES} files allowed. Some files were skipped.`);
+      if (valid.length > remaining) {
+        const msg = `Maximum ${MAX_FILES} files allowed. Some files were skipped.`;
+        trackErrorShown({ tool: TOOL_KIND, error_message: msg });
+        setError(msg);
+      }
 
       if (toAdd.length === 0) return;
 
@@ -600,6 +611,7 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
         const copy = [...prev];
         const [removed] = copy.splice(idx, 1);
         URL.revokeObjectURL(removed.previewUrl);
+        trackEvent("file_removed", { tool: TOOL_KIND, file_type: removed.file.type });
         if (copy.length === 0) {
           setState("idle");
           setPreviewIdx(0);
@@ -633,6 +645,7 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
     setError(null);
     setShowAdvanced(false);
     if (inputRef.current) inputRef.current.value = "";
+    trackEvent("tool_reset", { tool: TOOL_KIND });
   }, [files, results, removeLogo]);
 
   // ---- Drag & drop ----
@@ -670,7 +683,7 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
   const onExport = async () => {
     if (!canApply || state === "processing") return;
 
-    trackProcessingStarted({ tool: TOOL_KIND });
+    trackProcessingStarted({ tool: TOOL_KIND, preset: wm.type });
     trackEvent("watermark_apply", {
       tool: TOOL_KIND,
       type: wm.type,
@@ -892,7 +905,7 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
                 type="button"
                 className={`resize-tab${wm.type === "text" ? " resize-tab-active" : ""}`}
                 disabled={isProcessing}
-                onClick={() => updateWm("type", "text")}
+                onClick={() => { updateWm("type", "text"); trackEvent("watermark_type_switched", { tool: TOOL_KIND, watermark_type: "text" }); }}
               >
                 Text
               </button>
@@ -900,7 +913,7 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
                 type="button"
                 className={`resize-tab${wm.type === "image" ? " resize-tab-active" : ""}`}
                 disabled={isProcessing}
-                onClick={() => updateWm("type", "image")}
+                onClick={() => { updateWm("type", "image"); trackEvent("watermark_type_switched", { tool: TOOL_KIND, watermark_type: "image" }); }}
               >
                 Image
               </button>
@@ -1018,7 +1031,12 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
             <button
               type="button"
               className="wm-advanced-toggle"
-              onClick={() => setShowAdvanced((v) => !v)}
+              onClick={() => {
+                setShowAdvanced((v) => {
+                  if (!v) trackEvent("advanced_options_opened", { tool: TOOL_KIND });
+                  return !v;
+                });
+              }}
             >
               {showAdvanced ? "Hide options" : "More options"}
               <span className={`wm-chevron${showAdvanced ? " wm-chevron-open" : ""}`}>

@@ -104,6 +104,11 @@ export const compressImagePage: PageConfig = {
         description: "Mirror images horizontally or vertically.",
       },
       {
+        href: "/watermark-image",
+        label: "Watermark Image",
+        description: "Add text or logo watermarks to protect your photos.",
+      },
+      {
         href: "/compress-jpg",
         label: "Compress JPG",
         description: "Format-focused JPG compression for photos and web.",

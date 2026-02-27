@@ -222,6 +222,12 @@ export const resizeImagePage: PageConfig = {
         description:
           "Reduce file size without changing dimensions.",
       },
+      {
+        href: "/watermark-image",
+        label: "Watermark Image",
+        description:
+          "Add text or logo watermarks after resizing.",
+      },
     ],
   },
 };
@@ -345,6 +351,12 @@ export const cropImagePage: PageConfig = {
         label: "Compress Image",
         description:
           "Reduce file size after cropping.",
+      },
+      {
+        href: "/watermark-image",
+        label: "Watermark Image",
+        description:
+          "Add a watermark after cropping your image.",
       },
     ],
   },
@@ -481,6 +493,12 @@ export const rotateImagePage: PageConfig = {
         description:
           "Reduce file size after rotation.",
       },
+      {
+        href: "/watermark-image",
+        label: "Watermark Image",
+        description:
+          "Add a watermark after fixing orientation.",
+      },
     ],
   },
 };
@@ -616,6 +634,12 @@ export const flipImagePage: PageConfig = {
         description:
           "Change dimensions after flipping.",
       },
+      {
+        href: "/watermark-image",
+        label: "Watermark Image",
+        description:
+          "Protect your images with a watermark after flipping.",
+      },
     ],
   },
 };
@@ -746,10 +770,16 @@ export const watermarkImagePage: PageConfig = {
           "Crop your image before watermarking.",
       },
       {
-        href: "/compress-image-batch",
-        label: "Batch Compress",
+        href: "/rotate-image",
+        label: "Rotate Image",
         description:
-          "Compress a batch of watermarked images.",
+          "Fix image orientation before watermarking.",
+      },
+      {
+        href: "/flip-image",
+        label: "Flip Image",
+        description:
+          "Mirror images before adding a watermark.",
       },
     ],
   },

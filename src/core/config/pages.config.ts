@@ -14,6 +14,16 @@ import {
   genericPages,
   batchPages,
 } from "@/core/config/pages/image-compress";
+import { convertImagePage } from "@/core/config/pages/convert-image-page";
+import {
+  heicToJpgPage,
+  webpToJpgPage,
+  jpgToPngPage,
+  pngToJpgPage,
+  jpgToWebpPage,
+  pngToWebpPage,
+  pngToAvifPage,
+} from "@/core/config/pages/converter-tools";
 import { validatePageConfigs } from "@/core/config/validate";
 import { hydrateRelatedLinks } from "@/core/config/related-links";
 import type { PageConfig } from "@/core/types";
@@ -28,12 +38,24 @@ import type { PageConfig } from "@/core/types";
 //
 // Hidden pages (configs preserved, re-add when functionality is ready):
 //   - PDF tools: compressPdfPage, mergePdfPage, pdfToJpgPage
-//   - Converter tools: jpgToPngPage, pngToWebpPage, heicToJpgPage
+//   - Converter pair pages: jpgToPngPage, pngToWebpPage, heicToJpgPage
 // ---------------------------------------------------------------------------
 
 const rawPages: readonly PageConfig[] = [
   // Hub
   compressImagePage,
+
+  // Universal converter
+  convertImagePage,
+
+  // Converter pair pages (ranked by predicted usage frequency)
+  heicToJpgPage,
+  webpToJpgPage,
+  jpgToPngPage,
+  pngToJpgPage,
+  jpgToWebpPage,
+  pngToWebpPage,
+  pngToAvifPage,
 
   // Standalone image tools
   compressImageUnder1mbPage,

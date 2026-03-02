@@ -116,6 +116,12 @@ export type PageConfig = {
       ratio: number;
       elapsedMs: number;
     };
+    /**
+     * When set, the converter operates in "pair" mode:
+     * From/To selectors are hidden and formats are fixed.
+     * Used by dedicated SEO pair pages (e.g. /jpg-to-png).
+     */
+    conversionPair?: { from: string; to: string };
   };
 
   results: {

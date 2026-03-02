@@ -72,6 +72,14 @@ const LazyWatermarkTool = dynamic(
   { ssr: false },
 );
 
+const LazyConvertImageTool = dynamic(
+  () =>
+    import("@/components/convert-image-tool").then((module) => ({
+      default: module.ConvertImageTool,
+    })),
+  { ssr: false },
+);
+
 type ToolRuntimeProps = {
   config: PageConfig;
 };
@@ -99,6 +107,10 @@ export function ToolRuntime({ config }: ToolRuntimeProps) {
 
   if (config.tool.kind === "image-resize") {
     return <ResizeToolRuntime config={config} />;
+  }
+
+  if (config.tool.kind === "image-convert") {
+    return <ConvertImageRuntime config={config} />;
   }
 
   if (isBatchIntent(config.intent)) {
@@ -184,6 +196,19 @@ function BatchCompressRuntime({ config }: { config: PageConfig }) {
   }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
 
   return <LazyBatchCompressTool config={config} />;
+}
+
+function ConvertImageRuntime({ config }: { config: PageConfig }) {
+  useEffect(() => {
+    trackPageMeta({
+      pageSlug: config.slug,
+      intent: config.intent,
+      toolMode: config.tool.mode,
+    });
+    trackToolOpen(config.tool.kind);
+  }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
+
+  return <LazyConvertImageTool config={config} />;
 }
 
 function CompressionToolRuntime({ config }: { config: PageConfig }) {

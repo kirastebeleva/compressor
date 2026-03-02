@@ -197,7 +197,7 @@ export const IMAGE_WATERMARK_TOOL_DEFAULTS: PageConfig["tool"] = {
 export const IMAGE_CONVERT_TOOL_DEFAULTS: PageConfig["tool"] = {
   ...IMAGE_COMPRESS_TOOL_DEFAULTS,
   kind: "image-convert",
-  mode: "stub",
+  mode: "browser-compression",
   title: "Image Converter",
   subtitle: "Upload an image and convert it to another format.",
   outputNameSuffix: "-converted",

@@ -2,6 +2,87 @@
 
 ---
 
+## Convert Image
+
+| Параметр | Значение |
+|----------|----------|
+| **Название** | Convert Image |
+| **URL** | `/convert-image/` |
+| **ToolKind** | `image-convert` |
+| **Intent** | `convert` |
+| **NavSection** | `converter-tools` |
+
+### Краткое описание
+
+Универсальный batch-конвертер изображений. Позволяет загрузить до 20 файлов и конвертировать их между поддерживаемыми форматами: WebP, JPG, PNG, AVIF, HEIC. Вся обработка выполняется в браузере — без загрузки на сервер. HEIC-файлы обрабатываются через `heic2any` (lazy import). Для остальных форматов используется Canvas API.
+
+### Архитектура
+
+- **Конфиг пар**: `src/core/config/conversions.ts` — единый источник истины для `ALLOWED_CONVERSIONS`, MIME-маппинга и вспомогательных функций.
+- **Конвертер**: `src/conversion/convert.ts` — диспатчит на `canvasConvert` или `heicConvert` по типу файла.
+- **Компонент**: `src/components/convert-image-tool.tsx` — работает в двух режимах:
+  - **Обычный режим** (`/convert-image`): показывает селекторы From/To, поддерживает авто-определение формата по файлу.
+  - **Pair mode** (`/heic-to-jpg`, `/webp-to-jpg` и т.д.): форматы фиксированы через `config.tool.conversionPair`, селекторы скрыты.
+- **ToolRuntime**: ветка `image-convert` → `ConvertImageRuntime` в `src/tool-page/tool-runtime.tsx`.
+
+### Разрешённые пары конвертации
+
+```
+WebP  → JPG
+JPG   → PNG, WebP
+PNG   → JPG, WebP, AVIF
+HEIC  → JPG
+```
+
+### SEO-страницы пар форматов
+
+| Slug | Intent | Rank |
+|------|--------|------|
+| `/heic-to-jpg` | `convert-heic-jpg` | 1 |
+| `/webp-to-jpg` | `convert-webp-jpg` | 2 |
+| `/jpg-to-png` | `convert-jpg-png` | 3 |
+| `/png-to-jpg` | `convert-png-jpg` | 4 |
+| `/jpg-to-webp` | `convert-jpg-webp` | 5 |
+| `/png-to-webp` | `convert-png-webp` | 6 |
+| `/png-to-avif` | `convert-png-avif` | 7 |
+
+Все страницы имеют уникальные H1, meta title/description, hero subtitle и FAQ. Селекторы форматов скрыты — input определяется по файлу, output фиксирован страницей.
+
+### Аналитика
+
+События отправляются через `src/lib/analytics.ts`:
+
+| Событие | Когда | Ключевые параметры |
+|---------|-------|--------------------|
+| `tool_open` | Монтирование `ConvertImageRuntime` | `tool` |
+| `file_uploaded` | Загрузка файлов в dropzone | `tool`, `file_count`, `from_format` |
+| `convert_image_to_selected` | Изменение селектора «To» | `from_format`, `to_format` |
+| `action_started` | Клик «Convert» | `tool`, `from_format`, `to_format`, `file_count` |
+| `action_completed` | Завершение конвертации | `tool`, `success_count`, `fail_count`, `elapsed_ms`, `output_size_mb` |
+| `error` | Ошибка конвертации файла | `tool`, `file_type`, `file_size_mb`, `error_message` |
+
+### Sitemap
+
+Все страницы конвертера включены в `src/app/sitemap.ts` с приоритетами:
+- `/convert-image/` — priority `0.9`, changeFrequency `monthly`
+- Pair-страницы (`/heic-to-jpg/` и др.) — priority `0.8`, changeFrequency `monthly`
+
+Stub-страницы исключены из sitemap автоматически (фильтр `mode !== "stub"`).
+
+### Ключевые файлы
+
+| Файл | Описание |
+|------|----------|
+| `src/core/config/conversions.ts` | `ALLOWED_CONVERSIONS`, MIME-маппинг, утилиты |
+| `src/conversion/convert.ts` | Логика конвертации (canvas + heic2any) |
+| `src/conversion/types.ts` | `ConvertOptions`, `ConvertResult` |
+| `src/components/convert-image-tool.tsx` | UI-компонент, pair mode, аналитика |
+| `src/core/config/pages/convert-image-page.ts` | PageConfig для `/convert-image` |
+| `src/core/config/pages/converter-tools.ts` | PageConfig для 7 pair-страниц |
+| `src/app/sitemap.ts` | Динамическая генерация sitemap с приоритетами |
+
+---
+
 ## Rotate Image
 
 | Параметр | Значение |

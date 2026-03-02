@@ -25,14 +25,25 @@ export const BRAND = { label: "imgloo", href: "/" } as const;
 // Add a section id here when it is ready to be shown publicly.
 // ---------------------------------------------------------------------------
 
-const VISIBLE_SECTIONS: readonly NavSectionId[] = ["image-tools"];
+const VISIBLE_SECTIONS: readonly NavSectionId[] = [
+  "image-tools",
+  "converter-tools",
+];
 
 /**
  * Core tool slugs shown in the header dropdown.
  * Only add tools here that are fully functional (not stubs).
  * Format-specific and long-tail pages belong in the footer only.
  */
-const HEADER_SLUGS = new Set(["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image", "watermark-image"]);
+const HEADER_SLUGS = new Set([
+  "compress-image",
+  "resize-image",
+  "crop-image",
+  "rotate-image",
+  "flip-image",
+  "watermark-image",
+  "convert-image",
+]);
 
 // ---------------------------------------------------------------------------
 // Navigation sections built from page configs

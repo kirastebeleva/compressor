@@ -179,5 +179,61 @@ export function trackDownload(params: {
   });
 }
 
+// ---------------------------------------------------------------------------
+// Convert Image page events
+// ---------------------------------------------------------------------------
+
+export function trackConvertImageFileUploaded(p: {
+  from_format: string;
+  file_count: number;
+}) {
+  trackEvent("convert_image_file_uploaded", {
+    from_format: p.from_format,
+    file_count: p.file_count,
+    device: getDevice(),
+  });
+}
+
+export function trackConvertImageToSelected(p: {
+  from_format: string;
+  to_format: string;
+}) {
+  trackEvent("convert_image_to_selected", {
+    from_format: p.from_format,
+    to_format: p.to_format,
+    device: getDevice(),
+  });
+}
+
+export function trackConvertImageStarted(p: {
+  from_format: string;
+  to_format: string;
+  file_count: number;
+}) {
+  trackEvent("convert_image_started", {
+    from_format: p.from_format,
+    to_format: p.to_format,
+    file_count: p.file_count,
+    device: getDevice(),
+  });
+}
+
+export function trackConvertImageCompleted(p: {
+  from_format: string;
+  to_format: string;
+  file_count: number;
+  success_count: number;
+  fail_count: number;
+}) {
+  trackEvent("convert_image_completed", {
+    from_format: p.from_format,
+    to_format: p.to_format,
+    file_count: p.file_count,
+    success_count: p.success_count,
+    fail_count: p.fail_count,
+    device: getDevice(),
+  });
+}
+
 // Re-export helper for use in components
 export { bytesToMb };

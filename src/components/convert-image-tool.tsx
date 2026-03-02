@@ -13,11 +13,13 @@ import { convertImage } from "@/conversion";
 import { LIMITS } from "@/compression";
 import { formatBytes } from "@/lib/format";
 import {
-  trackConvertImageFileUploaded,
+  trackFileUploaded,
+  trackActionStarted,
+  trackActionCompleted,
+  trackError,
   trackConvertImageToSelected,
-  trackConvertImageStarted,
-  trackConvertImageCompleted,
   trackEvent,
+  bytesToMb,
 } from "@/lib/analytics";
 import type { PageConfig } from "@/core/types";
 
@@ -169,9 +171,12 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
 
       setFiles((prev) => {
         const next = [...prev, ...loaded];
-        trackConvertImageFileUploaded({
-          from_format: detectedFrom === AUTO ? "unknown" : detectedFrom,
+        trackFileUploaded({
+          tool: config.tool.kind,
+          file_type: filtered[0].type || "(unknown)",
+          file_size_mb: bytesToMb(filtered[0].size),
           file_count: next.length,
+          from_format: detectedFrom === AUTO ? "unknown" : detectedFrom,
         });
         return next;
       });
@@ -249,17 +254,21 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
   const onConvert = async () => {
     if (!canConvert) return;
 
-    trackConvertImageStarted({
+    const actionParams = {
+      tool: config.tool.kind,
       from_format: fromFormat,
       to_format: toFormat,
       file_count: files.length,
-    });
+    };
+
+    trackActionStarted(actionParams);
 
     setError(null);
     setState("converting");
     setProgress(0);
     clearResults();
 
+    const startTime = performance.now();
     const newResults: FileResult[] = [];
     let successCount = 0;
     let failCount = 0;
@@ -280,11 +289,17 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
         successCount++;
       } catch (err) {
         failCount++;
-        setError(
+        const msg =
           err instanceof Error
             ? err.message
-            : `Failed to convert ${uf.file.name}.`,
-        );
+            : `Failed to convert ${uf.file.name}.`;
+        setError(msg);
+        trackError({
+          ...actionParams,
+          file_type: uf.file.type || "(unknown)",
+          file_size_mb: bytesToMb(uf.file.size),
+          error_message: msg,
+        });
       }
       setProgress(i + 1);
     }
@@ -292,12 +307,16 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
     setResults(newResults);
     setState(newResults.length > 0 ? "done" : "ready");
 
-    trackConvertImageCompleted({
-      from_format: fromFormat,
-      to_format: toFormat,
-      file_count: files.length,
+    const totalOutputMb = bytesToMb(
+      newResults.reduce((s, r) => s + r.outputBytes, 0),
+    );
+
+    trackActionCompleted({
+      ...actionParams,
       success_count: successCount,
       fail_count: failCount,
+      elapsed_ms: Math.round(performance.now() - startTime),
+      output_size_mb: totalOutputMb,
     });
   };
 

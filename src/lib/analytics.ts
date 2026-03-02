@@ -57,35 +57,106 @@ export function trackEvent(
 }
 
 // ---------------------------------------------------------------------------
-// Structured event helpers (tool lifecycle)
+// Shared base params for all tool lifecycle events
 // ---------------------------------------------------------------------------
 
-type ToolEventParams = {
+/**
+ * Base parameters shared across all tool events.
+ * Optional fields are included in the event payload only when defined,
+ * so adding new optional fields here is non-breaking for existing tools.
+ */
+export type ToolEventParams = {
+  /** ToolKind identifier, e.g. "image-compress", "image-convert". */
   tool: string;
+  /** Primary input MIME type, e.g. "image/jpeg". */
   file_type?: string;
+  /** Primary input file size in MB. */
   file_size_mb?: number;
+  /** Number of files being processed (batch tools). */
+  file_count?: number;
+  /** Source format key for conversion tools, e.g. "jpg". */
+  from_format?: string;
+  /** Target format key for conversion tools, e.g. "png". */
+  to_format?: string;
 };
 
 function buildBaseParams(p: ToolEventParams): Record<string, unknown> {
-  return {
+  const params: Record<string, unknown> = {
     tool: p.tool,
     file_type: p.file_type ?? "(none)",
     file_size_mb: p.file_size_mb ?? 0,
     device: getDevice(),
   };
+  if (p.file_count !== undefined) params.file_count = p.file_count;
+  if (p.from_format) params.from_format = p.from_format;
+  if (p.to_format) params.to_format = p.to_format;
+  return params;
 }
 
-/** User opened a tool page */
+// ---------------------------------------------------------------------------
+// Tool lifecycle events (reusable across all tools)
+// ---------------------------------------------------------------------------
+
+/** User opened a tool page. Fired once on mount. */
 export function trackToolOpen(tool: string) {
   trackEvent("tool_open", buildBaseParams({ tool }));
 }
 
-/** User selected / dropped a file */
+/**
+ * User selected or dropped one or more files.
+ * Supports single-file and batch tools via optional file_count.
+ */
 export function trackFileUploaded(p: ToolEventParams) {
   trackEvent("file_uploaded", buildBaseParams(p));
 }
 
-/** Compression (or other processing) started */
+/**
+ * An action (conversion, compression, resize, …) was started.
+ * Replaces the compress-specific `trackProcessingStarted` for new tools.
+ */
+export function trackActionStarted(p: ToolEventParams) {
+  trackEvent("action_started", buildBaseParams(p));
+}
+
+/**
+ * An action finished (successfully or partially).
+ * Use success_count / fail_count to distinguish full vs partial success.
+ */
+export function trackActionCompleted(
+  p: ToolEventParams & {
+    success_count?: number;
+    fail_count?: number;
+    elapsed_ms?: number;
+    output_size_mb?: number;
+  },
+) {
+  trackEvent("action_completed", {
+    ...buildBaseParams(p),
+    success_count: p.success_count ?? 1,
+    fail_count: p.fail_count ?? 0,
+    elapsed_ms: p.elapsed_ms ?? 0,
+    output_size_mb: p.output_size_mb ?? 0,
+  });
+}
+
+/**
+ * A processing error was shown to the user.
+ * Generic replacement for `trackErrorShown` for new tools.
+ */
+export function trackError(
+  p: ToolEventParams & { error_message?: string },
+) {
+  trackEvent("error", {
+    ...buildBaseParams(p),
+    error_message: p.error_message ?? "(unknown)",
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Compression-specific lifecycle (kept for existing tools — do not rename)
+// ---------------------------------------------------------------------------
+
+/** Compression started — kept for compress/resize/crop tools. */
 export function trackProcessingStarted(p: ToolEventParams & { preset?: string }) {
   trackEvent("processing_started", {
     ...buildBaseParams(p),
@@ -93,7 +164,7 @@ export function trackProcessingStarted(p: ToolEventParams & { preset?: string })
   });
 }
 
-/** Processing finished successfully */
+/** Compression finished — kept for compress/resize/crop tools. */
 export function trackProcessingCompleted(
   p: ToolEventParams & {
     preset: string;
@@ -111,7 +182,7 @@ export function trackProcessingCompleted(
   });
 }
 
-/** User clicked the download link */
+/** User clicked the download link. */
 export function trackDownloadResult(p: ToolEventParams & { output_size_mb: number }) {
   trackEvent("download_result", {
     ...buildBaseParams(p),
@@ -119,7 +190,7 @@ export function trackDownloadResult(p: ToolEventParams & { output_size_mb: numbe
   });
 }
 
-/** A user-facing error was shown */
+/** A user-facing error was shown — kept for existing compression tools. */
 export function trackErrorShown(p: ToolEventParams & { error_message: string }) {
   trackEvent("error_shown", {
     ...buildBaseParams(p),
@@ -180,20 +251,15 @@ export function trackDownload(params: {
 }
 
 // ---------------------------------------------------------------------------
-// Convert Image page events
+// Converter-specific supplementary event
+// (format selection is a UX pattern unique to the converter tool)
 // ---------------------------------------------------------------------------
 
-export function trackConvertImageFileUploaded(p: {
-  from_format: string;
-  file_count: number;
-}) {
-  trackEvent("convert_image_file_uploaded", {
-    from_format: p.from_format,
-    file_count: p.file_count,
-    device: getDevice(),
-  });
-}
-
+/**
+ * User changed the "To" format selector on the universal convert-image page.
+ * This is a supplementary event on top of the standard action_started/completed
+ * lifecycle — it helps track format preference before conversion begins.
+ */
 export function trackConvertImageToSelected(p: {
   from_format: string;
   to_format: string;
@@ -201,36 +267,6 @@ export function trackConvertImageToSelected(p: {
   trackEvent("convert_image_to_selected", {
     from_format: p.from_format,
     to_format: p.to_format,
-    device: getDevice(),
-  });
-}
-
-export function trackConvertImageStarted(p: {
-  from_format: string;
-  to_format: string;
-  file_count: number;
-}) {
-  trackEvent("convert_image_started", {
-    from_format: p.from_format,
-    to_format: p.to_format,
-    file_count: p.file_count,
-    device: getDevice(),
-  });
-}
-
-export function trackConvertImageCompleted(p: {
-  from_format: string;
-  to_format: string;
-  file_count: number;
-  success_count: number;
-  fail_count: number;
-}) {
-  trackEvent("convert_image_completed", {
-    from_format: p.from_format,
-    to_format: p.to_format,
-    file_count: p.file_count,
-    success_count: p.success_count,
-    fail_count: p.fail_count,
     device: getDevice(),
   });
 }

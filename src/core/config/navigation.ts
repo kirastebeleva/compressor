@@ -36,13 +36,22 @@ const VISIBLE_SECTIONS: readonly NavSectionId[] = [
  * Format-specific and long-tail pages belong in the footer only.
  */
 const HEADER_SLUGS = new Set([
+  // Image tools
   "compress-image",
   "resize-image",
   "crop-image",
   "rotate-image",
   "flip-image",
   "watermark-image",
+  // Converter tools (ranked by usage frequency)
   "convert-image",
+  "heic-to-jpg",
+  "webp-to-jpg",
+  "jpg-to-png",
+  "png-to-jpg",
+  "jpg-to-webp",
+  "png-to-webp",
+  "png-to-avif",
 ]);
 
 // ---------------------------------------------------------------------------

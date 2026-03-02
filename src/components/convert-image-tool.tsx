@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ALLOWED_CONVERSIONS,
   ACCEPTED_INPUT_MIMES,
+  FORMAT_TO_MIME,
   detectFormatFromFile,
   formatLabel,
   buildConvertedName,
@@ -44,10 +45,23 @@ type ConvertImageToolProps = {
   config: PageConfig;
 };
 
+/** Returns the `accept` attribute value for a single fixed input format. */
+function getAcceptForFormat(fmt: string): string {
+  if (fmt === "heic") return "image/heic,image/heif,.heic,.heif";
+  return FORMAT_TO_MIME[fmt] ?? "image/*";
+}
+
 export function ConvertImageTool({ config }: ConvertImageToolProps) {
+  const conversionPair = config.tool.conversionPair;
+  const isPairMode = !!conversionPair;
+
   const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [fromFormat, setFromFormat] = useState<string>(AUTO);
-  const [toFormat, setToFormat] = useState<string>("");
+  const [fromFormat, setFromFormat] = useState<string>(
+    conversionPair ? conversionPair.from : AUTO,
+  );
+  const [toFormat, setToFormat] = useState<string>(
+    conversionPair ? conversionPair.to : "",
+  );
   const [state, setState] = useState<ViewState>("idle");
   const [results, setResults] = useState<FileResult[]>([]);
   const [progress, setProgress] = useState(0);
@@ -57,6 +71,11 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const zipBusyRef = useRef(false);
   const byteLabels = config.results.labels;
+
+  // In pair mode, restrict the file input to the expected input format only
+  const fileAccept = isPairMode
+    ? getAcceptForFormat(conversionPair!.from)
+    : ACCEPTED_INPUT_MIMES;
 
   const toOptions: readonly string[] = useMemo(
     () =>
@@ -169,26 +188,30 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
         const next = prev.filter((f) => f.id !== id);
         if (next.length === 0) {
           setState("idle");
-          setFromFormat(AUTO);
-          setToFormat("");
+          if (!isPairMode) {
+            setFromFormat(AUTO);
+            setToFormat("");
+          }
         }
         return next;
       });
       clearResults();
       setError(null);
     },
-    [clearResults],
+    [clearResults, isPairMode],
   );
 
   const clearAll = useCallback(() => {
     clearResults();
     setFiles([]);
     setState("idle");
-    setFromFormat(AUTO);
-    setToFormat("");
+    if (!isPairMode) {
+      setFromFormat(AUTO);
+      setToFormat("");
+    }
     setError(null);
     if (inputRef.current) inputRef.current.value = "";
-  }, [clearResults]);
+  }, [clearResults, isPairMode]);
 
   const handleFromChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
@@ -302,66 +325,66 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
     }
   };
 
-  const inputFormats = Object.keys(ALLOWED_CONVERSIONS);
-
   return (
     <>
       <section className="card tool-card">
         <h2 className="section-title">{config.tool.title}</h2>
         <p className="body-text tool-subtitle">{config.tool.subtitle}</p>
 
-        {/* Format selectors */}
-        <div className="convert-format-row">
-          <div className="convert-format-group">
-            <label className="preset-label" htmlFor="from-format-select">
-              From
-            </label>
-            <select
-              className="preset-select"
-              disabled={isConverting}
-              id="from-format-select"
-              onChange={handleFromChange}
-              value={fromFormat}
-            >
-              <option value={AUTO}>Auto-detect</option>
-              {inputFormats.map((fmt) => (
-                <option key={fmt} value={fmt}>
-                  {formatLabel(fmt)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <span aria-hidden="true" className="convert-arrow">
-            →
-          </span>
-
-          <div className="convert-format-group">
-            <label className="preset-label" htmlFor="to-format-select">
-              To
-            </label>
-            <select
-              className="preset-select"
-              disabled={isConverting || toOptions.length === 0}
-              id="to-format-select"
-              onChange={handleToChange}
-              value={toFormat}
-            >
-              {toOptions.length === 0 ? (
-                <option value="">Select input format or upload a file</option>
-              ) : (
-                toOptions.map((fmt) => (
+        {/* Format selectors — hidden in pair mode (formats are fixed) */}
+        {!isPairMode && (
+          <div className="convert-format-row">
+            <div className="convert-format-group">
+              <label className="preset-label" htmlFor="from-format-select">
+                From
+              </label>
+              <select
+                className="preset-select"
+                disabled={isConverting}
+                id="from-format-select"
+                onChange={handleFromChange}
+                value={fromFormat}
+              >
+                <option value={AUTO}>Auto-detect</option>
+                {Object.keys(ALLOWED_CONVERSIONS).map((fmt) => (
                   <option key={fmt} value={fmt}>
                     {formatLabel(fmt)}
                   </option>
-                ))
-              )}
-            </select>
+                ))}
+              </select>
+            </div>
+
+            <span aria-hidden="true" className="convert-arrow">
+              →
+            </span>
+
+            <div className="convert-format-group">
+              <label className="preset-label" htmlFor="to-format-select">
+                To
+              </label>
+              <select
+                className="preset-select"
+                disabled={isConverting || toOptions.length === 0}
+                id="to-format-select"
+                onChange={handleToChange}
+                value={toFormat}
+              >
+                {toOptions.length === 0 ? (
+                  <option value="">Select input format or upload a file</option>
+                ) : (
+                  toOptions.map((fmt) => (
+                    <option key={fmt} value={fmt}>
+                      {formatLabel(fmt)}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
           </div>
-        </div>
+        )}
 
         <input
-          accept={ACCEPTED_INPUT_MIMES}
+          accept={fileAccept}
           className="visually-hidden-file-input"
           multiple
           onChange={(e) => {
@@ -420,14 +443,26 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
                 />
               </svg>
             </div>
-            <span className="dropzone-label">Choose images</span>
+            <span className="dropzone-label">
+              {isPairMode
+                ? `Choose ${formatLabel(conversionPair!.from)} images`
+                : "Choose images"}
+            </span>
             <span className="dropzone-hint">or drag and drop</span>
             <div className="dropzone-badges">
-              <span className="format-badge">JPG</span>
-              <span className="format-badge">PNG</span>
-              <span className="format-badge">WebP</span>
-              <span className="format-badge">AVIF</span>
-              <span className="format-badge">HEIC</span>
+              {isPairMode ? (
+                <span className="format-badge">
+                  {formatLabel(conversionPair!.from)}
+                </span>
+              ) : (
+                <>
+                  <span className="format-badge">JPG</span>
+                  <span className="format-badge">PNG</span>
+                  <span className="format-badge">WebP</span>
+                  <span className="format-badge">AVIF</span>
+                  <span className="format-badge">HEIC</span>
+                </>
+              )}
               <span className="format-badge format-badge-muted">
                 Up to {MAX_FILES} files
               </span>

@@ -15,6 +15,15 @@ import {
   batchPages,
 } from "@/core/config/pages/image-compress";
 import { convertImagePage } from "@/core/config/pages/convert-image-page";
+import {
+  heicToJpgPage,
+  webpToJpgPage,
+  jpgToPngPage,
+  pngToJpgPage,
+  jpgToWebpPage,
+  pngToWebpPage,
+  pngToAvifPage,
+} from "@/core/config/pages/converter-tools";
 import { validatePageConfigs } from "@/core/config/validate";
 import { hydrateRelatedLinks } from "@/core/config/related-links";
 import type { PageConfig } from "@/core/types";
@@ -38,6 +47,15 @@ const rawPages: readonly PageConfig[] = [
 
   // Universal converter
   convertImagePage,
+
+  // Converter pair pages (ranked by predicted usage frequency)
+  heicToJpgPage,
+  webpToJpgPage,
+  jpgToPngPage,
+  pngToJpgPage,
+  jpgToWebpPage,
+  pngToWebpPage,
+  pngToAvifPage,
 
   // Standalone image tools
   compressImageUnder1mbPage,

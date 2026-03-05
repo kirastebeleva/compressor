@@ -1145,6 +1145,81 @@ select {
 }
 
 /* ==========================================================================
+   STATIC PAGES (About, Privacy Policy, Terms, Contact)
+   ========================================================================== */
+
+.static-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: calc(var(--header-h) + 48px) 20px 0;
+}
+
+.static-page-content {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 40px 48px;
+  box-shadow: var(--shadow-sm);
+}
+
+.static-page-content h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-heading);
+  margin: 0 0 24px;
+  line-height: 1.25;
+}
+
+.static-page-content h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-heading);
+  margin: 36px 0 12px;
+}
+
+.static-page-content p {
+  color: var(--color-text);
+  margin: 0 0 14px;
+  line-height: 1.7;
+}
+
+.static-page-content ul {
+  margin: 0 0 16px;
+  padding-left: 24px;
+}
+
+.static-page-content ul li {
+  color: var(--color-text);
+  line-height: 1.7;
+  margin-bottom: 4px;
+}
+
+.static-page-content a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.static-page-content a:hover {
+  text-decoration: underline;
+}
+
+.static-page-updated {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 28px !important;
+}
+
+@media (max-width: 640px) {
+  .static-page-content {
+    padding: 28px 20px;
+  }
+
+  .static-page-content h1 {
+    font-size: 1.6rem;
+  }
+}
+
+/* ==========================================================================
    AD SLOT
    ========================================================================== */
 

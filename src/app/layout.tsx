@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import Script from "next/script";
 import "@/app/globals.css";
 import CookieConsent from "@/components/cookie-consent";
 import { WebVitals } from "@/components/web-vitals";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "imgloo — Free Online Image Compressor",
@@ -11,6 +18,12 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon.png",
     apple: "/apple-icon.png",
+  },
+  verification: {
+    yandex: "3ef9ff63d7141d76",
+    other: {
+      "msvalidate.01": "085A7D7566BC56EE7CFC9CAE285C2DBA",
+    },
   },
 };
 
@@ -41,7 +54,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body>
         {children}
         <WebVitals />

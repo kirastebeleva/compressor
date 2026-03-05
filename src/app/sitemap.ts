@@ -69,6 +69,33 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: getPriority(page),
     }));
 
+  const staticPages: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE_URL}/about/`,
+      lastModified: BUILD_DATE,
+      changeFrequency: "yearly",
+      priority: 0.5,
+    },
+    {
+      url: `${BASE_URL}/privacy-policy/`,
+      lastModified: BUILD_DATE,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/terms/`,
+      lastModified: BUILD_DATE,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/contact/`,
+      lastModified: BUILD_DATE,
+      changeFrequency: "yearly",
+      priority: 0.4,
+    },
+  ];
+
   return [
     {
       url: `${BASE_URL}/`,
@@ -77,5 +104,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     ...pages,
+    ...staticPages,
   ];
 }

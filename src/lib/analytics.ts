@@ -66,8 +66,10 @@ export function trackEvent(
  * so adding new optional fields here is non-breaking for existing tools.
  */
 export type ToolEventParams = {
-  /** ToolKind identifier, e.g. "image-compress", "image-convert". */
+  /** ToolKind identifier, e.g. "image-compress", "image-resize". */
   tool: string;
+  /** Page slug for segmentation, e.g. "resize-image-for-instagram-post". */
+  page_slug?: string;
   /** Primary input MIME type, e.g. "image/jpeg". */
   file_type?: string;
   /** Primary input file size in MB. */
@@ -87,6 +89,7 @@ function buildBaseParams(p: ToolEventParams): Record<string, unknown> {
     file_size_mb: p.file_size_mb ?? 0,
     device: getDevice(),
   };
+  if (p.page_slug) params.page_slug = p.page_slug;
   if (p.file_count !== undefined) params.file_count = p.file_count;
   if (p.from_format) params.from_format = p.from_format;
   if (p.to_format) params.to_format = p.to_format;
@@ -98,8 +101,8 @@ function buildBaseParams(p: ToolEventParams): Record<string, unknown> {
 // ---------------------------------------------------------------------------
 
 /** User opened a tool page. Fired once on mount. */
-export function trackToolOpen(tool: string) {
-  trackEvent("tool_open", buildBaseParams({ tool }));
+export function trackToolOpen(tool: string, pageSlug?: string) {
+  trackEvent("tool_open", buildBaseParams({ tool, page_slug: pageSlug }));
 }
 
 /**

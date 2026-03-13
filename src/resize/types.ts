@@ -1,8 +1,13 @@
 export type ResizeMode = "pixels" | "percentage";
 
+/** fit = contain (scale to fit, add padding); fill = cover (scale to cover, crop) */
+export type ResizeFitMode = "fit" | "fill";
+
 export type ResizeOptions = {
   targetWidth: number;
   targetHeight: number;
+  /** Default "fill" — stretch/cover. Use "fit" for avatars to preserve aspect without crop. */
+  fitMode?: ResizeFitMode;
 };
 
 export type ResizeResult = {
@@ -22,6 +27,7 @@ export type ResizeWorkerRequest = {
   fileType: string;
   targetWidth: number;
   targetHeight: number;
+  fitMode?: ResizeFitMode;
 };
 
 export type ResizeWorkerSuccess = {

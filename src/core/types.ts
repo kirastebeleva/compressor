@@ -19,6 +19,7 @@ export type ToolIntent =
   | "batch"
   | `batch-${string}`
   | "resize"
+  | `resize-platform-${string}`
   | "crop"
   | "rotate"
   | "flip"
@@ -122,6 +123,20 @@ export type PageConfig = {
      * Used by dedicated SEO pair pages (e.g. /jpg-to-png).
      */
     conversionPair?: { from: string; to: string };
+    /**
+     * Platform-specific resize presets for pages like /resize-image-for-instagram-post.
+     * When set, ResizeTool shows these presets instead of generic ones.
+     */
+    resizePlatformPresets?: readonly {
+      label: string;
+      w: number;
+      h: number;
+      title?: string;
+      mode: "fit" | "fill";
+      isDefault?: boolean;
+    }[];
+    /** Default resize fit mode for platform pages: fit (contain) or fill (cover). */
+    defaultResizeMode?: "fit" | "fill";
   };
 
   results: {

@@ -7,6 +7,7 @@ import {
   flipImagePage,
   watermarkImagePage,
 } from "@/core/config/pages/image-tools";
+import { resizePlatformPages } from "@/core/config/pages/resize-platform-pages";
 import {
   formatPages,
   sizePages,
@@ -60,6 +61,7 @@ const rawPages: readonly PageConfig[] = [
   // Standalone image tools
   compressImageUnder1mbPage,
   resizeImagePage,
+  ...resizePlatformPages,
   cropImagePage,
   rotateImagePage,
   flipImagePage,

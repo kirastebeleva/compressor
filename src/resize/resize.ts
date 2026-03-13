@@ -59,6 +59,7 @@ export async function resizeImage(
       fileType: file.type,
       targetWidth: Math.round(options.targetWidth),
       targetHeight: Math.round(options.targetHeight),
+      fitMode: options.fitMode ?? "fill",
     });
 
     const elapsedMs = Math.round(performance.now() - startedAt);

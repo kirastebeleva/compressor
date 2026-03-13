@@ -8,10 +8,17 @@ import {
   MAX_DIMENSION,
   MAX_FILES,
 } from "@/resize";
-import type { ResizeMode, ResizeResult } from "@/resize";
+import type { ResizeMode, ResizeResult, ResizeFitMode } from "@/resize";
 import type { PageConfig } from "@/core/types";
 import { formatBytes } from "@/lib/format";
-import { trackEvent } from "@/lib/analytics";
+import {
+  trackEvent,
+  trackFileUploaded,
+  trackActionStarted,
+  trackActionCompleted,
+  trackError,
+  bytesToMb,
+} from "@/lib/analytics";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -33,12 +40,12 @@ type FileResult = {
 
 type ViewState = "idle" | "uploading" | "ready" | "processing" | "done";
 
-const SIZE_PRESETS = [
-  { label: "1080 × 1080", w: 1080, h: 1080, title: "Instagram Post" },
-  { label: "1920 × 1080", w: 1920, h: 1080, title: "Full HD" },
-  { label: "1280 × 720", w: 1280, h: 720, title: "YouTube Thumbnail" },
-  { label: "800 × 800", w: 800, h: 800, title: "Square Image" },
-  { label: "300 × 300", w: 300, h: 300, title: "Avatar / Thumbnail" },
+const DEFAULT_SIZE_PRESETS = [
+  { label: "1080 × 1080", w: 1080, h: 1080, title: "Instagram Post", mode: "fill" as const },
+  { label: "1920 × 1080", w: 1920, h: 1080, title: "Full HD", mode: "fill" as const },
+  { label: "1280 × 720", w: 1280, h: 720, title: "YouTube Thumbnail", mode: "fill" as const },
+  { label: "800 × 800", w: 800, h: 800, title: "Square Image", mode: "fill" as const },
+  { label: "300 × 300", w: 300, h: 300, title: "Avatar / Thumbnail", mode: "fit" as const },
 ] as const;
 
 const PERCENT_PRESETS = [25, 50, 75] as const;
@@ -82,12 +89,38 @@ type ResizeToolProps = {
   config: PageConfig;
 };
 
+function getDefaultPresetIndex(
+  presets: readonly { isDefault?: boolean }[],
+): number {
+  const idx = presets.findIndex((p) => p.isDefault);
+  return idx >= 0 ? idx : 0;
+}
+
 export function ResizeTool({ config }: ResizeToolProps) {
+  const platformPresets = config.tool.resizePlatformPresets;
+  const sizePresets = platformPresets ?? DEFAULT_SIZE_PRESETS;
+  const defaultFitMode = (config.tool.defaultResizeMode ?? "fill") as ResizeFitMode;
+  const isPlatformPage = !!platformPresets;
+  const defaultPresetIdx = isPlatformPage
+    ? getDefaultPresetIndex(platformPresets)
+    : 0;
+  const defaultPreset = isPlatformPage ? platformPresets[defaultPresetIdx] : null;
+
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [state, setState] = useState<ViewState>("idle");
   const [mode, setMode] = useState<ResizeMode>("pixels");
-  const [width, setWidth] = useState("");
-  const [height, setHeight] = useState("");
+  const [width, setWidth] = useState(
+    defaultPreset ? String(defaultPreset.w) : "",
+  );
+  const [height, setHeight] = useState(
+    defaultPreset ? String(defaultPreset.h) : "",
+  );
+  const [selectedPresetIndex, setSelectedPresetIndex] = useState<number | null>(
+    isPlatformPage ? defaultPresetIdx : null,
+  );
+  const [fitMode, setFitMode] = useState<ResizeFitMode>(
+    defaultPreset?.mode ?? defaultFitMode,
+  );
   const [maintainAspect, setMaintainAspect] = useState(true);
   const [dontEnlarge, setDontEnlarge] = useState(true);
   const [percentage, setPercentage] = useState(50);
@@ -103,10 +136,26 @@ export function ResizeTool({ config }: ResizeToolProps) {
   const firstFile = files[0] ?? null;
   const aspectRatio = firstFile ? firstFile.width / firstFile.height : 1;
 
+  const evtBase = useMemo(
+    () => ({
+      tool: config.tool.kind,
+      page_slug: config.slug,
+    }),
+    [config.tool.kind, config.slug],
+  );
+
   const byteLabels = useMemo(
     () => config.results.labels,
     [config.results.labels],
   );
+
+  const targetW = mode === "pixels" ? Number(width) || 0 : 0;
+  const targetH = mode === "pixels" ? Number(height) || 0 : 0;
+  const showSmallImageWarning =
+    firstFile &&
+    targetW > 0 &&
+    targetH > 0 &&
+    (firstFile.width < targetW || firstFile.height < targetH);
 
   // Cleanup blob URLs on unmount
   useEffect(() => {
@@ -127,14 +176,20 @@ export function ResizeTool({ config }: ResizeToolProps) {
 
       for (const f of arr) {
         if (!SUPPORTED_TYPES.has(f.type)) {
-          trackEvent("error_invalid_format", { file_type: f.type });
+          trackError({
+            ...evtBase,
+            file_type: f.type,
+            error_message: `Unsupported format: ${f.name}. Use JPG, PNG, or WebP.`,
+          });
           setError(`Unsupported format: ${f.name}. Use JPG, PNG, or WebP.`);
           continue;
         }
         if (f.size > MAX_FILE_SIZE) {
-          trackEvent("error_file_too_large", {
-            file_name: f.name,
-            file_size: f.size,
+          trackError({
+            ...evtBase,
+            file_type: f.type,
+            file_size_mb: bytesToMb(f.size),
+            error_message: `File too large: ${f.name}. Maximum size is 10 MB.`,
           });
           setError(`File too large: ${f.name}. Maximum size is 10 MB.`);
           continue;
@@ -145,6 +200,11 @@ export function ResizeTool({ config }: ResizeToolProps) {
       const remaining = MAX_FILES - files.length;
       const toAdd = valid.slice(0, remaining);
       if (valid.length > remaining) {
+        trackError({
+          ...evtBase,
+          file_count: valid.length,
+          error_message: `Maximum ${MAX_FILES} files allowed. Some files were skipped.`,
+        });
         setError(`Maximum ${MAX_FILES} files allowed. Some files were skipped.`);
       }
 
@@ -165,12 +225,18 @@ export function ResizeTool({ config }: ResizeToolProps) {
 
       setFiles((prev) => {
         const next = [...prev, ...loaded];
-        trackEvent("upload_image", { count: loaded.length, total: next.length });
+        const primary = loaded[0];
+        trackFileUploaded({
+          ...evtBase,
+          file_type: primary?.file.type,
+          file_size_mb: primary ? bytesToMb(primary.file.size) : 0,
+          file_count: next.length,
+        });
         return next;
       });
       setState("ready");
     },
-    [files.length],
+    [files.length, evtBase],
   );
 
   const removeFile = useCallback(
@@ -197,11 +263,19 @@ export function ResizeTool({ config }: ResizeToolProps) {
     setResults([]);
     setState("idle");
     setError(null);
-    setWidth("");
-    setHeight("");
+    if (isPlatformPage && defaultPreset) {
+      setWidth(String(defaultPreset.w));
+      setHeight(String(defaultPreset.h));
+      setFitMode(defaultPreset.mode);
+      setSelectedPresetIndex(defaultPresetIdx);
+    } else {
+      setWidth("");
+      setHeight("");
+      setSelectedPresetIndex(null);
+    }
     setCustomPct("");
     if (inputRef.current) inputRef.current.value = "";
-  }, [files, results]);
+  }, [files, results, isPlatformPage, defaultPreset, defaultPresetIdx]);
 
   // ---- Drag & drop ----
 
@@ -222,6 +296,7 @@ export function ResizeTool({ config }: ResizeToolProps) {
   // ---- Aspect-ratio-linked inputs ----
 
   const onWidthChange = (val: string) => {
+    if (isPlatformPage) setSelectedPresetIndex(null);
     setWidth(val);
     if (maintainAspect && firstFile && val) {
       const w = Number(val);
@@ -230,6 +305,7 @@ export function ResizeTool({ config }: ResizeToolProps) {
   };
 
   const onHeightChange = (val: string) => {
+    if (isPlatformPage) setSelectedPresetIndex(null);
     setHeight(val);
     if (maintainAspect && firstFile && val) {
       const h = Number(val);
@@ -237,11 +313,22 @@ export function ResizeTool({ config }: ResizeToolProps) {
     }
   };
 
-  const applyPreset = (w: number, h: number) => {
+  const applyPreset = (
+    w: number,
+    h: number,
+    presetMode?: ResizeFitMode,
+    presetIndex?: number,
+  ) => {
     setMode("pixels");
     setWidth(String(w));
     setHeight(String(h));
     setMaintainAspect(false);
+    if (presetMode) setFitMode(presetMode);
+    if (isPlatformPage && presetIndex !== undefined) {
+      setSelectedPresetIndex(presetIndex);
+    } else if (isPlatformPage && presetIndex === undefined) {
+      setSelectedPresetIndex(null);
+    }
   };
 
   const applyPctPreset = (pct: number) => {
@@ -282,6 +369,16 @@ export function ResizeTool({ config }: ResizeToolProps) {
       const h = Number(height);
       if (!w && !h) return null;
 
+      // When preset selected on platform page: use exact dimensions (no dontEnlarge)
+      const useExactFromPreset =
+        isPlatformPage && selectedPresetIndex !== null;
+      if (useExactFromPreset && w > 0 && h > 0) {
+        return {
+          targetWidth: clampDim(w),
+          targetHeight: clampDim(h),
+        };
+      }
+
       let tw: number;
       let th: number;
 
@@ -309,7 +406,16 @@ export function ResizeTool({ config }: ResizeToolProps) {
 
       return { targetWidth: tw, targetHeight: th };
     },
-    [mode, percentage, width, height, maintainAspect, dontEnlarge],
+    [
+      mode,
+      percentage,
+      width,
+      height,
+      maintainAspect,
+      dontEnlarge,
+      isPlatformPage,
+      selectedPresetIndex,
+    ],
   );
 
   const canResize = useMemo(() => {
@@ -325,23 +431,31 @@ export function ResizeTool({ config }: ResizeToolProps) {
   const onResize = async () => {
     if (!canResize || isProcessing) return;
 
-    trackEvent("click_resize", { mode, file_count: files.length });
+    trackActionStarted({
+      ...evtBase,
+      file_type: firstFile?.file.type,
+      file_size_mb: firstFile ? bytesToMb(firstFile.file.size) : 0,
+      file_count: files.length,
+    });
     setError(null);
     setState("processing");
     setProgress(0);
+
+    const startedAt = performance.now();
 
     // Cleanup previous results
     for (const r of results) URL.revokeObjectURL(r.downloadUrl);
 
     const newResults: FileResult[] = [];
-    let hasErrors = false;
+    let failCount = 0;
+    let totalOutputBytes = 0;
 
     for (let i = 0; i < files.length; i++) {
       const uf = files[i];
       const dims = computeTargetDims(uf);
 
       if (!dims) {
-        hasErrors = true;
+        failCount++;
         continue;
       }
 
@@ -349,6 +463,7 @@ export function ResizeTool({ config }: ResizeToolProps) {
         const res = await resizeImage(uf.file, {
           targetWidth: dims.targetWidth,
           targetHeight: dims.targetHeight,
+          fitMode,
         });
 
         newResults.push({
@@ -357,19 +472,38 @@ export function ResizeTool({ config }: ResizeToolProps) {
           downloadUrl: URL.createObjectURL(res.outputBlob),
           downloadName: buildResizedName(uf.file.name),
         });
+        totalOutputBytes += res.outputBlob.size;
       } catch (err) {
-        hasErrors = true;
-        setError(
-          err instanceof Error ? err.message : "Failed to resize an image.",
-        );
+        failCount++;
+        const msg = err instanceof Error ? err.message : "Failed to resize an image.";
+        setError(msg);
+        trackError({
+          ...evtBase,
+          file_type: uf.file.type,
+          file_size_mb: bytesToMb(uf.file.size),
+          error_message: msg,
+        });
       }
 
       setProgress(i + 1);
     }
 
+    const elapsedMs = Math.round(performance.now() - startedAt);
+
+    trackActionCompleted({
+      ...evtBase,
+      file_type: firstFile?.file.type,
+      file_size_mb: firstFile ? bytesToMb(firstFile.file.size) : 0,
+      file_count: files.length,
+      success_count: newResults.length,
+      fail_count: failCount,
+      elapsed_ms: elapsedMs,
+      output_size_mb: bytesToMb(totalOutputBytes),
+    });
+
     setResults(newResults);
     setState("done");
-    if (hasErrors && newResults.length === 0) {
+    if (failCount > 0 && newResults.length === 0) {
       setState("ready");
     }
   };
@@ -564,85 +698,230 @@ export function ResizeTool({ config }: ResizeToolProps) {
             {/* Pixels mode */}
             {mode === "pixels" && (
               <div className="resize-controls">
-                <div className="resize-input-row">
-                  <div className="resize-input-group">
-                    <label className="resize-label" htmlFor="resize-w">
-                      Width (px)
-                    </label>
-                    <input
-                      className="resize-input"
-                      disabled={isProcessing}
-                      id="resize-w"
-                      inputMode="numeric"
-                      max={MAX_DIMENSION}
-                      min={1}
-                      onChange={(e) => onWidthChange(e.target.value)}
-                      placeholder={firstFile ? String(firstFile.width) : ""}
-                      type="number"
-                      value={width}
-                    />
-                  </div>
-                  <span className="resize-x" aria-hidden="true">
-                    ×
-                  </span>
-                  <div className="resize-input-group">
-                    <label className="resize-label" htmlFor="resize-h">
-                      Height (px)
-                    </label>
-                    <input
-                      className="resize-input"
-                      disabled={isProcessing}
-                      id="resize-h"
-                      inputMode="numeric"
-                      max={MAX_DIMENSION}
-                      min={1}
-                      onChange={(e) => onHeightChange(e.target.value)}
-                      placeholder={firstFile ? String(firstFile.height) : ""}
-                      type="number"
-                      value={height}
-                    />
-                  </div>
-                </div>
+                {isPlatformPage ? (
+                  <>
+                    {/* Platform: presets first */}
+                    <div className="resize-presets">
+                      <span className="resize-presets-label">
+                        Choose preset:
+                      </span>
+                      <div className="resize-presets-row">
+                        {sizePresets.map((p, idx) => (
+                          <button
+                            className={`resize-preset-btn${selectedPresetIndex === idx ? " resize-preset-btn-active" : ""}`}
+                            disabled={isProcessing}
+                            key={p.label}
+                            onClick={() =>
+                              applyPreset(
+                                p.w,
+                                p.h,
+                                "mode" in p ? p.mode : undefined,
+                                idx,
+                              )
+                            }
+                            title={"title" in p ? p.title : undefined}
+                            type="button"
+                          >
+                            {p.label}
+                          </button>
+                        ))}
+                        <button
+                          className={`resize-preset-btn resize-preset-custom${selectedPresetIndex === null ? " resize-preset-btn-active" : ""}`}
+                          disabled={isProcessing}
+                          onClick={() => setSelectedPresetIndex(null)}
+                          title="Enter custom width and height"
+                          type="button"
+                        >
+                          Custom
+                        </button>
+                      </div>
+                    </div>
 
-                <div className="resize-checkbox-group">
-                  <label className="resize-checkbox-label">
-                    <input
-                      checked={maintainAspect}
-                      disabled={isProcessing}
-                      onChange={(e) => setMaintainAspect(e.target.checked)}
-                      type="checkbox"
-                    />
-                    Maintain aspect ratio
-                  </label>
-                  <label className="resize-checkbox-label">
-                    <input
-                      checked={dontEnlarge}
-                      disabled={isProcessing}
-                      onChange={(e) => setDontEnlarge(e.target.checked)}
-                      type="checkbox"
-                    />
-                    Do not enlarge if smaller
-                  </label>
-                </div>
+                    {/* Custom size inputs */}
+                    <div className="resize-custom-section">
+                      <span className="resize-presets-label">
+                        Or enter custom size:
+                      </span>
+                      <div className="resize-input-row">
+                        <div className="resize-input-group">
+                          <label className="resize-label" htmlFor="resize-w">
+                            Width (px)
+                          </label>
+                          <input
+                            className="resize-input"
+                            disabled={isProcessing}
+                            id="resize-w"
+                            inputMode="numeric"
+                            max={MAX_DIMENSION}
+                            min={1}
+                            onChange={(e) =>
+                              onWidthChange(e.target.value)
+                            }
+                            placeholder={firstFile ? String(firstFile.width) : ""}
+                            type="number"
+                            value={width}
+                          />
+                        </div>
+                        <span className="resize-x" aria-hidden="true">
+                          ×
+                        </span>
+                        <div className="resize-input-group">
+                          <label className="resize-label" htmlFor="resize-h">
+                            Height (px)
+                          </label>
+                          <input
+                            className="resize-input"
+                            disabled={isProcessing}
+                            id="resize-h"
+                            inputMode="numeric"
+                            max={MAX_DIMENSION}
+                            min={1}
+                            onChange={(e) =>
+                              onHeightChange(e.target.value)
+                            }
+                            placeholder={
+                              firstFile ? String(firstFile.height) : ""
+                            }
+                            type="number"
+                            value={height}
+                          />
+                        </div>
+                      </div>
 
-                {/* Size presets */}
-                <div className="resize-presets">
-                  <span className="resize-presets-label">Common sizes:</span>
-                  <div className="resize-presets-row">
-                    {SIZE_PRESETS.map((p) => (
-                      <button
-                        className="resize-preset-btn"
-                        disabled={isProcessing}
-                        key={p.label}
-                        onClick={() => applyPreset(p.w, p.h)}
-                        title={p.title}
-                        type="button"
-                      >
-                        {p.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                      {/* Checkboxes only when custom (no preset selected) */}
+                      {selectedPresetIndex === null && (
+                        <div className="resize-checkbox-group">
+                          <label className="resize-checkbox-label">
+                            <input
+                              checked={maintainAspect}
+                              disabled={isProcessing}
+                              onChange={(e) =>
+                                setMaintainAspect(e.target.checked)
+                              }
+                              type="checkbox"
+                            />
+                            Maintain aspect ratio
+                          </label>
+                          <label className="resize-checkbox-label">
+                            <input
+                              checked={dontEnlarge}
+                              disabled={isProcessing}
+                              onChange={(e) =>
+                                setDontEnlarge(e.target.checked)
+                              }
+                              type="checkbox"
+                            />
+                            Do not enlarge if smaller
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Non-platform: original layout */}
+                    <div className="resize-input-row">
+                      <div className="resize-input-group">
+                        <label className="resize-label" htmlFor="resize-w">
+                          Width (px)
+                        </label>
+                        <input
+                          className="resize-input"
+                          disabled={isProcessing}
+                          id="resize-w"
+                          inputMode="numeric"
+                          max={MAX_DIMENSION}
+                          min={1}
+                          onChange={(e) => onWidthChange(e.target.value)}
+                          placeholder={firstFile ? String(firstFile.width) : ""}
+                          type="number"
+                          value={width}
+                        />
+                      </div>
+                      <span className="resize-x" aria-hidden="true">
+                        ×
+                      </span>
+                      <div className="resize-input-group">
+                        <label className="resize-label" htmlFor="resize-h">
+                          Height (px)
+                        </label>
+                        <input
+                          className="resize-input"
+                          disabled={isProcessing}
+                          id="resize-h"
+                          inputMode="numeric"
+                          max={MAX_DIMENSION}
+                          min={1}
+                          onChange={(e) => onHeightChange(e.target.value)}
+                          placeholder={
+                            firstFile ? String(firstFile.height) : ""
+                          }
+                          type="number"
+                          value={height}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="resize-checkbox-group">
+                      <label className="resize-checkbox-label">
+                        <input
+                          checked={maintainAspect}
+                          disabled={isProcessing}
+                          onChange={(e) =>
+                            setMaintainAspect(e.target.checked)
+                          }
+                          type="checkbox"
+                        />
+                        Maintain aspect ratio
+                      </label>
+                      <label className="resize-checkbox-label">
+                        <input
+                          checked={dontEnlarge}
+                          disabled={isProcessing}
+                          onChange={(e) =>
+                            setDontEnlarge(e.target.checked)
+                          }
+                          type="checkbox"
+                        />
+                        Do not enlarge if smaller
+                      </label>
+                    </div>
+
+                    <div className="resize-presets">
+                      <span className="resize-presets-label">
+                        Common sizes:
+                      </span>
+                      <div className="resize-presets-row">
+                        {sizePresets.map((p) => (
+                          <button
+                            className="resize-preset-btn"
+                            disabled={isProcessing}
+                            key={p.label}
+                            onClick={() =>
+                              applyPreset(
+                                p.w,
+                                p.h,
+                                "mode" in p ? p.mode : undefined,
+                              )
+                            }
+                            title={"title" in p ? p.title : undefined}
+                            type="button"
+                          >
+                            {p.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {showSmallImageWarning && (
+                  <p className="resize-warning" role="alert">
+                    Your image is smaller than the target size. Upscaling may
+                    reduce quality. Consider using a higher-resolution source
+                    image.
+                  </p>
+                )}
               </div>
             )}
 

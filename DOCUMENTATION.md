@@ -83,6 +83,45 @@ Stub-страницы исключены из sitemap автоматически
 
 ---
 
+## Resize Image for Platform
+
+| Параметр | Значение |
+|----------|----------|
+| **Название** | Resize Image for Platform |
+| **URL** | `/resize-image-for-instagram-post/`, `/resize-image-for-facebook/`, и др. |
+| **ToolKind** | `image-resize` |
+| **Intent** | `resize-platform-*` |
+| **NavSection** | `image-tools` |
+
+### Краткое описание
+
+Config-driven система из 10 SEO-страниц для изменения размера изображений под конкретные платформы: Instagram, Facebook, LinkedIn, Twitter, YouTube, Shopify, WhatsApp, Discord. Каждая страница предлагает пресеты с рекомендуемыми размерами (например, 1080×1080 для постов, 320×320 для аватаров). Использует общий resize engine и UI из `/resize-image/`. Обработка выполняется в браузере — без загрузки на сервер.
+
+### Какую проблему решает
+
+У каждой платформы свои требования к размерам изображений. Пользователям приходится искать актуальные размеры и вручную вводить их в общий инструмент. Resize Image for Platform устраняет этот friction: пользователь выбирает страницу под свою платформу, видит готовые пресеты с подсказками для каких кейсов они подходят, и в один клик получает изображение нужного размера.
+
+### Основное действие пользователя
+
+Выбрать пресет под платформу (или ввести свой размер) → загрузить изображения → нажать «Resize now» → скачать результат (по одному или ZIP-архивом).
+
+### SEO-страницы платформ
+
+| Slug | Платформа |
+|------|-----------|
+| `/resize-image-for-instagram-post` | Instagram Post (1080×1080, 1080×1350, 1080×566) |
+| `/resize-image-for-instagram-profile` | Instagram Profile (320×320) |
+| `/resize-image-for-facebook` | Facebook (post, profile, cover, story) |
+| `/resize-image-for-linkedin` | LinkedIn (post, profile, banner, logo) |
+| `/resize-image-for-twitter` | Twitter (post, profile, header) |
+| `/resize-image-for-youtube-thumbnail` | YouTube Thumbnail (1280×720) |
+| `/resize-image-for-youtube-banner` | YouTube Banner (2560×1440) |
+| `/resize-image-for-shopify` | Shopify (product, collection, hero) |
+| `/resize-image-for-whatsapp` | WhatsApp (profile, status) |
+| `/resize-image-for-discord` | Discord (server icon, banner) |
+
+---
+
 ## Rotate Image
 
 | Параметр | Значение |

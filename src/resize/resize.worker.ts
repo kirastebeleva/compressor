@@ -7,6 +7,7 @@ type ResizeWorkerRequest = {
   fileType: string;
   targetWidth: number;
   targetHeight: number;
+  fitMode?: "fit" | "fill";
 };
 
 type ResizeWorkerSuccess = {
@@ -31,10 +32,13 @@ const QUALITY: Record<string, number> = {
 const workerGlobal = self as unknown as Worker;
 
 workerGlobal.onmessage = async (event: MessageEvent<ResizeWorkerRequest>) => {
-  const { id, file, fileType, targetWidth, targetHeight } = event.data;
+  const { id, file, fileType, targetWidth, targetHeight, fitMode = "fill" } =
+    event.data;
 
   try {
     const bitmap = await createImageBitmap(file);
+    const srcW = bitmap.width;
+    const srcH = bitmap.height;
 
     try {
       const canvas = new OffscreenCanvas(targetWidth, targetHeight);
@@ -46,7 +50,29 @@ workerGlobal.onmessage = async (event: MessageEvent<ResizeWorkerRequest>) => {
 
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
-      ctx.drawImage(bitmap, 0, 0, targetWidth, targetHeight);
+
+      if (fitMode === "fit") {
+        // Contain: scale to fit inside target, add padding
+        const scale = Math.min(targetWidth / srcW, targetHeight / srcH);
+        const drawW = Math.round(srcW * scale);
+        const drawH = Math.round(srcH * scale);
+        const x = (targetWidth - drawW) / 2;
+        const y = (targetHeight - drawH) / 2;
+        // Fill background (white for JPEG, transparent for PNG/WebP)
+        if (fileType === "image/jpeg") {
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, targetWidth, targetHeight);
+        }
+        ctx.drawImage(bitmap, 0, 0, srcW, srcH, x, y, drawW, drawH);
+      } else {
+        // Fill: cover target, scale to fill and crop overflow (default)
+        const scale = Math.max(targetWidth / srcW, targetHeight / srcH);
+        const drawW = Math.round(srcW * scale);
+        const drawH = Math.round(srcH * scale);
+        const x = (targetWidth - drawW) / 2;
+        const y = (targetHeight - drawH) / 2;
+        ctx.drawImage(bitmap, 0, 0, srcW, srcH, x, y, drawW, drawH);
+      }
 
       const quality = QUALITY[fileType];
       const outputBlob = quality

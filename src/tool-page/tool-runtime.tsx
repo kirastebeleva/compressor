@@ -179,7 +179,7 @@ function ResizeToolRuntime({ config }: { config: PageConfig }) {
       intent: config.intent,
       toolMode: config.tool.mode,
     });
-    trackToolOpen(config.tool.kind);
+    trackToolOpen(config.tool.kind, config.slug);
   }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
 
   return <LazyResizeTool config={config} />;

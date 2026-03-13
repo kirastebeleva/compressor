@@ -41,6 +41,9 @@ function getPriority(page: PageConfig): number {
   if (page.intent === "size" || page.intent.startsWith("size-")) return 0.7;
   if (page.intent.startsWith("generic-") || page.intent.startsWith("batch-")) return 0.7;
 
+  // Resize platform pages (resize-image-for-instagram-post, etc.)
+  if (page.intent.startsWith("resize-platform-")) return 0.7;
+
   // Long-tail cluster: format / platform / device variants
   return 0.6;
 }

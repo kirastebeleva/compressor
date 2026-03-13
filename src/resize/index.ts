@@ -5,4 +5,9 @@ export {
   MAX_DIMENSION,
   MAX_FILES,
 } from "./resize";
-export type { ResizeResult, ResizeOptions, ResizeMode } from "./types";
+export type {
+  ResizeResult,
+  ResizeOptions,
+  ResizeMode,
+  ResizeFitMode,
+} from "./types";

@@ -1481,6 +1481,22 @@ select {
   cursor: not-allowed;
 }
 
+.resize-preset-btn-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.resize-preset-custom {
+  font-style: italic;
+}
+
+.resize-custom-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-light);
+}
+
 /* Percentage mode */
 
 .resize-pct-row {
@@ -1590,6 +1606,16 @@ select {
   color: #94a3b8;
   text-align: center;
   font-weight: 500;
+}
+
+.resize-warning {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: var(--radius-sm);
 }
 
 .resize-dl-btn {

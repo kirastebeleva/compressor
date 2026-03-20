@@ -9,7 +9,8 @@
     "preview": "npx serve out -p 3000",
     "start": "npx serve out -p 3000",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "indexnow:submit": "node scripts/indexnow-submit.mjs"
   },
   "dependencies": {
     "@sentry/nextjs": "^10.39.0",

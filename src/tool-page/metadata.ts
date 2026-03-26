@@ -6,8 +6,17 @@ const BASE_URL =
 
 const DEFAULT_OG_IMAGE = `${BASE_URL}/og-default.png`;
 
+/** Matches `trailingSlash: true` in next.config — canonicals must match real URLs and sitemap. */
+function normalizeCanonicalPath(path: string): string {
+  const p = path.startsWith("/") ? path : `/${path}`;
+  if (p === "/") return "/";
+  return p.endsWith("/") ? p : `${p}/`;
+}
+
 export function buildToolPageMetadata(config: PageConfig): Metadata {
-  const canonicalPath = config.meta.canonical ?? `/${config.slug}`;
+  const canonicalPath = normalizeCanonicalPath(
+    config.meta.canonical ?? `/${config.slug}`,
+  );
   const pageUrl = `${BASE_URL}${canonicalPath}`;
 
   return {

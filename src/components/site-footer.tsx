@@ -39,31 +39,10 @@ export function SiteFooter() {
           </ul>
         </div>
       </div>
-      <div className="footer-bottom">
+      <div className="footer-bottom footer-bottom-copyright">
         <p className="muted">
-          © 2026 Imgloo. Browser-based tools for practical image and file
-          optimization.
+          © 2026 Imgloo. Practical tools for image and file optimization.
         </p>
-        <nav className="footer-bottom-links" aria-label="Footer links">
-          <Link className="footer-link" href="/">
-            Home
-          </Link>
-          <Link className="footer-link" href="/compress-image">
-            Compress Image
-          </Link>
-          <Link className="footer-link" href="/about/">
-            About
-          </Link>
-          <Link className="footer-link" href="/privacy-policy/">
-            Privacy Policy
-          </Link>
-          <Link className="footer-link" href="/terms/">
-            Terms
-          </Link>
-          <Link className="footer-link" href="/contact/">
-            Contact
-          </Link>
-        </nav>
       </div>
     </footer>
   );

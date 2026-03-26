@@ -98,6 +98,14 @@ export type FooterSection = {
 
 const MAX_FOOTER_LINKS_PER_SECTION = 10;
 
+/** Format-specific compress pages — covered by “Compress Image”; omit from footer. */
+const FOOTER_EXCLUDED_SLUGS = new Set([
+  "compress-jpg",
+  "compress-png",
+  "compress-webp",
+  "compress-jpeg",
+]);
+
 const CORE_TOOL_INTENTS = new Set(["resize", "crop", "rotate", "flip", "watermark"]);
 
 /** Active (browser-compression) pages rank higher than stubs. */
@@ -117,6 +125,7 @@ function buildFooterSections(): FooterSection[] {
   const grouped = new Map<NavSectionId, PageConfig[]>();
 
   for (const page of allPages) {
+    if (FOOTER_EXCLUDED_SLUGS.has(page.slug)) continue;
     const arr = grouped.get(page.section) ?? [];
     arr.push(page);
     grouped.set(page.section, arr);

@@ -1,3 +1,8 @@
+/**
+ * Copies pdf.js worker into public/ for static export. The file is committed to git
+ * so production always serves /pdf.worker.min.mjs even if a host skips prebuild hooks.
+ * After upgrading `pdfjs-dist`, run this script and commit the updated file.
+ */
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";

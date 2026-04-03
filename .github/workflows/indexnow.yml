@@ -1,0 +1,27 @@
+# Submits production URLs from the live sitemap to IndexNow (Bing, Yandex, etc.).
+#
+# Setup (once): GitHub repo → Settings → Secrets and variables → Actions → New repository secret
+#   Name:  INDEXNOW_KEY
+#   Value: same as in public/89db74dd95fc4018a6e75fd66d9c7292.txt (single line, no spaces).
+#
+# Run: Actions → IndexNow → Run workflow (after prod deploy so sitemap includes new URLs).
+# Optional: add a push: branches: [main] trigger here if you want auto-submit on every merge
+# (only after the secret exists; INDEXNOW_AUTO_SUBMIT on the host is a separate path — see README).
+
+name: IndexNow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Submit URLs from live sitemap
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          INDEXNOW_SITEMAP: https://imgloo.com/sitemap.xml
+        run: node scripts/indexnow-submit.mjs

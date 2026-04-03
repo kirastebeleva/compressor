@@ -1,5 +1,5 @@
 import JSZip from "jszip";
-import { configurePdfJsWorkerSync } from "@/lib/pdfjs-worker";
+import { loadPdfDocument } from "@/lib/pdf-open";
 
 export type PdfExportFormatId =
   | "docx"
@@ -249,11 +249,20 @@ export async function exportPdfInBrowser(
   pageTo: number,
 ): Promise<PdfExportResult> {
   const pdfjs = await import("pdfjs-dist");
-  configurePdfJsWorkerSync(pdfjs);
+  const pdf = await loadPdfDocument(pdfjs, data);
+  try {
+    return await runPdfExport(pdf, format, pageFrom, pageTo);
+  } finally {
+    await pdf.destroy().catch(() => {});
+  }
+}
 
-  const pdf = await pdfjs
-    .getDocument({ data: data.slice(0), useSystemFonts: true })
-    .promise;
+async function runPdfExport(
+  pdf: import("pdfjs-dist").PDFDocumentProxy,
+  format: "png" | "jpg" | "txt" | "html",
+  pageFrom: number,
+  pageTo: number,
+): Promise<PdfExportResult> {
   const from = Math.max(1, pageFrom);
   const to = Math.min(pdf.numPages, pageTo);
 
@@ -325,3 +334,4 @@ body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#111;line-h
 
   throw new Error("Unsupported export format.");
 }
+

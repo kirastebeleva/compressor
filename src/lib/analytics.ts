@@ -80,6 +80,8 @@ export type ToolEventParams = {
   from_format?: string;
   /** Target format key for conversion tools, e.g. "png". */
   to_format?: string;
+  /** Page selection, e.g. "all" or "2-7" for PDF tools. */
+  page_range?: string;
 };
 
 function buildBaseParams(p: ToolEventParams): Record<string, unknown> {
@@ -93,11 +95,22 @@ function buildBaseParams(p: ToolEventParams): Record<string, unknown> {
   if (p.file_count !== undefined) params.file_count = p.file_count;
   if (p.from_format) params.from_format = p.from_format;
   if (p.to_format) params.to_format = p.to_format;
+  if (p.page_range) params.page_range = p.page_range;
   return params;
 }
 
 // ---------------------------------------------------------------------------
 // Tool lifecycle events (reusable across all tools)
+//
+// Standard GA4 event names sent via trackEvent → gtag("event", …):
+//   tool_open        — page load / tool UI shown (usually from layout or runtime)
+//   file_uploaded    — user added valid input file(s)
+//   action_started   — user triggered processing (compress, convert, …)
+//   action_completed — processing finished successfully (batch: use success_count / fail_count)
+//   error            — validation or processing error shown to the user
+//
+// Shared payload shape: buildBaseParams(ToolEventParams) + event-specific fields.
+// Prefer snake_case page_slug, from_format, to_format for dashboards.
 // ---------------------------------------------------------------------------
 
 /** User opened a tool page. Fired once on mount. */

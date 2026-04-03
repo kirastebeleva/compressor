@@ -27,13 +27,13 @@ export const BRAND = { label: "imgloo", href: "/" } as const;
 
 const VISIBLE_SECTIONS: readonly NavSectionId[] = [
   "image-tools",
+  "pdf-tools",
   "converter-tools",
 ];
 
 /**
  * Core tool slugs shown in the header dropdown.
- * Only add tools here that are fully functional (not stubs).
- * Format-specific and long-tail pages belong in the footer only.
+ * Long-tail SEO pages stay footer-only; core tools from each section are listed here.
  */
 const HEADER_SLUGS = new Set([
   // Image tools
@@ -43,6 +43,8 @@ const HEADER_SLUGS = new Set([
   "rotate-image",
   "flip-image",
   "watermark-image",
+  // PDF Tools
+  "convert-pdf",
   // Converter tools (ranked by usage frequency)
   "convert-image",
   "heic-to-jpg",
@@ -113,7 +115,12 @@ function footerScore(page: PageConfig): number {
   let s = 0;
   if (page.intent === "base") s += 10;
   if (CORE_TOOL_INTENTS.has(page.intent)) s += 8;
-  if (page.tool.mode === "browser-compression") s += 5;
+  if (
+    page.tool.mode === "browser-compression" ||
+    page.tool.mode === "browser-pdf-export"
+  ) {
+    s += 5;
+  }
   if (page.intent.startsWith("format")) s += 3;
   if (page.intent.startsWith("platform")) s += 2;
   return s;

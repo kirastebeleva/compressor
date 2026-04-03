@@ -733,6 +733,33 @@ select {
   letter-spacing: 0.04em;
 }
 
+.pdf-convert-advanced {
+  margin: 4px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.pdf-convert-advanced-summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  list-style: none;
+}
+
+.pdf-convert-advanced-summary::-webkit-details-marker {
+  display: none;
+}
+
+.pdf-convert-advanced-body {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
 /* ==========================================================================
    SPINNER
    ========================================================================== */
@@ -767,6 +794,211 @@ select {
 .stub-notice {
   margin-top: 8px;
   font-size: 13px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Custom format picker (avoids native <select> OS rendering glitches) */
+.pdf-format-field {
+  position: relative;
+  z-index: 3;
+}
+
+.pdf-format-select {
+  position: relative;
+  width: 100%;
+}
+
+.pdf-format-select-trigger {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  font-size: 15px;
+  color: var(--color-text);
+  min-height: 44px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  box-shadow: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pdf-format-select-trigger:hover {
+  border-color: #cbd5e1;
+}
+
+.pdf-format-select-trigger:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.pdf-format-select-chevron {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+.pdf-format-select-list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 40;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.pdf-format-select-option {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  text-align: left;
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.pdf-format-select-option:hover,
+.pdf-format-select-option:focus {
+  outline: none;
+  background: #f1f5f9;
+}
+
+.pdf-format-select-option-active {
+  background: #eff6ff;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.pdf-page-count-line {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.pdf-page-mode-fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pdf-page-mode-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.pdf-page-range-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 12px;
+  margin-top: 10px;
+}
+
+.pdf-page-range-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.pdf-page-range-input {
+  min-width: 72px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.pdf-page-range-sep {
+  padding-bottom: 8px;
+  color: var(--color-text-secondary);
+}
+
+.pdf-page-range-hint {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.pdf-file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pdf-add-more.pdf-add-more-compact {
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  margin: 6px 0 12px;
+}
+
+.pdf-add-more-compact .dropzone-icon {
+  display: none;
+}
+
+.pdf-add-more-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary-dark);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.pdf-convert-success {
+  padding: 8px 0 4px;
+}
+
+.pdf-convert-success-lead {
+  margin: 0 0 14px;
+  font-size: 15px;
+  color: var(--color-text);
+}
+
+.pdf-convert-success-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
 
 .error-message {
@@ -2827,6 +3059,11 @@ main.home-hub {
   border-color: rgba(5, 150, 105, 0.45);
 }
 
+.home-hub-product-card--pdf:hover {
+  border-color: rgba(185, 28, 28, 0.38);
+  box-shadow: 0 6px 18px rgba(185, 28, 28, 0.12);
+}
+
 .home-hub-product-card-accent {
   height: 5px;
   width: 100%;
@@ -2843,6 +3080,10 @@ main.home-hub {
 
 .home-hub-product-card--convert .home-hub-product-card-accent {
   background: linear-gradient(90deg, #059669 0%, #34d399 100%);
+}
+
+.home-hub-product-card--pdf .home-hub-product-card-accent {
+  background: linear-gradient(90deg, #b91c1c 0%, #f87171 100%);
 }
 
 .home-hub-product-card-body {
@@ -2871,6 +3112,11 @@ main.home-hub {
 .home-hub-product-icon-wrap--convert {
   background: #ecfdf5;
   color: #059669;
+}
+
+.home-hub-product-icon-wrap--pdf {
+  background: #fef2f2;
+  color: #b91c1c;
 }
 
 .home-hub-product-icon {

@@ -16,6 +16,7 @@ import {
   batchPages,
 } from "@/core/config/pages/image-compress";
 import { convertImagePage } from "@/core/config/pages/convert-image-page";
+import { convertPdfPage } from "@/core/config/pages/pdf-tools";
 import {
   heicToJpgPage,
   webpToJpgPage,
@@ -38,7 +39,7 @@ import type { PageConfig } from "@/core/types";
 //   3. That's it — the barrel re-exports it here automatically.
 //
 // Hidden pages (configs preserved, re-add when functionality is ready):
-//   - PDF tools: compressPdfPage, mergePdfPage, pdfToJpgPage
+//   - PDF tools: compressPdfPage, mergePdfPage, pdfToJpgPage (convert-pdf is live)
 //   - Converter pair pages: jpgToPngPage, pngToWebpPage, heicToJpgPage
 // ---------------------------------------------------------------------------
 
@@ -48,6 +49,8 @@ const rawPages: readonly PageConfig[] = [
 
   // Universal converter
   convertImagePage,
+
+  convertPdfPage,
 
   // Converter pair pages (ranked by predicted usage frequency)
   heicToJpgPage,

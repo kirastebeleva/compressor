@@ -45,7 +45,7 @@ Required flags:
 
 Optional flags:
   --section     NavSectionId (default: "image-tools")
-  --mode        ToolMode: "browser-compression" or "stub" (default: "stub")
+  --mode        ToolMode: "browser-compression", "browser-pdf-export", or "stub" (default: "stub")
   --defaults    Defaults constant name (default: "IMAGE_COMPRESS_TOOL_DEFAULTS")
 
 Example:

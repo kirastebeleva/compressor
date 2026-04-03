@@ -131,6 +131,7 @@ const SLUG_ICON_KEYS = {
   "flip-image": "flip",
   "watermark-image": "watermark",
   "convert-image": "convertMulti",
+  "convert-pdf": "convertArrow",
   "heic-to-jpg": "convertArrow",
   "webp-to-jpg": "convertArrow",
   "jpg-to-png": "convertArrow",

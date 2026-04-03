@@ -110,7 +110,7 @@ export function ResultsSection({
           onClick={onReset}
           type="button"
         >
-          Compress another image
+          {config.resetButtonLabel ?? "Compress another image"}
         </button>
       </div>
     </section>

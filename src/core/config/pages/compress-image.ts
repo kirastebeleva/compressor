@@ -109,6 +109,11 @@ export const compressImagePage: PageConfig = {
         description: "Add text or logo watermarks to protect your photos.",
       },
       {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "Export PDFs to Word, Excel, images, and more.",
+      },
+      {
         href: "/compress-jpg",
         label: "Compress JPG",
         description: "Format-focused JPG compression for photos and web.",

@@ -29,6 +29,7 @@ export type ToolIntent =
   | "merge"
   | "split"
   | "pdf-compress"
+  | "pdf-convert"
   | "pdf-to-image"
   | `generic-${string}`;
 
@@ -41,10 +42,14 @@ export type ToolKind =
   | "image-watermark"
   | "image-convert"
   | "pdf-compress"
+  | "pdf-convert"
   | "pdf-merge"
   | "pdf-to-image";
 
-export type ToolMode = "browser-compression" | "stub";
+export type ToolMode =
+  | "browser-compression"
+  | "browser-pdf-export"
+  | "stub";
 
 export type NavSectionId = "image-tools" | "pdf-tools" | "converter-tools";
 
@@ -142,6 +147,8 @@ export type PageConfig = {
   results: {
     title: string;
     emptyState: string;
+    /** Shown on the results card reset button. Defaults to “Compress another image”. */
+    resetButtonLabel?: string;
     labels: {
       input: string;
       output: string;

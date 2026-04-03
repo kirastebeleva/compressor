@@ -83,6 +83,59 @@ Stub-страницы исключены из sitemap автоматически
 
 ---
 
+## Convert PDF
+
+| Параметр | Значение |
+|----------|----------|
+| **Название** | Convert PDF |
+| **URL** | `/convert-pdf/` |
+| **ToolKind** | `pdf-convert` |
+| **Intent** | `pdf-convert` |
+| **NavSection** | `pdf-tools` |
+
+### Краткое описание
+
+Инструмент экспорта PDF в браузере: страницы в **PNG** или **JPG** (несколько страниц — ZIP), либо извлечение текста в **TXT** / простой **HTML** по текстовому слою PDF. Диапазон страниц (все или From–To). Обработка локально через **pdf.js** (`pdfjs-dist`); worker копируется в `public/pdf.worker.min.mjs` скриптом `scripts/copy-pdf-worker.mjs` при `predev` / `prebuild`. Форматы Word/Excel/PowerPoint в UI помечены как coming soon.
+
+### Архитектура
+
+- **Конфиг страницы**: `src/core/config/pages/pdf-tools.ts` — `convertPdfPage`.
+- **Дефолты инструмента**: `PDF_CONVERT_TOOL_DEFAULTS` в `src/core/config/defaults.ts` — `kind: "pdf-convert"`, `mode: "browser-pdf-export"`.
+- **UI**: `src/components/convert-pdf-tool.tsx`.
+- **Экспорт**: `src/lib/pdf-export.ts` (рендер страниц, TXT/HTML), `src/lib/pdf-page-count.ts` (число страниц), `src/lib/pdfjs-worker.ts` (путь к worker).
+- **Runtime**: ветка `pdf-convert` в `src/tool-page/tool-runtime.tsx` (`PdfConvertToolRuntime`, lazy `ConvertPdfTool`).
+
+### Аналитика
+
+События через `src/lib/analytics.ts` (и `page_meta` при открытии):
+
+| Событие | Когда | Ключевые параметры |
+|---------|-------|--------------------|
+| `page_meta` | Монтирование runtime | `page_slug`, `tool_intent`, `tool_mode` |
+| `tool_open` | Открытие инструмента | `tool`, `page_slug` |
+| `file_uploaded` | Добавлены PDF | `tool`, `file_count`, `from_format` (pdf) |
+| `action_started` | Старт конвертации | `tool`, `to_format`, `page_range`, … |
+| `action_completed` | Успешное завершение | `success_count`, `elapsed_ms`, `output_size_mb`, … |
+| `download_result` | Скачивание результата | `tool`, `file_type`, `output_size_mb`, … |
+| `error` | Ошибка валидации/чтения/обработки | `error_message`, … |
+
+### Sitemap
+
+`/convert-pdf/` входит в `src/app/sitemap.ts` автоматически через `allPages` (режим не `stub`). Приоритет `0.9` (`intent === "pdf-convert"`), `changeFrequency` для секции `pdf-tools` — `monthly`.
+
+### Ключевые файлы
+
+| Файл | Описание |
+|------|----------|
+| `src/core/config/pages/pdf-tools.ts` | `convertPdfPage`, SEO и related |
+| `src/components/convert-pdf-tool.tsx` | Dropzone, формат, диапазон страниц, аналитика |
+| `src/lib/pdf-export.ts` | Экспорт PNG/JPG/TXT/HTML |
+| `src/lib/pdf-page-count.ts` | Подсчёт страниц pdf.js |
+| `src/lib/pdfjs-worker.ts` | Настройка `GlobalWorkerOptions.workerSrc` |
+| `scripts/copy-pdf-worker.mjs` | Копирование worker в `public/` |
+
+---
+
 ## Resize Image for Platform
 
 | Параметр | Значение |

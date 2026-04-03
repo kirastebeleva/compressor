@@ -19,7 +19,7 @@ const HUB_SLUGS = new Set(["compress-image"]);
 // Priority rules
 //
 //  1.0  home + hub pages
-//  0.9  universal tool pages (one tool, many formats): /convert-image, /compress-image, /resize-image
+//  0.9  universal tool pages: /convert-image, /convert-pdf, batch landing, …
 //  0.8  format pair pages (/heic-to-jpg) and core image tools (/resize-image, /crop-image …)
 //  0.6  long-tail SEO cluster pages (platform/size/format variants of compress)
 // ---------------------------------------------------------------------------
@@ -28,7 +28,13 @@ function getPriority(page: PageConfig): number {
   if (HUB_SLUGS.has(page.slug)) return 1.0;
 
   // Universal converter / batch / generic tools
-  if (page.intent === "convert" || page.intent === "batch") return 0.9;
+  if (
+    page.intent === "convert" ||
+    page.intent === "batch" ||
+    page.intent === "pdf-convert"
+  ) {
+    return 0.9;
+  }
 
   // Core standalone tools
   const coreIntents = new Set(["resize", "crop", "rotate", "flip", "watermark"]);

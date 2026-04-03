@@ -10,6 +10,7 @@ type TabId = "all" | HomeHubCategory;
 const TABS: { id: TabId; label: string }[] = [
   { id: "all", label: "All" },
   { id: "optimize", label: "Optimize" },
+  { id: "pdf", label: "PDF" },
   { id: "convert", label: "Convert" },
 ];
 

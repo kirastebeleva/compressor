@@ -3,6 +3,7 @@ import {
   PDF_COMPRESS_TOOL_DEFAULTS,
   PDF_MERGE_TOOL_DEFAULTS,
   PDF_TO_IMAGE_TOOL_DEFAULTS,
+  PDF_CONVERT_TOOL_DEFAULTS,
   RESULTS_DEFAULTS,
   AD_SLOT_DEFAULTS,
 } from "@/core/config/defaults";
@@ -166,6 +167,76 @@ export const pdfToJpgPage: PageConfig = {
         href: "/jpg-to-png",
         label: "JPG to PNG",
         description: "Convert JPG images to PNG format.",
+      },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
+// /convert-pdf
+// ---------------------------------------------------------------------------
+
+export const convertPdfPage: PageConfig = {
+  slug: "convert-pdf",
+  intent: "pdf-convert",
+  section: "pdf-tools",
+  navLabel: "Convert PDF",
+
+  h1: "Convert PDF to Images, Text & HTML",
+
+  meta: {
+    title: "Convert PDF to PNG, JPG, Text, HTML — Free in Your Browser",
+    description:
+      "PDF to PNG, JPG, TXT, or HTML in your browser. Full file or page range. Free, private. Word/Excel/PPT export planned.",
+  },
+
+  hero: {
+    subtitle:
+      "Turn PDF pages into PNG or JPG images, a text file, or simple HTML — optionally limit to a page range. Everything runs on your device. Word, Excel, and PowerPoint export is planned for a later release.",
+    trustBadges: ["Free", "No signup", "Browser-based"],
+  },
+
+  tool: {
+    ...PDF_CONVERT_TOOL_DEFAULTS,
+    title: "PDF Converter",
+    subtitle:
+      "PNG, JPG, TXT, and HTML export runs in your browser; pick pages or the whole file. Office formats are marked as coming soon.",
+  },
+
+  results: RESULTS_DEFAULTS,
+
+  adSlot: AD_SLOT_DEFAULTS,
+
+  seoContent: {
+    blocks: [
+      {
+        id: "why-convert-pdf",
+        title: "Why convert a PDF?",
+        paragraphs: [
+          "Images are ideal for slides and social posts; plain text and HTML help when you need to reuse content quickly.",
+          "Use a page range when you only need part of a long document. In-browser export reads text and renders pages; scanned PDFs may yield little text.",
+        ],
+      },
+    ],
+  },
+
+  related: {
+    title: "Related Tools",
+    links: [
+      {
+        href: "/convert-image",
+        label: "Convert Image",
+        description: "Convert between JPG, PNG, WebP, AVIF, and HEIC.",
+      },
+      {
+        href: "/compress-image",
+        label: "Compress Image",
+        description: "Shrink JPG, PNG, and WebP files with quality presets.",
+      },
+      {
+        href: "/jpg-to-png",
+        label: "JPG to PNG",
+        description: "Convert JPG to lossless PNG when you need transparency.",
       },
     ],
   },

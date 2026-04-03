@@ -287,6 +287,31 @@ export const PDF_TO_IMAGE_TOOL_DEFAULTS: PageConfig["tool"] = {
 };
 
 // ---------------------------------------------------------------------------
+// PDF → other formats
+// ---------------------------------------------------------------------------
+
+export const PDF_CONVERT_TOOL_DEFAULTS: PageConfig["tool"] = {
+  ...PDF_TO_IMAGE_TOOL_DEFAULTS,
+  kind: "pdf-convert",
+  mode: "browser-pdf-export",
+  title: "PDF Converter",
+  subtitle:
+    "Export pages to PNG, JPG, plain text, or HTML locally. Office formats need a future update.",
+  outputNameSuffix: "-converted",
+  labels: {
+    ...PDF_TO_IMAGE_TOOL_DEFAULTS.labels,
+    compressButton: "Convert PDF",
+    compressingButton: "Converting…",
+    downloadButton: "Download file",
+  },
+  messages: {
+    ...PDF_TO_IMAGE_TOOL_DEFAULTS.messages,
+    noFileSelected: "Choose a PDF file first.",
+    stubModeNotice: "",
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Shared ad slot
 // ---------------------------------------------------------------------------
 

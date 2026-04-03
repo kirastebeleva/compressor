@@ -47,7 +47,12 @@ function score(current: PageConfig, candidate: PageConfig): number {
   if (curCat === canCat && candidate.intent !== current.intent) s += 3;
   if (curCat !== canCat) s += 1;
 
-  if (candidate.tool.mode === "browser-compression") s += 2;
+  if (
+    candidate.tool.mode === "browser-compression" ||
+    candidate.tool.mode === "browser-pdf-export"
+  ) {
+    s += 2;
+  }
 
   return s;
 }

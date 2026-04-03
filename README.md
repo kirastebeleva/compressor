@@ -25,7 +25,10 @@ This app is a static export: there is no CMS webhook. The practical pattern is *
    | `INDEXNOW_HOST` | Hostname for the API (default: parsed from the first `<loc>`). |
    | `INDEXNOW_KEY_LOCATION` | Full URL of the key file (default: `https://{host}/{key}.txt`). |
    | `INDEXNOW_DRY_RUN=1` | Log batches only; no HTTP POST. |
+   | `INDEXNOW_AUTO_SUBMIT=1` | After `npm run build`, `postbuild` runs `indexnow:submit` automatically (requires `INDEXNOW_KEY`). Off by default so local builds do not ping the API. |
 
-4. In CI (e.g. GitHub Actions), add a step **after** `npm run build` and deploy, store `INDEXNOW_KEY` in secrets, and run `npm run indexnow:submit`.
+4. In CI (e.g. GitHub Actions), either:
+   - set **`INDEXNOW_AUTO_SUBMIT=1`** and **`INDEXNOW_KEY`** (secret) on the job that runs `npm run build`, so **`postbuild`** submits URLs from `out/sitemap.xml`; or
+   - add a separate step **after** build/deploy that runs `npm run indexnow:submit` with the same env vars.
 
 Implementation: `scripts/indexnow-submit.mjs` reads the sitemap, chunks URLs (max 10k per request per [IndexNow](https://www.indexnow.org/documentation)), and POSTs to `https://api.indexnow.org/IndexNow`.

@@ -69,6 +69,11 @@ export const convertImagePage: PageConfig = {
         label: "Resize Image",
         description: "Change image dimensions to any target size.",
       },
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "Turn PDF into Word, Excel, JPG, PNG, text, or HTML.",
+      },
     ],
   },
 };

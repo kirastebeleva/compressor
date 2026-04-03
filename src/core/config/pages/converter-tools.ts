@@ -93,6 +93,11 @@ export const heicToJpgPage: PageConfig = {
         label: "Compress Image",
         description: "Reduce JPG file size after conversion.",
       },
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "Export PDFs to Word, Excel, images, and more.",
+      },
     ],
   },
 };
@@ -165,6 +170,11 @@ export const webpToJpgPage: PageConfig = {
         href: "/compress-image",
         label: "Compress Image",
         description: "Reduce JPG file size after conversion.",
+      },
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "Export PDFs to Word, Excel, images, and more.",
       },
     ],
   },
@@ -239,6 +249,11 @@ export const jpgToPngPage: PageConfig = {
         label: "PNG to WebP",
         description: "Get a smaller file while keeping quality.",
       },
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "Export PDFs to Word, Excel, images, and more.",
+      },
     ],
   },
 };
@@ -311,6 +326,11 @@ export const pngToJpgPage: PageConfig = {
         href: "/compress-image",
         label: "Compress Image",
         description: "Reduce JPG file size even further.",
+      },
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "Export PDFs to Word, Excel, images, and more.",
       },
     ],
   },
@@ -385,6 +405,11 @@ export const jpgToWebpPage: PageConfig = {
         label: "PNG to WebP",
         description: "Convert PNG images to WebP as well.",
       },
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "Export PDFs to Word, Excel, images, and more.",
+      },
     ],
   },
 };
@@ -458,6 +483,11 @@ export const pngToWebpPage: PageConfig = {
         label: "PNG to JPG",
         description: "Convert PNG to smaller JPG when WebP is not needed.",
       },
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "Export PDFs to Word, Excel, images, and more.",
+      },
     ],
   },
 };
@@ -530,6 +560,11 @@ export const pngToAvifPage: PageConfig = {
         href: "/compress-image",
         label: "Compress Image",
         description: "Reduce image file size without changing format.",
+      },
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "Export PDFs to Word, Excel, images, and more.",
       },
     ],
   },

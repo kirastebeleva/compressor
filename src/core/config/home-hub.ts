@@ -14,6 +14,7 @@ export const HOME_HUB_SLUGS = new Set([
   "watermark-image",
   "compress-image-batch",
   "convert-image",
+  "convert-pdf",
   "heic-to-jpg",
   "webp-to-jpg",
   "jpg-to-png",
@@ -22,6 +23,9 @@ export const HOME_HUB_SLUGS = new Set([
   "png-to-webp",
   "png-to-avif",
 ]);
+
+/** Stub tools allowed on the home hub (single exception for the PDF entry point). */
+const HOME_HUB_STUB_ALLOWLIST = new Set(["convert-pdf"]);
 
 /** One-line card copy for the home hub (no pricing / runtime claims). */
 export const HOME_HUB_CARD_BLURBS: Record<string, string> = {
@@ -35,6 +39,8 @@ export const HOME_HUB_CARD_BLURBS: Record<string, string> = {
   "compress-image-batch": "Run compression on many files at once.",
   "convert-image":
     "Convert between JPG, PNG, WebP, AVIF, and HEIC in bulk.",
+  "convert-pdf":
+    "Export PDF pages to images, text, or HTML in your browser — optional page range.",
   "heic-to-jpg": "Turn HEIC photos into JPG files.",
   "webp-to-jpg": "Convert WebP images to JPG for broader compatibility.",
   "jpg-to-png": "Convert JPG to lossless PNG when you need transparency.",
@@ -55,10 +61,19 @@ const CONVERT_SLUGS = new Set([
   "png-to-avif",
 ]);
 
-export type HomeHubCategory = "optimize" | "convert";
+export type HomeHubCategory = "optimize" | "convert" | "pdf";
 
-export function getHomeHubCategory(slug: string): HomeHubCategory {
-  return CONVERT_SLUGS.has(slug) ? "convert" : "optimize";
+function hubCategoryOrder(c: HomeHubCategory): number {
+  if (c === "optimize") return 0;
+  if (c === "pdf") return 1;
+  return 2;
+}
+
+/** Hub card color / tab — PDF tools use section `pdf-tools` (present + future pages). */
+export function getHomeHubCategory(page: PageConfig): HomeHubCategory {
+  if (page.section === "pdf-tools") return "pdf";
+  if (CONVERT_SLUGS.has(page.slug)) return "convert";
+  return "optimize";
 }
 
 const CORE_TOOL_INTENTS = new Set([
@@ -73,18 +88,29 @@ function hubSortScore(page: PageConfig): number {
   let s = 0;
   if (page.intent === "base") s += 10;
   if (CORE_TOOL_INTENTS.has(page.intent)) s += 8;
-  if (page.tool.mode === "browser-compression") s += 5;
+  if (
+    page.tool.mode === "browser-compression" ||
+    page.tool.mode === "browser-pdf-export"
+  ) {
+    s += 5;
+  }
   if (page.intent.startsWith("format")) s += 3;
+  if (page.slug === "convert-pdf") s += 4;
   return s;
 }
 
 export function getHomeHubTools(): PageConfig[] {
   return allPages
-    .filter((p) => p.tool.mode !== "stub" && HOME_HUB_SLUGS.has(p.slug))
+    .filter(
+      (p) =>
+        HOME_HUB_SLUGS.has(p.slug) &&
+        (p.tool.mode !== "stub" || HOME_HUB_STUB_ALLOWLIST.has(p.slug)),
+    )
     .sort((a, b) => {
-      const catA = getHomeHubCategory(a.slug);
-      const catB = getHomeHubCategory(b.slug);
-      if (catA !== catB) return catA === "optimize" ? -1 : 1;
+      const catA = getHomeHubCategory(a);
+      const catB = getHomeHubCategory(b);
+      const byCat = hubCategoryOrder(catA) - hubCategoryOrder(catB);
+      if (byCat !== 0) return byCat;
       return (
         hubSortScore(b) - hubSortScore(a) ||
         a.navLabel.localeCompare(b.navLabel, "en")
@@ -104,6 +130,6 @@ export function toHomeHubToolCards(pages: PageConfig[]): HomeHubToolCard[] {
     slug: p.slug,
     navLabel: p.navLabel,
     description: HOME_HUB_CARD_BLURBS[p.slug] ?? p.navLabel,
-    category: getHomeHubCategory(p.slug),
+    category: getHomeHubCategory(p),
   }));
 }

@@ -80,6 +80,14 @@ const LazyConvertImageTool = dynamic(
   { ssr: false },
 );
 
+const LazyConvertPdfTool = dynamic(
+  () =>
+    import("@/components/convert-pdf-tool").then((module) => ({
+      default: module.ConvertPdfTool,
+    })),
+  { ssr: false },
+);
+
 type ToolRuntimeProps = {
   config: PageConfig;
 };
@@ -111,6 +119,10 @@ export function ToolRuntime({ config }: ToolRuntimeProps) {
 
   if (config.tool.kind === "image-convert") {
     return <ConvertImageRuntime config={config} />;
+  }
+
+  if (config.tool.kind === "pdf-convert") {
+    return <PdfConvertToolRuntime config={config} />;
   }
 
   if (isBatchIntent(config.intent)) {
@@ -209,6 +221,24 @@ function ConvertImageRuntime({ config }: { config: PageConfig }) {
   }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
 
   return <LazyConvertImageTool config={config} />;
+}
+
+function PdfConvertToolRuntime({ config }: { config: PageConfig }) {
+  useEffect(() => {
+    trackPageMeta({
+      pageSlug: config.slug,
+      intent: config.intent,
+      toolMode: config.tool.mode,
+    });
+    trackToolOpen(config.tool.kind, config.slug);
+  }, [config.slug, config.intent, config.tool.mode, config.tool.kind]);
+
+  return (
+    <>
+      <LazyConvertPdfTool config={config} />
+      {ADS_ENABLED && <LazyAdSlot config={config.adSlot} />}
+    </>
+  );
 }
 
 function CompressionToolRuntime({ config }: { config: PageConfig }) {

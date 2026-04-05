@@ -1,4 +1,8 @@
 # Netlify / Cloudflare Pages: correct MIME for pdf.js module worker
+/pdf.worker.min.js
+  Content-Type: application/javascript; charset=utf-8
+  Cross-Origin-Resource-Policy: cross-origin
+
 /pdf.worker.min.mjs
   Content-Type: application/javascript; charset=utf-8
   Cross-Origin-Resource-Policy: cross-origin

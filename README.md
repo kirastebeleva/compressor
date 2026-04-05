@@ -32,3 +32,13 @@ This app is a static export: there is no CMS webhook. The practical pattern is *
    - **Build-time ping:** set **`INDEXNOW_AUTO_SUBMIT=1`** and **`INDEXNOW_KEY`** on the job that runs `npm run build`, so **`postbuild`** submits from `out/sitemap.xml` (works when CI builds the site itself).
 
 Implementation: `scripts/indexnow-submit.mjs` reads the sitemap, chunks URLs (max 10k per request per [IndexNow](https://www.indexnow.org/documentation)), and POSTs to `https://api.indexnow.org/IndexNow`.
+
+### PDF.js worker (Convert PDF)
+
+The UI loads **`/pdf.worker.min.js`** from your domain (same file is also deployed as `pdf.worker.min.mjs`). After `next build`, both must exist under `out/` — `postbuild` runs `scripts/verify-out-worker.mjs` to fail the build if they are missing.
+
+If your static host still returns **404** for those URLs, publish the **entire** `out/` output, or set an env override:
+
+| Variable | Purpose |
+|----------|---------|
+| `NEXT_PUBLIC_PDFJS_WORKER_SRC` | Full URL to the worker script (e.g. `https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs` — keep the version in sync with `dependencies.pdfjs-dist` in `package.json`). |

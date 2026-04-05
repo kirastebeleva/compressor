@@ -11,6 +11,10 @@ export function configurePdfJsWorkerSync(pdfjs: {
   if (typeof window === "undefined" || configured) {
     return;
   }
-  pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.mjs`;
+  const origin = window.location.origin;
+  const fromEnv = process.env.NEXT_PUBLIC_PDFJS_WORKER_SRC?.trim();
+  // Prefer `.js` in production: some CDNs / static hosts mishandle `.mjs` or omit it from deploy.
+  pdfjs.GlobalWorkerOptions.workerSrc =
+    fromEnv || `${origin}/pdf.worker.min.js`;
   configured = true;
 }

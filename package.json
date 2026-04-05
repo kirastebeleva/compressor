@@ -8,7 +8,7 @@
     "dev": "next dev",
     "clean": "node -e \"require('fs').rmSync('.next', {recursive: true, force: true})\"",
     "build": "next build",
-    "postbuild": "node scripts/indexnow-after-build.mjs",
+    "postbuild": "node scripts/verify-out-worker.mjs && node scripts/indexnow-after-build.mjs",
     "preview": "npx serve out -p 3000",
     "start": "npx serve out -p 3000",
     "lint": "next lint",

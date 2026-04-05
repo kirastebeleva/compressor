@@ -19,12 +19,6 @@ export async function loadPdfDocument(
     isEvalSupported: false as const,
   };
 
-  try {
-    const task = pdfjs.getDocument(base);
-    return await task.promise;
-  } catch {
-    // Worker failed to start (MIME/COOP/CORS) or other non-fatal setup issue.
-    const task = pdfjs.getDocument({ ...base, disableWorker: true });
-    return await task.promise;
-  }
+  const task = pdfjs.getDocument(base);
+  return await task.promise;
 }

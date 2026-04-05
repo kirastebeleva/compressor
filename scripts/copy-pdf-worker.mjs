@@ -16,12 +16,17 @@ const src = path.join(
   "build",
   "pdf.worker.min.mjs",
 );
-const dest = path.join(root, "public", "pdf.worker.min.mjs");
+const publicDir = path.join(root, "public");
+const destMjs = path.join(publicDir, "pdf.worker.min.mjs");
+const destJs = path.join(publicDir, "pdf.worker.min.js");
 
 if (!fs.existsSync(src)) {
   console.error("copy-pdf-worker: missing", src);
   process.exit(1);
 }
-fs.mkdirSync(path.dirname(dest), { recursive: true });
-fs.copyFileSync(src, dest);
-console.log("copy-pdf-worker: copied to public/pdf.worker.min.mjs");
+fs.mkdirSync(publicDir, { recursive: true });
+fs.copyFileSync(src, destMjs);
+fs.copyFileSync(src, destJs);
+console.log(
+  "copy-pdf-worker: copied to public/pdf.worker.min.mjs and pdf.worker.min.js",
+);

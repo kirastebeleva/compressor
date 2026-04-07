@@ -126,9 +126,19 @@ type DownloadPayload = {
   elapsedMs: number;
 };
 
+function initialPdfExportFormat(
+  config: PageConfig,
+): PdfExportFormatId {
+  const d = config.tool.defaultPdfExportFormat;
+  if (d === "png" || d === "jpg" || d === "txt" || d === "html") return d;
+  return "png";
+}
+
 export function ConvertPdfTool({ config }: ConvertPdfToolProps) {
   const [pdfEntries, setPdfEntries] = useState<PdfEntry[]>([]);
-  const [formatId, setFormatId] = useState<PdfExportFormatId>("png");
+  const [formatId, setFormatId] = useState<PdfExportFormatId>(() =>
+    initialPdfExportFormat(config),
+  );
   const [formatMenuOpen, setFormatMenuOpen] = useState(false);
   const [state, setState] = useState<ViewState>("idle");
   const [download, setDownload] = useState<DownloadPayload | null>(null);

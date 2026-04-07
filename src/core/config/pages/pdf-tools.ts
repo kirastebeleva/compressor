@@ -2,7 +2,6 @@ import type { PageConfig } from "@/core/types";
 import {
   PDF_COMPRESS_TOOL_DEFAULTS,
   PDF_MERGE_TOOL_DEFAULTS,
-  PDF_TO_IMAGE_TOOL_DEFAULTS,
   PDF_CONVERT_TOOL_DEFAULTS,
   RESULTS_DEFAULTS,
   AD_SLOT_DEFAULTS,
@@ -63,9 +62,9 @@ export const compressPdfPage: PageConfig = {
         description: "Combine multiple PDF files into one.",
       },
       {
-        href: "/pdf-to-jpg",
-        label: "PDF to JPG",
-        description: "Convert PDF pages to JPG images.",
+        href: "/pdf-to-png",
+        label: "PDF to PNG",
+        description: "Export PDF pages as PNG images.",
       },
     ],
   },
@@ -114,9 +113,66 @@ export const mergePdfPage: PageConfig = {
         description: "Reduce PDF file size for sharing.",
       },
       {
+        href: "/pdf-to-png",
+        label: "PDF to PNG",
+        description: "Export PDF pages as PNG images.",
+      },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
+// /pdf-to-png
+// ---------------------------------------------------------------------------
+
+export const pdfToPngPage: PageConfig = {
+  slug: "pdf-to-png",
+  intent: "pdf-convert-png",
+  section: "pdf-tools",
+  navLabel: "PDF to PNG",
+
+  h1: "Convert PDF to PNG",
+
+  meta: {
+    title: "PDF to PNG — Free Browser Converter",
+    description:
+      "Export PDF pages as PNG images in your browser. Optional page range. Free, private, no upload.",
+  },
+
+  hero: {
+    subtitle:
+      "Turn each PDF page into a PNG image — pick the whole file or a page range. Processing stays on your device.",
+    trustBadges: ["Free", "No signup", "Browser-based"],
+  },
+
+  tool: {
+    ...PDF_CONVERT_TOOL_DEFAULTS,
+    defaultPdfExportFormat: "png",
+    title: "PDF to PNG",
+    subtitle:
+      "PNG is selected by default; you can switch to JPG, text, or HTML in the same tool.",
+  },
+
+  results: RESULTS_DEFAULTS,
+  adSlot: AD_SLOT_DEFAULTS,
+
+  related: {
+    title: "Related Tools",
+    links: [
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "All export formats in one place.",
+      },
+      {
         href: "/pdf-to-jpg",
         label: "PDF to JPG",
-        description: "Convert PDF pages to JPG images.",
+        description: "Export pages as JPG images.",
+      },
+      {
+        href: "/jpg-to-png",
+        label: "JPG to PNG",
+        description: "Convert JPG images to PNG format.",
       },
     ],
   },
@@ -128,28 +184,30 @@ export const mergePdfPage: PageConfig = {
 
 export const pdfToJpgPage: PageConfig = {
   slug: "pdf-to-jpg",
-  intent: "pdf-to-image",
+  intent: "pdf-convert-jpg",
   section: "pdf-tools",
   navLabel: "PDF to JPG",
 
   h1: "Convert PDF to JPG",
 
   meta: {
-    title: "PDF to JPG Converter - Free Online Tool",
+    title: "PDF to JPG Converter — Free in Your Browser",
     description:
-      "Convert PDF pages to high-quality JPG images. Free and browser-based.",
+      "Export PDF pages as JPG images locally. Page range optional. Free, no server upload.",
   },
 
   hero: {
-    subtitle: "Extract pages from PDF as JPG images.",
-    trustBadges: ["Free", "No upload", "Browser-based"],
+    subtitle:
+      "Save each page as a JPG — good for sharing and smaller files than PNG. Runs entirely in your browser.",
+    trustBadges: ["Free", "No signup", "Browser-based"],
   },
 
   tool: {
-    ...PDF_TO_IMAGE_TOOL_DEFAULTS,
-    title: "PDF to JPG Converter",
+    ...PDF_CONVERT_TOOL_DEFAULTS,
+    defaultPdfExportFormat: "jpg",
+    title: "PDF to JPG",
     subtitle:
-      "Upload a PDF and get JPG images of each page.",
+      "JPG is selected by default; other formats are available from the same converter.",
   },
 
   results: RESULTS_DEFAULTS,
@@ -159,14 +217,133 @@ export const pdfToJpgPage: PageConfig = {
     title: "Related Tools",
     links: [
       {
-        href: "/compress-pdf",
-        label: "Compress PDF",
-        description: "Reduce PDF file size.",
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "All export formats in one place.",
+      },
+      {
+        href: "/pdf-to-png",
+        label: "PDF to PNG",
+        description: "Lossless page images when you need sharp text.",
       },
       {
         href: "/jpg-to-png",
         label: "JPG to PNG",
         description: "Convert JPG images to PNG format.",
+      },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
+// /pdf-to-txt
+// ---------------------------------------------------------------------------
+
+export const pdfToTxtPage: PageConfig = {
+  slug: "pdf-to-txt",
+  intent: "pdf-convert-txt",
+  section: "pdf-tools",
+  navLabel: "PDF to Text",
+
+  h1: "Convert PDF to Text (TXT)",
+
+  meta: {
+    title: "PDF to TXT — Extract Text in Your Browser",
+    description:
+      "Save PDF text as a .txt file locally. Scanned PDFs may export little text. Free, private.",
+  },
+
+  hero: {
+    subtitle:
+      "Pull readable text into a single .txt file — use a page range for long documents. Scanned pages often need OCR elsewhere.",
+    trustBadges: ["Free", "No signup", "Browser-based"],
+  },
+
+  tool: {
+    ...PDF_CONVERT_TOOL_DEFAULTS,
+    defaultPdfExportFormat: "txt",
+    title: "PDF to Text",
+    subtitle:
+      "Plain text is selected by default; switch to images or HTML from the same tool if needed.",
+  },
+
+  results: RESULTS_DEFAULTS,
+  adSlot: AD_SLOT_DEFAULTS,
+
+  related: {
+    title: "Related Tools",
+    links: [
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "All export formats in one place.",
+      },
+      {
+        href: "/pdf-to-html",
+        label: "PDF to HTML",
+        description: "Export with basic layout to HTML.",
+      },
+      {
+        href: "/pdf-to-png",
+        label: "PDF to PNG",
+        description: "Export pages as PNG images.",
+      },
+    ],
+  },
+};
+
+// ---------------------------------------------------------------------------
+// /pdf-to-html
+// ---------------------------------------------------------------------------
+
+export const pdfToHtmlPage: PageConfig = {
+  slug: "pdf-to-html",
+  intent: "pdf-convert-html",
+  section: "pdf-tools",
+  navLabel: "PDF to HTML",
+
+  h1: "Convert PDF to HTML",
+
+  meta: {
+    title: "PDF to HTML — Free Browser Export",
+    description:
+      "Turn PDF pages into simple HTML in your browser. Optional page range. Free and private.",
+  },
+
+  hero: {
+    subtitle:
+      "Get a lightweight HTML file you can open in a browser — useful for reusing layout and text. Processing stays local.",
+    trustBadges: ["Free", "No signup", "Browser-based"],
+  },
+
+  tool: {
+    ...PDF_CONVERT_TOOL_DEFAULTS,
+    defaultPdfExportFormat: "html",
+    title: "PDF to HTML",
+    subtitle:
+      "HTML is selected by default; PNG, JPG, and text are one click away in the same tool.",
+  },
+
+  results: RESULTS_DEFAULTS,
+  adSlot: AD_SLOT_DEFAULTS,
+
+  related: {
+    title: "Related Tools",
+    links: [
+      {
+        href: "/convert-pdf",
+        label: "Convert PDF",
+        description: "All export formats in one place.",
+      },
+      {
+        href: "/pdf-to-txt",
+        label: "PDF to Text",
+        description: "Extract plain text to a .txt file.",
+      },
+      {
+        href: "/compress-image",
+        label: "Compress Image",
+        description: "Shrink JPG, PNG, and WebP from your exports.",
       },
     ],
   },
@@ -224,19 +401,19 @@ export const convertPdfPage: PageConfig = {
     title: "Related Tools",
     links: [
       {
-        href: "/convert-image",
-        label: "Convert Image",
-        description: "Convert between JPG, PNG, WebP, AVIF, and HEIC.",
+        href: "/pdf-to-png",
+        label: "PDF to PNG",
+        description: "Export pages as PNG images.",
+      },
+      {
+        href: "/pdf-to-txt",
+        label: "PDF to Text",
+        description: "Extract plain text to a .txt file.",
       },
       {
         href: "/compress-image",
         label: "Compress Image",
         description: "Shrink JPG, PNG, and WebP files with quality presets.",
-      },
-      {
-        href: "/jpg-to-png",
-        label: "JPG to PNG",
-        description: "Convert JPG to lossless PNG when you need transparency.",
       },
     ],
   },

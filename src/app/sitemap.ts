@@ -31,7 +31,8 @@ function getPriority(page: PageConfig): number {
   if (
     page.intent === "convert" ||
     page.intent === "batch" ||
-    page.intent === "pdf-convert"
+    page.intent === "pdf-convert" ||
+    page.intent.startsWith("pdf-convert-")
   ) {
     return 0.9;
   }

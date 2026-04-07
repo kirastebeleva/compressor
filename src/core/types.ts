@@ -30,6 +30,10 @@ export type ToolIntent =
   | "split"
   | "pdf-compress"
   | "pdf-convert"
+  | "pdf-convert-png"
+  | "pdf-convert-jpg"
+  | "pdf-convert-txt"
+  | "pdf-convert-html"
   | "pdf-to-image"
   | `generic-${string}`;
 
@@ -142,6 +146,10 @@ export type PageConfig = {
     }[];
     /** Default resize fit mode for platform pages: fit (contain) or fill (cover). */
     defaultResizeMode?: "fit" | "fill";
+    /**
+     * For `pdf-convert` pages: pre-selected export format in the shared PDF converter UI.
+     */
+    defaultPdfExportFormat?: "png" | "jpg" | "txt" | "html";
   };
 
   results: {

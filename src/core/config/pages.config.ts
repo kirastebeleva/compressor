@@ -16,7 +16,13 @@ import {
   batchPages,
 } from "@/core/config/pages/image-compress";
 import { convertImagePage } from "@/core/config/pages/convert-image-page";
-import { convertPdfPage } from "@/core/config/pages/pdf-tools";
+import {
+  convertPdfPage,
+  pdfToPngPage,
+  pdfToJpgPage,
+  pdfToTxtPage,
+  pdfToHtmlPage,
+} from "@/core/config/pages/pdf-tools";
 import {
   heicToJpgPage,
   webpToJpgPage,
@@ -51,6 +57,10 @@ const rawPages: readonly PageConfig[] = [
   convertImagePage,
 
   convertPdfPage,
+  pdfToPngPage,
+  pdfToJpgPage,
+  pdfToTxtPage,
+  pdfToHtmlPage,
 
   // Converter pair pages (ranked by predicted usage frequency)
   heicToJpgPage,

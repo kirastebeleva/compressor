@@ -45,6 +45,10 @@ const HEADER_SLUGS = new Set([
   "watermark-image",
   // PDF Tools
   "convert-pdf",
+  "pdf-to-png",
+  "pdf-to-jpg",
+  "pdf-to-txt",
+  "pdf-to-html",
   // Converter tools (ranked by usage frequency)
   "convert-image",
   "heic-to-jpg",
@@ -70,7 +74,7 @@ function buildNavSections(): NavSection[] {
     if (!visibleSet.has(page.section)) continue;
     if (!HEADER_SLUGS.has(page.slug)) continue;
     const items = grouped.get(page.section) ?? [];
-    items.push({ href: `/${page.slug}`, label: page.navLabel });
+    items.push({ href: `/${page.slug}/`, label: page.navLabel });
     grouped.set(page.section, items);
   }
 
@@ -152,6 +156,6 @@ function buildFooterSections(): FooterSection[] {
         .get(id)!
         .sort((a, b) => footerScore(b) - footerScore(a))
         .slice(0, MAX_FOOTER_LINKS_PER_SECTION)
-        .map((p) => ({ href: `/${p.slug}`, label: p.navLabel })),
+        .map((p) => ({ href: `/${p.slug}/`, label: p.navLabel })),
     }));
 }

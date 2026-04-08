@@ -86,7 +86,7 @@ export function validatePageConfigs(pages: readonly PageConfig[]): void {
   for (const page of pages) {
     if (!page.related) continue;
     for (const link of page.related.links) {
-      const target = link.href.replace(/^\//, "");
+      const target = link.href.replace(/^\//, "").replace(/\/+$/, "");
       if (!slugSet.has(target)) {
         errors.push(
           `Broken related link "${link.href}" on "${page.slug}" — target slug not found.`

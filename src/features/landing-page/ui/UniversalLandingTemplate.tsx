@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
 import type { PageConfig } from "@/core/types";
 import { navSections, BRAND, SECTION_META } from "@/core/config/navigation";
@@ -70,8 +71,16 @@ export function UniversalLandingTemplate({ config }: Props) {
           )}
         </section>
 
-        {/* Tool + Results */}
-        <ToolRuntime config={config} />
+        {/* Tool + Results — client-only; Suspense avoids a blank gap while the chunk loads */}
+        <Suspense
+          fallback={
+            <section className="card tool-card" aria-busy="true">
+              <p className="body-text">Loading tool…</p>
+            </section>
+          }
+        >
+          <ToolRuntime config={config} />
+        </Suspense>
 
         {/* SEO content blocks */}
         {config.seoContent?.blocks.map((section) => (

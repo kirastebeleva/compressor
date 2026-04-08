@@ -29,7 +29,7 @@ function buildRelated(
   return {
     title: "Related Tools",
     links: candidates.map((c) => ({
-      href: `/${c.page.slug}`,
+      href: `/${c.page.slug}/`,
       label: c.page.navLabel,
       description: c.page.meta.description.slice(0, 80),
     })),

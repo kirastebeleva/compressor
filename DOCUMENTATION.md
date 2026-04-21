@@ -63,7 +63,8 @@ HEIC  → JPG
 
 ### Sitemap
 
-Все страницы конвертера включены в `src/app/sitemap.ts` с приоритетами:
+Список URL для поисковых систем — в **`public/sitemap.xml`**. При `prebuild` и `npm run generate:sitemap` скрипт `scripts/generate-public-sitemap.ts` использует `src/lib/sitemap-entries.ts` (приоритеты и фильтр `mode !== "stub"`, как раньше в App Router sitemap). Базовый домен: `NEXT_PUBLIC_BASE_URL` (по умолчанию `https://imgloo.com`).
+
 - `/convert-image/` — priority `0.9`, changeFrequency `monthly`
 - Pair-страницы (`/heic-to-jpg/` и др.) — priority `0.8`, changeFrequency `monthly`
 
@@ -79,7 +80,8 @@ Stub-страницы исключены из sitemap автоматически
 | `src/components/convert-image-tool.tsx` | UI-компонент, pair mode, аналитика |
 | `src/core/config/pages/convert-image-page.ts` | PageConfig для `/convert-image` |
 | `src/core/config/pages/converter-tools.ts` | PageConfig для 7 pair-страниц |
-| `src/app/sitemap.ts` | Динамическая генерация sitemap с приоритетами |
+| `src/lib/sitemap-entries.ts` | Логика списка URL для sitemap |
+| `scripts/generate-public-sitemap.ts` | Генерация `public/sitemap.xml` |
 
 ---
 
@@ -99,11 +101,22 @@ Stub-страницы исключены из sitemap автоматически
 
 ### Архитектура
 
-- **Конфиг страницы**: `src/core/config/pages/pdf-tools.ts` — `convertPdfPage`.
+- **Конфиг страниц**: `src/core/config/pages/pdf-tools.ts` — `convertPdfPage` и отдельные лендинги форматов (`pdfToPngPage`, `pdfToJpgPage`, `pdfToTxtPage`, `pdfToHtmlPage`) с полем `defaultPdfExportFormat`.
 - **Дефолты инструмента**: `PDF_CONVERT_TOOL_DEFAULTS` в `src/core/config/defaults.ts` — `kind: "pdf-convert"`, `mode: "browser-pdf-export"`.
-- **UI**: `src/components/convert-pdf-tool.tsx`.
+- **UI**: `src/components/convert-pdf-tool.tsx` (один компонент для хаба и лендингов; стартовый формат из конфига).
 - **Экспорт**: `src/lib/pdf-export.ts` (рендер страниц, TXT/HTML), `src/lib/pdf-page-count.ts` (число страниц), `src/lib/pdfjs-worker.ts` (путь к worker).
-- **Runtime**: ветка `pdf-convert` в `src/tool-page/tool-runtime.tsx` (`PdfConvertToolRuntime`, lazy `ConvertPdfTool`).
+- **Runtime**: ветка `pdf-convert` в `src/tool-page/tool-runtime.tsx` (`PdfConvertToolRuntime`, lazy `ConvertPdfTool`); `trackToolOpen(kind, page_slug)` отличает лендинги в аналитике.
+
+### SEO-лендинги по формату (один инструмент, разные URL)
+
+| URL | Intent | Стартовый формат в UI |
+|-----|--------|------------------------|
+| `/pdf-to-png/` | `pdf-convert-png` | PNG |
+| `/pdf-to-jpg/` | `pdf-convert-jpg` | JPG |
+| `/pdf-to-txt/` | `pdf-convert-txt` | TXT |
+| `/pdf-to-html/` | `pdf-convert-html` | HTML |
+
+Хаб `/convert-pdf/` — полный выбор форматов; лендинги задают дефолт и уникальные H1 / meta / related.
 
 ### Аналитика
 
@@ -121,13 +134,13 @@ Stub-страницы исключены из sitemap автоматически
 
 ### Sitemap
 
-`/convert-pdf/` входит в `src/app/sitemap.ts` автоматически через `allPages` (режим не `stub`). Приоритет `0.9` (`intent === "pdf-convert"`), `changeFrequency` для секции `pdf-tools` — `monthly`.
+`/convert-pdf/` и лендинги `/pdf-to-png/`, `/pdf-to-jpg/`, `/pdf-to-txt/`, `/pdf-to-html/` попадают в `public/sitemap.xml` через `allPages` в `src/lib/sitemap-entries.ts` (режим не `stub`). Приоритет `0.9` для `intent === "pdf-convert"` и для `pdf-convert-*`; `changeFrequency` — `monthly`.
 
 ### Ключевые файлы
 
 | Файл | Описание |
 |------|----------|
-| `src/core/config/pages/pdf-tools.ts` | `convertPdfPage`, SEO и related |
+| `src/core/config/pages/pdf-tools.ts` | `convertPdfPage`, лендинги форматов, SEO и related |
 | `src/components/convert-pdf-tool.tsx` | Dropzone, формат, диапазон страниц, аналитика |
 | `src/lib/pdf-export.ts` | Экспорт PNG/JPG/TXT/HTML |
 | `src/lib/pdf-page-count.ts` | Подсчёт страниц pdf.js |

@@ -298,6 +298,7 @@ export function ConvertPdfTool({ config }: ConvertPdfToolProps) {
     const toStage = accepted.slice(0, Math.max(0, room));
     if (accepted.length > room) {
       setError(`Maximum ${PDF_MAX_FILES} files allowed. Extra files were skipped.`);
+      trackError({ ...evtBase, error_message: "max_files_exceeded" });
     }
 
     let running = pdfEntries.reduce((s, e) => s + e.file.size, 0);
@@ -307,6 +308,7 @@ export function ConvertPdfTool({ config }: ConvertPdfToolProps) {
         setError(
           `Total size limit (${PDF_MAX_TOTAL_BYTES / (1024 * 1024)} MB) exceeded. Some files were skipped.`,
         );
+        trackError({ ...evtBase, error_message: "total_limit_exceeded" });
         break;
       }
       running += f.size;

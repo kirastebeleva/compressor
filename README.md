@@ -8,7 +8,7 @@ The file `public/89db74dd95fc4018a6e75fd66d9c7292.txt` is required for [IndexNow
 
 This app is a static export: there is no CMS webhook. The practical pattern is **notify IndexNow after each production build or deploy** (only URLs that actually changed is ideal; notifying the full sitemap on every deploy is a common simplification).
 
-1. Build so `out/sitemap.xml` exists: `npm run build` (uses `NEXT_PUBLIC_BASE_URL` / defaults from `src/app/sitemap.ts`).
+1. Build so `out/sitemap.xml` exists: `npm run build` (`prebuild` writes `public/sitemap.xml` from `src/lib/sitemap-entries.ts` using `NEXT_PUBLIC_BASE_URL`, default `https://imgloo.com`).
 2. Ensure the key file is already live at `https://imgloo.com/{KEY}.txt` before the first real submit (or submit only after deploy).
 3. Run:
 

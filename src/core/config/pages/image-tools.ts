@@ -156,6 +156,42 @@ export const resizeImagePage: PageConfig = {
           "The resizing algorithm uses high-quality bicubic interpolation to keep your images sharp. Aspect ratio is preserved by default so your photos never look stretched. If you also need to reduce file size, try our [Compress Image](/compress-image) tool.",
         ],
       },
+      {
+        id: "resize-without-losing-quality",
+        title: "How to resize an image without losing quality",
+        paragraphs: [
+          "To resize image files without losing quality, keep the original aspect ratio and avoid unnecessary upscaling. When width and height stay proportional, photos and graphics keep their natural shape instead of looking stretched.",
+          "This tool uses high-quality interpolation to keep edges smooth during resizing. It is useful when you need clean images for web pages, email campaigns, or social media posts and want to resize image assets without losing quality.",
+        ],
+      },
+      {
+        id: "when-to-use-image-resizing",
+        title: "When to use image resizing",
+        paragraphs: [
+          "Use image resizing for websites when you need faster loading and better Core Web Vitals. Smaller dimensions help pages render faster, especially on mobile networks.",
+          "Use it for email when attachments or embedded images must stay lightweight. Resizing before sending helps reduce message size and improves delivery speed.",
+          "Use it for social media when each platform needs specific dimensions. Correct sizing helps your content display cleanly in feeds, stories, and profile areas.",
+          "Use it for uploads when forms or portals require exact width, height, or file rules. Resizing first helps you pass validation without repeated upload errors.",
+        ],
+      },
+      {
+        id: "why-use-this-image-resizer",
+        title: "Why use this image resizer",
+        paragraphs: [
+          "You get consistent, sharp output with no visible quality loss in normal downscaling workflows.",
+          "Everything runs in your browser, so files are not uploaded to external servers.",
+          "Processing is fast and works well for one image or small batches.",
+          "The tool supports common formats including JPG, PNG, and WebP.",
+          "Controls are simple, so you can set exact dimensions quickly without extra editing software.",
+        ],
+      },
+      {
+        id: "related-tools-seo",
+        title: "Related tools",
+        paragraphs: [
+          "Need a complete workflow after resizing? You can [compress an image for faster loading](/compress-image), [convert image formats for compatibility](/convert-image), or [crop an image to improve framing](/crop-image).",
+        ],
+      },
     ],
   },
 
@@ -191,6 +227,21 @@ export const resizeImagePage: PageConfig = {
         question: "What is the maximum image size?",
         answer:
           "Each file can be up to 10 MB and up to 8000 pixels on the longest side. You can process up to 10 files per batch.",
+      },
+      {
+        question: "How to resize an image without losing quality?",
+        answer:
+          "Start with a high-resolution source image, keep aspect ratio enabled, and avoid enlarging small files. Downscaling with high-quality interpolation gives the best clarity for most use cases.",
+      },
+      {
+        question: "What is the best image size for web?",
+        answer:
+          "For most websites, 1200 to 1920 pixels on the long side works well for hero images, while content images are often smaller. Choose dimensions based on your layout and keep file size optimized for faster loading.",
+      },
+      {
+        question: "How to resize images for Instagram?",
+        answer:
+          "Common Instagram targets are 1080×1080 for square posts, 1080×1350 for portrait posts, and 1080×1920 for Stories. Resize to the exact format you need before uploading to avoid unwanted cropping.",
       },
     ],
   },

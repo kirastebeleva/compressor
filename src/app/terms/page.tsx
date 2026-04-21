@@ -6,14 +6,14 @@ import { navSections, BRAND } from "@/core/config/navigation";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
 
 export const metadata: Metadata = {
-  title: "Terms of Use",
+  title: "Read imgloo Terms of Use for Online Tools (Fast Clear)",
   description:
     "Read the Terms of Use for Imgloo. By using Imgloo tools, you agree to these terms.",
   alternates: {
     canonical: "/terms/",
   },
   openGraph: {
-    title: "Terms of Use",
+    title: "Read imgloo Terms of Use for Online Tools (Fast Clear)",
     description:
       "Read the Terms of Use for Imgloo. By using Imgloo tools, you agree to these terms.",
     url: `${BASE_URL}/terms/`,

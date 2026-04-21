@@ -14,7 +14,7 @@ export const compressImagePage: PageConfig = {
   h1: "Compress Image Online",
 
   meta: {
-    title: "Compress Image Online - Free Browser Tool",
+    title: "Compress Image Without Quality Loss Online (Free Tool)",
     description:
       "Compress JPG, PNG, and WebP images directly in your browser. No upload to server, quick download, and predictable quality presets.",
   },

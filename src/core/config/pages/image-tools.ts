@@ -24,7 +24,7 @@ export const compressImageUnder1mbPage: PageConfig = {
   h1: "Compress Image Under 1 MB",
 
   meta: {
-    title: "Compress Image Under 1 MB - Free Online Tool",
+    title: "Compress Image Under 1 MB for Uploads Online (Fast)",
     description:
       "Reduce any image to under 1 MB for email attachments, form uploads, and web use. Free browser-based compression.",
   },
@@ -115,7 +115,7 @@ export const resizeImagePage: PageConfig = {
   h1: "Resize Image Online",
 
   meta: {
-    title: "Resize Image Online Free — Change Size in Pixels or %",
+    title: "Resize Image by Pixels or Percent Online (Free Fast)",
     description:
       "Resize JPG, PNG and WebP images to exact pixel dimensions or by percentage. Free, private, no upload — runs entirely in your browser.",
   },
@@ -245,7 +245,7 @@ export const cropImagePage: PageConfig = {
   h1: "Crop Image Online",
 
   meta: {
-    title: "Crop Image Online Free — Trim & Reframe Photos Instantly",
+    title: "Crop Image for Social Media Frames Online (Free Fast)",
     description:
       "Crop JPG, PNG and WebP images to exact dimensions or aspect ratio presets. Free, private, no upload — runs entirely in your browser.",
   },
@@ -375,7 +375,7 @@ export const rotateImagePage: PageConfig = {
   h1: "Rotate Image Online",
 
   meta: {
-    title: "Rotate Image Online Free — Batch Rotate Up to 10",
+    title: "Rotate Image to Fix Orientation Online (Free Fast)",
     description:
       "Rotate up to 10 JPG, PNG or WebP images by 90° or 180°. Rotate all at once or fine-tune each image. EXIF fix, ZIP download. Free, browser-based.",
   },
@@ -516,7 +516,7 @@ export const flipImagePage: PageConfig = {
   h1: "Flip Image Online",
 
   meta: {
-    title: "Flip Image Online Free — Mirror Photos Instantly",
+    title: "Flip Image to Mirror Photos Online (Free No Quality Loss)",
     description:
       "Flip or mirror up to 10 JPG, PNG and WebP images horizontally or vertically. Free, private, no upload — runs entirely in your browser.",
   },
@@ -657,7 +657,7 @@ export const watermarkImagePage: PageConfig = {
   h1: "Add Watermark to Image Online",
 
   meta: {
-    title: "Add Watermark to Image Online Free — Text & Logo Watermarks",
+    title: "Add Watermark to Image for Copyright Online (Free Fast)",
     description:
       "Add text or logo watermarks to up to 10 JPG, PNG and WebP images. Free, private, no upload — runs entirely in your browser.",
   },
@@ -798,7 +798,7 @@ export const convertToWebpPage: PageConfig = {
   h1: "Convert Images to WebP",
 
   meta: {
-    title: "Convert to WebP - Free Online Converter",
+    title: "Convert Image to WebP for Faster Web Pages (Free Online)",
     description:
       "Convert JPG and PNG images to WebP format for smaller file sizes and faster page loads.",
   },

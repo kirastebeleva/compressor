@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "imgloo — Free Online Image Compressor",
+  title: "imgloo: Free Online Tools for Images, PDFs, and More",
   description:
     "Compress JPG, PNG and WebP images for free — right in your browser. No upload, no signup, instant results.",
   icons: {

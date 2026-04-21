@@ -12,7 +12,7 @@ export const compressImageUnder500kbPage: PageConfig = {
   navLabel: "Compress Under 500 KB",
   h1: "Compress Image Under 500 KB",
   meta: {
-    title: "Compress Image Under 500 KB - Free Tool",
+    title: "Compress Image Under 500 KB for Forms Online (Free)",
     description: "Get images below 500 KB for uploads, forms, and social platforms. Free browser-based compression.",
   },
   hero: {
@@ -65,7 +65,7 @@ export const compressImageTo100kbPage: PageConfig = {
   navLabel: "Compress to 100 KB",
   h1: "Compress Image to 100 KB",
   meta: {
-    title: "Compress Image to 100 KB - Free Online",
+    title: "Compress Image to 100 KB for IDs Online (Fast Free)",
     description: "Compress any image down to around 100 KB for strict upload limits. Processed locally in your browser.",
   },
   hero: {

@@ -66,7 +66,7 @@ function buildResizePlatformPage(
 export const resizeImageForInstagramPostPage = buildResizePlatformPage(
   "resize-image-for-instagram-post",
   "Resize Image for Instagram Post",
-  "Resize for Instagram Post - 1080×1080, 1080×1350 Free",
+  "Resize Image for Instagram Post Sizes Online (Free Fast)",
   "Resize images for Instagram posts: square (1080×1080), portrait (1080×1350), landscape (1080×566). Free, private, browser-based.",
   "Resize images to Instagram post dimensions — square, portrait, or landscape. One-click presets, no upload.",
   "Instagram Post Resizer",
@@ -121,7 +121,7 @@ export const resizeImageForInstagramPostPage = buildResizePlatformPage(
 export const resizeImageForInstagramProfilePage = buildResizePlatformPage(
   "resize-image-for-instagram-profile",
   "Resize Image for Instagram Profile",
-  "Resize Image for Instagram Profile - 320×320 Free",
+  "Resize Image for Instagram Profile Photo (Free Online)",
   "Resize images for Instagram profile picture (320×320). Fit mode preserves aspect ratio. Free, private, browser-based.",
   "Resize images for Instagram profile picture. Fit mode keeps your photo uncropped.",
   "Instagram Profile Resizer",
@@ -171,7 +171,7 @@ export const resizeImageForInstagramProfilePage = buildResizePlatformPage(
 export const resizeImageForFacebookPage = buildResizePlatformPage(
   "resize-image-for-facebook",
   "Resize Image for Facebook",
-  "Resize Image for Facebook - Post, Profile, Cover, Story Free",
+  "Resize Image for Facebook Posts and Covers (Free Fast)",
   "Resize images for Facebook: posts (1200×630), profile (320×320), cover (851×315), stories (1080×1920). Free, browser-based.",
   "Resize images for Facebook posts, profile picture, cover photo, or story. One-click presets.",
   "Facebook Image Resizer",
@@ -221,7 +221,7 @@ export const resizeImageForFacebookPage = buildResizePlatformPage(
 export const resizeImageForLinkedinPage = buildResizePlatformPage(
   "resize-image-for-linkedin",
   "Resize Image for LinkedIn",
-  "Resize Image for LinkedIn - Post, Profile, Banner, Logo Free",
+  "Resize Image for LinkedIn Post and Banner (Free Online)",
   "Resize images for LinkedIn: posts (1200×627), profile (400×400), banner (1584×396), logo (300×300). Free, browser-based.",
   "Resize images for LinkedIn posts, profile, banner, or company logo. Professional presets.",
   "LinkedIn Image Resizer",
@@ -271,7 +271,7 @@ export const resizeImageForLinkedinPage = buildResizePlatformPage(
 export const resizeImageForTwitterPage = buildResizePlatformPage(
   "resize-image-for-twitter",
   "Resize Image for Twitter",
-  "Resize Image for Twitter - Post, Profile, Header Free",
+  "Resize Image for Twitter Posts and Header (Free Online)",
   "Resize images for Twitter: posts (1600×900), profile (400×400), header (1500×500). Free, browser-based.",
   "Resize images for Twitter posts, profile picture, or header. One-click presets.",
   "Twitter Image Resizer",
@@ -321,7 +321,7 @@ export const resizeImageForTwitterPage = buildResizePlatformPage(
 export const resizeImageForYoutubeThumbnailPage = buildResizePlatformPage(
   "resize-image-for-youtube-thumbnail",
   "Resize Image for YouTube Thumbnail",
-  "Resize Image for YouTube Thumbnail - 1280×720 Free",
+  "Resize Image for YouTube Thumbnail 1280x720 (Free Fast)",
   "Resize images for YouTube thumbnails (1280×720). Free, private, browser-based. One-click preset.",
   "Resize images to YouTube thumbnail size (1280×720). Fill the frame, look sharp.",
   "YouTube Thumbnail Resizer",
@@ -371,7 +371,7 @@ export const resizeImageForYoutubeThumbnailPage = buildResizePlatformPage(
 export const resizeImageForYoutubeBannerPage = buildResizePlatformPage(
   "resize-image-for-youtube-banner",
   "Resize Image for YouTube Banner",
-  "Resize Image for YouTube Banner - 2560×1440 Channel Art Free",
+  "Resize Image for YouTube Banner 2560x1440 (Free Fast)",
   "Resize images for YouTube channel art (2560×1440). Free, private, browser-based.",
   "Resize images to YouTube channel banner size (2560×1440). Fill the frame.",
   "YouTube Banner Resizer",
@@ -421,7 +421,7 @@ export const resizeImageForYoutubeBannerPage = buildResizePlatformPage(
 export const resizeImageForShopifyPage = buildResizePlatformPage(
   "resize-image-for-shopify",
   "Resize Image for Shopify",
-  "Resize Image for Shopify - Product, Collection, Banner Free",
+  "Resize Image for Shopify Products and Banners (Free)",
   "Resize images for Shopify: product (2048×2048), collection (1600×900), hero (1800×1000). Free, browser-based.",
   "Resize images for Shopify product pages, collections, and hero banners. E-commerce presets.",
   "Shopify Image Resizer",
@@ -471,7 +471,7 @@ export const resizeImageForShopifyPage = buildResizePlatformPage(
 export const resizeImageForWhatsappPage = buildResizePlatformPage(
   "resize-image-for-whatsapp",
   "Resize Image for WhatsApp",
-  "Resize Image for WhatsApp - Profile, Status Free",
+  "Resize Image for WhatsApp Status and Profile (Free)",
   "Resize images for WhatsApp: profile (640×640), status (1080×1920). Free, browser-based.",
   "Resize images for WhatsApp profile picture or status. One-click presets.",
   "WhatsApp Image Resizer",
@@ -521,7 +521,7 @@ export const resizeImageForWhatsappPage = buildResizePlatformPage(
 export const resizeImageForDiscordPage = buildResizePlatformPage(
   "resize-image-for-discord",
   "Resize Image for Discord",
-  "Resize Image for Discord - Server Icon, Banner Free",
+  "Resize Image for Discord Icon and Banner (Free Online)",
   "Resize images for Discord: server icon/avatar (512×512), banner (960×540). Free, browser-based.",
   "Resize images for Discord server icon or banner. One-click presets.",
   "Discord Image Resizer",

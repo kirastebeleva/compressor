@@ -4,14 +4,14 @@ import { HomeHubPage } from "@/features/home-page/ui/HomeHubPage";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
 
 export const metadata: Metadata = {
-  title: "imgloo — Free Online Image Tools",
+  title: "Use Free Online Image Tools for Web, Email, Social Fast",
   description:
     "Compress, convert, resize, crop, and optimize images in your browser. Choose a tool — no upload to our servers, no signup.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "imgloo — Free Online Image Tools",
+    title: "Use Free Online Image Tools for Web, Email, Social Fast",
     description:
       "Compress, convert, resize, crop, and optimize images in your browser. Choose a tool — no upload to our servers, no signup.",
     url: `${BASE_URL}/`,

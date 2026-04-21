@@ -6,14 +6,14 @@ import { navSections, BRAND } from "@/core/config/navigation";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
+  title: "Read imgloo Privacy Policy for Browser Tools (Fast Online)",
   description:
     "Learn how Imgloo handles your information. Files are processed in your browser and are not stored on our servers.",
   alternates: {
     canonical: "/privacy-policy/",
   },
   openGraph: {
-    title: "Privacy Policy",
+    title: "Read imgloo Privacy Policy for Browser Tools (Fast Online)",
     description:
       "Learn how Imgloo handles your information. Files are processed in your browser and are not stored on our servers.",
     url: `${BASE_URL}/privacy-policy/`,

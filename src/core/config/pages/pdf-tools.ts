@@ -20,7 +20,7 @@ export const compressPdfPage: PageConfig = {
   h1: "Compress PDF Online",
 
   meta: {
-    title: "Compress PDF Online - Free Browser Tool",
+    title: "Compress PDF for Email Attachments Online (Free Fast)",
     description:
       "Reduce PDF file size directly in your browser. No upload to server required.",
   },
@@ -83,7 +83,7 @@ export const mergePdfPage: PageConfig = {
   h1: "Merge PDF Files Online",
 
   meta: {
-    title: "Merge PDF Files - Free Online Tool",
+    title: "Merge PDF Files into One Document Online (Free Fast)",
     description:
       "Combine multiple PDF documents into a single file. Free browser-based tool.",
   },
@@ -134,7 +134,7 @@ export const pdfToPngPage: PageConfig = {
   h1: "Convert PDF to PNG",
 
   meta: {
-    title: "PDF to PNG — Free Browser Converter",
+    title: "Convert PDF to PNG Images for Design Use (Free Online)",
     description:
       "Export PDF pages as PNG images in your browser. Optional page range. Free, private, no upload.",
   },
@@ -191,7 +191,7 @@ export const pdfToJpgPage: PageConfig = {
   h1: "Convert PDF to JPG",
 
   meta: {
-    title: "PDF to JPG Converter — Free in Your Browser",
+    title: "Convert PDF to JPG for Smaller Image Files (Free Online)",
     description:
       "Export PDF pages as JPG images locally. Page range optional. Free, no server upload.",
   },
@@ -248,7 +248,7 @@ export const pdfToTxtPage: PageConfig = {
   h1: "Convert PDF to Text (TXT)",
 
   meta: {
-    title: "PDF to TXT — Extract Text in Your Browser",
+    title: "Convert PDF to Text for Copying Content (Free Online)",
     description:
       "Save PDF text as a .txt file locally. Scanned PDFs may export little text. Free, private.",
   },
@@ -305,7 +305,7 @@ export const pdfToHtmlPage: PageConfig = {
   h1: "Convert PDF to HTML",
 
   meta: {
-    title: "PDF to HTML — Free Browser Export",
+    title: "Convert PDF to HTML for Web Publishing (Free Online)",
     description:
       "Turn PDF pages into simple HTML in your browser. Optional page range. Free and private.",
   },
@@ -362,7 +362,7 @@ export const convertPdfPage: PageConfig = {
   h1: "Convert PDF to Images, Text & HTML",
 
   meta: {
-    title: "Convert PDF to PNG, JPG, Text, HTML — Free in Your Browser",
+    title: "Convert PDF to PNG, JPG, Text, HTML Online (Free Fast)",
     description:
       "PDF to PNG, JPG, TXT, or HTML in your browser. Full file or page range. Free, private. Word/Excel/PPT export planned.",
   },

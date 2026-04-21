@@ -12,7 +12,7 @@ export const compressJpgPage: PageConfig = {
   navLabel: "Compress JPG",
   h1: "Compress JPG Files Online",
   meta: {
-    title: "Compress JPG Online - Free Browser Tool",
+    title: "Compress JPG Without Quality Loss Online (Free Fast)",
     description: "Make JPG images smaller without visible quality loss. Browser-based compression with no server uploads.",
   },
   hero: {
@@ -64,7 +64,7 @@ export const compressPngPage: PageConfig = {
   navLabel: "Compress PNG",
   h1: "Compress PNG Images Online",
   meta: {
-    title: "Compress PNG Online - Free Browser Tool",
+    title: "Compress PNG and Keep Transparency Online (Free Fast)",
     description: "Reduce PNG file size while keeping transparency intact. Runs locally in your browser — no file uploads.",
   },
   hero: {
@@ -116,7 +116,7 @@ export const compressWebpPage: PageConfig = {
   navLabel: "Compress WebP",
   h1: "Compress WebP Images Online",
   meta: {
-    title: "Compress WebP Online - Free Browser Tool",
+    title: "Compress WebP for Faster Page Speed Online (Free)",
     description: "Make WebP images even smaller with browser-based compression. No server upload, no account needed.",
   },
   hero: {
@@ -168,7 +168,7 @@ export const compressJpegPage: PageConfig = {
   navLabel: "Compress JPEG",
   h1: "Compress JPEG Files Online",
   meta: {
-    title: "Compress JPEG Online - Free Tool",
+    title: "Compress JPEG for Email and Web Uploads (Free Online)",
     description: "Compress JPEG images quickly in your browser. Private, free, and no software to install.",
     canonical: "/compress-jpg",
   },

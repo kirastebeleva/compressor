@@ -38,7 +38,7 @@ export const heicToJpgPage: PageConfig = {
   h1: "Convert HEIC to JPG",
 
   meta: {
-    title: "HEIC to JPG Converter — Free Online",
+    title: "Convert HEIC to JPG for Windows & Email (Free Online)",
     description:
       "Convert iPhone HEIC photos to JPG format. Free, browser-based, no upload. Works on Windows, Android, and any browser.",
   },
@@ -116,7 +116,7 @@ export const webpToJpgPage: PageConfig = {
   h1: "Convert WebP to JPG",
 
   meta: {
-    title: "WebP to JPG Converter — Free Online",
+    title: "Convert WebP to JPG for App Compatibility (Fast Free)",
     description:
       "Convert WebP images to JPG for wider app and editor compatibility. Free, browser-based, no upload. Batch supported.",
   },
@@ -194,7 +194,7 @@ export const jpgToPngPage: PageConfig = {
   h1: "Convert JPG to PNG",
 
   meta: {
-    title: "JPG to PNG Converter — Free Online",
+    title: "Convert JPG to PNG for Editing Needs (Free Online)",
     description:
       "Convert JPG images to lossless PNG format with transparency support. Free, browser-based, no upload required.",
   },
@@ -272,7 +272,7 @@ export const pngToJpgPage: PageConfig = {
   h1: "Convert PNG to JPG",
 
   meta: {
-    title: "PNG to JPG Converter — Free Online",
+    title: "Convert PNG to JPG to Reduce File Size (Free Online)",
     description:
       "Convert PNG images to JPG to reduce file size. Free, browser-based, no upload. Transparent areas are filled with white.",
   },
@@ -350,7 +350,7 @@ export const jpgToWebpPage: PageConfig = {
   h1: "Convert JPG to WebP",
 
   meta: {
-    title: "JPG to WebP Converter — Free Online",
+    title: "Convert JPG to WebP for Faster Website Loads (Free)",
     description:
       "Convert JPG images to WebP for smaller file sizes on the web. Free, browser-based, no upload required. Batch supported.",
   },
@@ -428,7 +428,7 @@ export const pngToWebpPage: PageConfig = {
   h1: "Convert PNG to WebP",
 
   meta: {
-    title: "PNG to WebP Converter — Free Online",
+    title: "Convert PNG to WebP with Transparency (Free Online)",
     description:
       "Convert PNG images to WebP for smaller file sizes without visible quality loss. Free, browser-based, no upload.",
   },
@@ -506,7 +506,7 @@ export const pngToAvifPage: PageConfig = {
   h1: "Convert PNG to AVIF",
 
   meta: {
-    title: "PNG to AVIF Converter — Free Online",
+    title: "Convert PNG to AVIF for Maximum Compression (Free)",
     description:
       "Convert PNG images to AVIF for the best compression ratios available. Free, browser-based. Requires Chrome or Firefox.",
   },

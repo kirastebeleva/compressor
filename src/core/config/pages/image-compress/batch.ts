@@ -11,7 +11,7 @@ export const compressImageBatchPage: PageConfig = {
   section: "image-tools",
   navLabel: "Batch Compress",
   h1: "Batch Compress Images",
-  meta: { title: "Batch Compress Images - Free Online Tool", description: "Compress multiple images at once. Free browser-based tool — up to 20 files per batch." },
+  meta: { title: "Batch Compress Images for Bulk Uploads Online (Free)", description: "Compress multiple images at once. Free browser-based tool — up to 20 files per batch." },
   hero: { subtitle: "Save time by compressing several images in a single session.", trustBadges: ["Free", "Multi-file", "Browser-based", "Private"] },
   tool: { ...IMAGE_COMPRESS_TOOL_DEFAULTS, mode: "browser-compression", title: "Batch Image Compressor", subtitle: "Upload up to 20 images and compress them all with one click." },
   results: RESULTS_DEFAULTS,

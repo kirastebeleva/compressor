@@ -44,9 +44,7 @@ import type { PageConfig } from "@/core/types";
 //   2. Export the config + add it to the file's `pages` array
 //   3. That's it — the barrel re-exports it here automatically.
 //
-// Hidden pages (configs preserved, re-add when functionality is ready):
-//   - PDF tools: compressPdfPage, mergePdfPage, pdfToJpgPage (convert-pdf is live)
-//   - Converter pair pages: jpgToPngPage, pngToWebpPage, heicToJpgPage
+// PDF configs not registered below (see pdf-tools.ts): compressPdfPage, mergePdfPage — add to rawPages when tools ship.
 // ---------------------------------------------------------------------------
 
 const rawPages: readonly PageConfig[] = [

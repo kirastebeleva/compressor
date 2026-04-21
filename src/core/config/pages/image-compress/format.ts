@@ -13,7 +13,7 @@ export const compressJpgPage: PageConfig = {
   h1: "Compress JPG Files Online",
   meta: {
     title: "Compress JPG Without Quality Loss Online (Free Fast)",
-    description: "Make JPG images smaller without visible quality loss. Browser-based compression with no server uploads.",
+    description: "Compress JPG online to reduce file size for web pages, email attachments, and uploads. Keep photos clear with quick local processing in your browser.",
   },
   hero: {
     subtitle: "Drop your JPG and get a lighter file in seconds — all processing happens in your browser.",
@@ -65,7 +65,7 @@ export const compressPngPage: PageConfig = {
   h1: "Compress PNG Images Online",
   meta: {
     title: "Compress PNG and Keep Transparency Online (Free Fast)",
-    description: "Reduce PNG file size while keeping transparency intact. Runs locally in your browser — no file uploads.",
+    description: "Compress PNG online and preserve transparency for logos, UI graphics, and overlays. Get lighter assets for faster pages with no install or account needed.",
   },
   hero: {
     subtitle: "Lighter PNG files with transparency preserved — processed right on your device.",
@@ -117,7 +117,7 @@ export const compressWebpPage: PageConfig = {
   h1: "Compress WebP Images Online",
   meta: {
     title: "Compress WebP for Faster Page Speed Online (Free)",
-    description: "Make WebP images even smaller with browser-based compression. No server upload, no account needed.",
+    description: "Already using WebP? Compress WebP online to trim extra kilobytes and improve mobile loading. Great for SEO-focused pages, with quick browser-based results.",
   },
   hero: {
     subtitle: "WebP already saves space — this tool pushes it further without leaving your browser.",
@@ -169,7 +169,7 @@ export const compressJpegPage: PageConfig = {
   h1: "Compress JPEG Files Online",
   meta: {
     title: "Compress JPEG for Email and Web Uploads (Free Online)",
-    description: "Compress JPEG images quickly in your browser. Private, free, and no software to install.",
+    description: "Compress JPEG online for smoother sharing in email, forms, and marketplace uploads. Reduce file size while keeping details clean, with instant local processing.",
     canonical: "/compress-jpg",
   },
   hero: {

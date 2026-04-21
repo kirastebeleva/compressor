@@ -16,7 +16,7 @@ export const compressImagePage: PageConfig = {
   meta: {
     title: "Compress Image Without Quality Loss Online (Free Tool)",
     description:
-      "Compress JPG, PNG, and WebP images directly in your browser. No upload to server, quick download, and predictable quality presets.",
+      "Reduce image size without visible quality loss for email attachments, web pages, and form uploads. Runs locally in your browser with quick downloadable results.",
   },
 
   hero: {

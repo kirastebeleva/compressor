@@ -8,14 +8,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
 export const metadata: Metadata = {
   title: "Contact imgloo Support for Tool Help (Fast Online)",
   description:
-    "Contact Imgloo for questions, feedback, bug reports, or feature requests.",
+    "Contact Imgloo support for bug reports, feature ideas, or tool questions related to web and upload workflows. Reach us by email and get practical help quickly.",
   alternates: {
     canonical: "/contact/",
   },
   openGraph: {
     title: "Contact imgloo Support for Tool Help (Fast Online)",
     description:
-      "Contact Imgloo for questions, feedback, bug reports, or feature requests.",
+      "Contact Imgloo support for bug reports, feature ideas, or tool questions related to web and upload workflows. Reach us by email and get practical help quickly.",
     url: `${BASE_URL}/contact/`,
     siteName: "imgloo",
     type: "website",

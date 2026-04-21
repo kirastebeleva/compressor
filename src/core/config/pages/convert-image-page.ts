@@ -16,7 +16,7 @@ export const convertImagePage: PageConfig = {
   meta: {
     title: "Convert Image Formats Online for Any Platform (Free Fast)",
     description:
-      "Convert images between JPG, PNG, WebP, AVIF and HEIC formats. Free, browser-based, no upload required. Batch supported.",
+      "Convert image formats online between JPG, PNG, WebP, AVIF, and HEIC for smooth sharing and uploads. Works in your browser with no account needed or install.",
   },
 
   hero: {

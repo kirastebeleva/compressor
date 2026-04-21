@@ -8,14 +8,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
 export const metadata: Metadata = {
   title: "About imgloo Image Tools and Browser Privacy (Fast Online)",
   description:
-    "Imgloo is a collection of simple online tools for working with images and documents directly in your browser.",
+    "Learn how Imgloo tools process files locally for safer web, email, and upload workflows. See our approach to privacy, speed, and practical no-install usability.",
   alternates: {
     canonical: "/about/",
   },
   openGraph: {
     title: "About imgloo Image Tools and Browser Privacy (Fast Online)",
     description:
-      "Imgloo is a collection of simple online tools for working with images and documents directly in your browser.",
+      "Learn how Imgloo tools process files locally for safer web, email, and upload workflows. See our approach to privacy, speed, and practical no-install usability.",
     url: `${BASE_URL}/about/`,
     siteName: "imgloo",
     type: "website",

@@ -13,7 +13,7 @@ export const compressImageUnder500kbPage: PageConfig = {
   h1: "Compress Image Under 500 KB",
   meta: {
     title: "Compress Image Under 500 KB for Forms Online (Free)",
-    description: "Get images below 500 KB for uploads, forms, and social platforms. Free browser-based compression.",
+    description: "Need a strict limit? Compress image under 500 KB online for forms, job portals, and profile uploads while keeping text and faces clear for submission.",
   },
   hero: {
     subtitle: "Hit a strict 500 KB target for platform uploads and form requirements.",
@@ -66,7 +66,7 @@ export const compressImageTo100kbPage: PageConfig = {
   h1: "Compress Image to 100 KB",
   meta: {
     title: "Compress Image to 100 KB for IDs Online (Fast Free)",
-    description: "Compress any image down to around 100 KB for strict upload limits. Processed locally in your browser.",
+    description: "Compress image to 100 KB online for tough upload rules on exam forms, ID portals, and applications. Keep key details readable with fast browser processing.",
   },
   hero: {
     subtitle: "Target an aggressive 100 KB size for the tightest upload restrictions.",

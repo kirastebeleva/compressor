@@ -22,7 +22,7 @@ export const compressPdfPage: PageConfig = {
   meta: {
     title: "Compress PDF for Email Attachments Online (Free Fast)",
     description:
-      "Reduce PDF file size directly in your browser. No upload to server required.",
+      "Compress PDF online to reduce file size for email attachments, forms, and cloud sharing. Keep pages readable and get quick results directly in your browser.",
   },
 
   hero: {
@@ -85,7 +85,7 @@ export const mergePdfPage: PageConfig = {
   meta: {
     title: "Merge PDF Files into One Document Online (Free Fast)",
     description:
-      "Combine multiple PDF documents into a single file. Free browser-based tool.",
+      "Merge PDF files online into one organized document for easier sharing and storage. Perfect for reports, invoices, and application packets with quick processing.",
   },
 
   hero: {
@@ -136,7 +136,7 @@ export const pdfToPngPage: PageConfig = {
   meta: {
     title: "Convert PDF to PNG Images for Design Use (Free Online)",
     description:
-      "Export PDF pages as PNG images in your browser. Optional page range. Free, private, no upload.",
+      "Convert PDF to PNG online for sharp page images used in slides, previews, and design files. Keep details crisp and export quickly with no install required.",
   },
 
   hero: {
@@ -193,7 +193,7 @@ export const pdfToJpgPage: PageConfig = {
   meta: {
     title: "Convert PDF to JPG for Smaller Image Files (Free Online)",
     description:
-      "Export PDF pages as JPG images locally. Page range optional. Free, no server upload.",
+      "Convert PDF to JPG online to create smaller image files for email, messengers, and uploads. Great when you need shareable pages with quick browser-based export.",
   },
 
   hero: {
@@ -250,7 +250,7 @@ export const pdfToTxtPage: PageConfig = {
   meta: {
     title: "Convert PDF to Text for Copying Content (Free Online)",
     description:
-      "Save PDF text as a .txt file locally. Scanned PDFs may export little text. Free, private.",
+      "Convert PDF to text online to extract copyable content from digital documents in seconds. Useful for notes, research, and rewriting content for web publication.",
   },
 
   hero: {
@@ -307,7 +307,7 @@ export const pdfToHtmlPage: PageConfig = {
   meta: {
     title: "Convert PDF to HTML for Web Publishing (Free Online)",
     description:
-      "Turn PDF pages into simple HTML in your browser. Optional page range. Free and private.",
+      "Convert PDF to HTML online to reuse document content on websites with basic structure. Ideal for drafts and quick publishing, with no install or signup steps.",
   },
 
   hero: {
@@ -364,7 +364,7 @@ export const convertPdfPage: PageConfig = {
   meta: {
     title: "Convert PDF to PNG, JPG, Text, HTML Online (Free Fast)",
     description:
-      "PDF to PNG, JPG, TXT, or HTML in your browser. Full file or page range. Free, private. Word/Excel/PPT export planned.",
+      "Convert PDF online to PNG, JPG, TXT, or HTML with page-range control for targeted export. Great for sharing, web reuse, and quick content preparation workflows.",
   },
 
   hero: {

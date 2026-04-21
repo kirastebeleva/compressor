@@ -40,7 +40,7 @@ export const heicToJpgPage: PageConfig = {
   meta: {
     title: "Convert HEIC to JPG for Windows & Email (Free Online)",
     description:
-      "Convert iPhone HEIC photos to JPG format. Free, browser-based, no upload. Works on Windows, Android, and any browser.",
+      "For Windows apps, email, and document uploads, convert HEIC to JPG online and keep photos clear. No codec setup required, and everything works in your browser.",
   },
 
   hero: {
@@ -118,7 +118,7 @@ export const webpToJpgPage: PageConfig = {
   meta: {
     title: "Convert WebP to JPG for App Compatibility (Fast Free)",
     description:
-      "Convert WebP images to JPG for wider app and editor compatibility. Free, browser-based, no upload. Batch supported.",
+      "Need better compatibility for email clients or office apps? Convert WebP to JPG online and share anywhere. Quick results, no install, and no account required.",
   },
 
   hero: {
@@ -196,7 +196,7 @@ export const jpgToPngPage: PageConfig = {
   meta: {
     title: "Convert JPG to PNG for Editing Needs (Free Online)",
     description:
-      "Convert JPG images to lossless PNG format with transparency support. Free, browser-based, no upload required.",
+      "Convert JPG to PNG online for cleaner design edits and steady image quality in creative workflows. Great for graphics, overlays, and reusable web assets.",
   },
 
   hero: {
@@ -274,7 +274,7 @@ export const pngToJpgPage: PageConfig = {
   meta: {
     title: "Convert PNG to JPG to Reduce File Size (Free Online)",
     description:
-      "Convert PNG images to JPG to reduce file size. Free, browser-based, no upload. Transparent areas are filled with white.",
+      "Convert PNG to JPG online to shrink file size and speed up sending across email, forms, and uploads. Keep visuals clear with instant processing in your browser.",
   },
 
   hero: {
@@ -352,7 +352,7 @@ export const jpgToWebpPage: PageConfig = {
   meta: {
     title: "Convert JPG to WebP for Faster Website Loads (Free)",
     description:
-      "Convert JPG images to WebP for smaller file sizes on the web. Free, browser-based, no upload required. Batch supported.",
+      "For better web performance, convert JPG to WebP online and reduce page weight without obvious quality drop. Ideal for blogs, product pages, and landing screens.",
   },
 
   hero: {
@@ -430,7 +430,7 @@ export const pngToWebpPage: PageConfig = {
   meta: {
     title: "Convert PNG to WebP with Transparency (Free Online)",
     description:
-      "Convert PNG images to WebP for smaller file sizes without visible quality loss. Free, browser-based, no upload.",
+      "Convert PNG to WebP online while preserving transparency for logos, UI assets, and social previews. Get lighter files quickly in your browser with no setup.",
   },
 
   hero: {
@@ -508,7 +508,7 @@ export const pngToAvifPage: PageConfig = {
   meta: {
     title: "Convert PNG to AVIF for Maximum Compression (Free)",
     description:
-      "Convert PNG images to AVIF for the best compression ratios available. Free, browser-based. Requires Chrome or Firefox.",
+      "Convert PNG to AVIF online for stronger compression and crisp output on modern websites. Perfect for performance-focused builds and efficient media delivery.",
   },
 
   hero: {

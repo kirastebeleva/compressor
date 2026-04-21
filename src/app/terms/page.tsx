@@ -8,14 +8,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://imgloo.com";
 export const metadata: Metadata = {
   title: "Read imgloo Terms of Use for Online Tools (Fast Clear)",
   description:
-    "Read the Terms of Use for Imgloo. By using Imgloo tools, you agree to these terms.",
+    "Review Imgloo terms of use before processing image or document files online. Understand usage rules for sharing, uploads, and web workflows in plain English.",
   alternates: {
     canonical: "/terms/",
   },
   openGraph: {
     title: "Read imgloo Terms of Use for Online Tools (Fast Clear)",
     description:
-      "Read the Terms of Use for Imgloo. By using Imgloo tools, you agree to these terms.",
+      "Review Imgloo terms of use before processing image or document files online. Understand usage rules for sharing, uploads, and web workflows in plain English.",
     url: `${BASE_URL}/terms/`,
     siteName: "imgloo",
     type: "website",

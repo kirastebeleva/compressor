@@ -26,7 +26,7 @@ export const compressImageUnder1mbPage: PageConfig = {
   meta: {
     title: "Compress Image Under 1 MB for Uploads Online (Fast)",
     description:
-      "Reduce any image to under 1 MB for email attachments, form uploads, and web use. Free browser-based compression.",
+      "For portals with strict limits, compress image under 1 MB online and keep clear visual quality. Great for forms, email attachments, and document submissions.",
   },
 
   hero: {
@@ -117,7 +117,7 @@ export const resizeImagePage: PageConfig = {
   meta: {
     title: "Resize Image by Pixels or Percent Online (Free Fast)",
     description:
-      "Resize JPG, PNG and WebP images to exact pixel dimensions or by percentage. Free, private, no upload — runs entirely in your browser.",
+      "Resize images by exact pixels or percentage for web banners, social posts, and upload rules. Works in your browser with no install and instant output files.",
   },
 
   hero: {
@@ -247,7 +247,7 @@ export const cropImagePage: PageConfig = {
   meta: {
     title: "Crop Image for Social Media Frames Online (Free Fast)",
     description:
-      "Crop JPG, PNG and WebP images to exact dimensions or aspect ratio presets. Free, private, no upload — runs entirely in your browser.",
+      "Crop images online to the exact frame you need for covers, product shots, and profile photos. Keep quality sharp and get quick results directly in your browser.",
   },
 
   hero: {
@@ -377,7 +377,7 @@ export const rotateImagePage: PageConfig = {
   meta: {
     title: "Rotate Image to Fix Orientation Online (Free Fast)",
     description:
-      "Rotate up to 10 JPG, PNG or WebP images by 90° or 180°. Rotate all at once or fine-tune each image. EXIF fix, ZIP download. Free, browser-based.",
+      "Fix sideways photos by rotating images online for consistent display across apps and uploads. Useful for listings, galleries, and social media posts in seconds.",
   },
 
   hero: {
@@ -518,7 +518,7 @@ export const flipImagePage: PageConfig = {
   meta: {
     title: "Flip Image to Mirror Photos Online (Free No Quality Loss)",
     description:
-      "Flip or mirror up to 10 JPG, PNG and WebP images horizontally or vertically. Free, private, no upload — runs entirely in your browser.",
+      "Flip images online horizontally or vertically to mirror selfies, product photos, or creative edits. No quality loss, quick processing, and no account needed.",
   },
 
   hero: {
@@ -659,7 +659,7 @@ export const watermarkImagePage: PageConfig = {
   meta: {
     title: "Add Watermark to Image for Copyright Online (Free Fast)",
     description:
-      "Add text or logo watermarks to up to 10 JPG, PNG and WebP images. Free, private, no upload — runs entirely in your browser.",
+      "Add text or logo watermarks online to protect photos before sharing or client delivery. Ideal for portfolios and social posts, with quick local processing.",
   },
 
   hero: {
@@ -800,7 +800,7 @@ export const convertToWebpPage: PageConfig = {
   meta: {
     title: "Convert Image to WebP for Faster Web Pages (Free Online)",
     description:
-      "Convert JPG and PNG images to WebP format for smaller file sizes and faster page loads.",
+      "Convert images to WebP online for smaller files and faster loading on blogs or landing pages. Keep visual quality strong and export in seconds without install.",
   },
 
   hero: {

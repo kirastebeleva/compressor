@@ -20,6 +20,14 @@ function ym(method: string, ...args: unknown[]) {
   window.ym?.(YM_ID, method, ...args);
 }
 
+function trackYmGoal(goal: string, params: Record<string, unknown>) {
+  try {
+    ym("reachGoal", goal, params);
+  } catch {
+    /* analytics must never break the app */
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -123,7 +131,9 @@ export function trackToolOpen(tool: string, pageSlug?: string) {
  * Supports single-file and batch tools via optional file_count.
  */
 export function trackFileUploaded(p: ToolEventParams) {
-  trackEvent("file_uploaded", buildBaseParams(p));
+  const params = buildBaseParams(p);
+  trackEvent("file_uploaded", params);
+  trackYmGoal("file_uploaded", params);
 }
 
 /**
@@ -200,10 +210,13 @@ export function trackProcessingCompleted(
 
 /** User clicked the download link. */
 export function trackDownloadResult(p: ToolEventParams & { output_size_mb: number }) {
-  trackEvent("download_result", {
+  const params = {
     ...buildBaseParams(p),
     output_size_mb: p.output_size_mb,
-  });
+  };
+
+  trackEvent("download_result", params);
+  trackYmGoal("file_downloaded", params);
 }
 
 /** A user-facing error was shown — kept for existing compression tools. */

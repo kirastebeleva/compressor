@@ -54,6 +54,19 @@ function toolUrl(baseUrl: string, slug: string): string {
   return `${baseUrl}/${slug}/`;
 }
 
+function normalizeCanonicalPath(path: string): string {
+  const p = path.startsWith("/") ? path : `/${path}`;
+  if (p === "/") return "/";
+  return p.endsWith("/") ? p : `${p}/`;
+}
+
+function hasSelfCanonical(page: PageConfig): boolean {
+  const canonicalPath = normalizeCanonicalPath(
+    page.meta.canonical ?? `/${page.slug}`,
+  );
+  return canonicalPath === `/${page.slug}/`;
+}
+
 function pageToRow(
   baseUrl: string,
   page: PageConfig,
@@ -79,7 +92,7 @@ export function getSitemapEntries(options?: {
   const lastmod = options?.lastmod ?? buildDateString();
 
   const pages = allPages
-    .filter((page) => page.tool.mode !== "stub")
+    .filter((page) => page.tool.mode !== "stub" && hasSelfCanonical(page))
     .map((page) => pageToRow(baseUrl, page, lastmod));
 
   const convertPdf = getPageBySlug(CONVERT_PDF_SLUG);

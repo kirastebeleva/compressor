@@ -13,6 +13,16 @@ const BASE_URL =
 
 const INLINE_LINK_RE = /\[([^\]]+)]\(([^)]+)\)/g;
 
+function normalizeInternalHref(href: string): string {
+  if (!href.startsWith("/") || href === "/") return href;
+  if (href.includes("#") || href.includes("?")) return href;
+  return href.endsWith("/") ? href : `${href}/`;
+}
+
+function absoluteToolUrl(slug: string): string {
+  return `${BASE_URL}/${slug}/`;
+}
+
 function renderInlineLinks(text: string): ReactNode {
   if (!INLINE_LINK_RE.test(text)) return text;
 
@@ -24,7 +34,7 @@ function renderInlineLinks(text: string): ReactNode {
   while ((match = INLINE_LINK_RE.exec(text)) !== null) {
     if (match.index > last) parts.push(text.slice(last, match.index));
     parts.push(
-      <Link href={match[2]} key={match.index}>
+      <Link href={normalizeInternalHref(match[2])} key={match.index}>
         {match[1]}
       </Link>,
     );
@@ -124,7 +134,7 @@ export function UniversalLandingTemplate({ config }: Props) {
               {config.related.links.map((link) => (
                 <Link
                   className="related-link"
-                  href={link.href}
+                  href={normalizeInternalHref(link.href)}
                   key={link.href}
                 >
                   <strong>{link.label}</strong>
@@ -202,13 +212,13 @@ function buildBreadcrumbSchema(config: PageConfig): Record<string, unknown> {
         "@type": "ListItem",
         position: 2,
         name: sectionLabel,
-        item: `${BASE_URL}/${sectionSlug}`,
+        item: absoluteToolUrl(sectionSlug),
       },
       {
         "@type": "ListItem",
         position: 3,
         name: config.h1,
-        item: `${BASE_URL}/${config.slug}`,
+        item: absoluteToolUrl(config.slug),
       },
     ],
   };
@@ -220,7 +230,7 @@ function buildWebAppSchema(config: PageConfig): Record<string, unknown> {
     "@type": "WebApplication",
     name: config.tool.title,
     description: config.meta.description,
-    url: `${BASE_URL}/${config.slug}`,
+    url: absoluteToolUrl(config.slug),
     applicationCategory: "MultimediaApplication",
     operatingSystem: "Any",
     browserRequirements: "Requires a modern web browser with JavaScript enabled",

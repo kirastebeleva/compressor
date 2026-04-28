@@ -10,8 +10,8 @@ export const SECTION_META: Record<
   { label: string; footerLabel: string; order: number; slug: string }
 > = {
   "image-tools": { label: "Image Tools", footerLabel: "Optimize Tools", order: 0, slug: "compress-image" },
-  "pdf-tools": { label: "PDF Tools", footerLabel: "PDF Tools", order: 1, slug: "pdf-tools" },
-  "converter-tools": { label: "Converter Tools", footerLabel: "Convert Tools", order: 2, slug: "converter-tools" },
+  "pdf-tools": { label: "PDF Tools", footerLabel: "PDF Tools", order: 1, slug: "convert-pdf" },
+  "converter-tools": { label: "Converter Tools", footerLabel: "Convert Tools", order: 2, slug: "convert-image" },
 };
 
 // ---------------------------------------------------------------------------

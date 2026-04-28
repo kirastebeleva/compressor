@@ -329,6 +329,6 @@ export const FOOTER_DEFAULTS = {
   linksAriaLabel: "Footer links",
   links: [
     { href: "/", label: "Home" },
-    { href: "/compress-image", label: "Compress Image" },
+    { href: "/compress-image/", label: "Compress Image" },
   ] as const,
 };

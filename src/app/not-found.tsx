@@ -23,25 +23,25 @@ export default function NotFound() {
         <section className="card">
           <h2 className="section-title">Popular Tools</h2>
           <div className="related-list">
-            <Link className="related-link" href="/compress-image">
+            <Link className="related-link" href="/compress-image/">
               <strong>Compress Image</strong>
               <span className="muted">
                 Compress JPG, PNG, and WebP images in your browser.
               </span>
             </Link>
-            <Link className="related-link" href="/compress-jpg">
+            <Link className="related-link" href="/compress-jpg/">
               <strong>Compress JPG</strong>
               <span className="muted">
                 Make JPG photos smaller without visible quality loss.
               </span>
             </Link>
-            <Link className="related-link" href="/compress-png">
+            <Link className="related-link" href="/compress-png/">
               <strong>Compress PNG</strong>
               <span className="muted">
                 Reduce PNG file size while keeping transparency.
               </span>
             </Link>
-            <Link className="related-link" href="/compress-image-for-email">
+            <Link className="related-link" href="/compress-image-for-email/">
               <strong>Compress for Email</strong>
               <span className="muted">
                 Get images ready for email attachment limits.

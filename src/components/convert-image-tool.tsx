@@ -18,6 +18,7 @@ import {
   trackActionCompleted,
   trackError,
   trackConvertImageToSelected,
+  trackDownloadResult,
   trackEvent,
   bytesToMb,
 } from "@/lib/analytics";
@@ -184,7 +185,7 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
       clearResults();
       setState("ready");
     },
-    [files, fromFormat, clearResults],
+    [files, fromFormat, clearResults, config.tool.kind],
   );
 
   const removeFile = useCallback(
@@ -331,6 +332,13 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
         zip.file(r.downloadName, r.outputBlob);
       }
       const blob = await zip.generateAsync({ type: "blob" });
+      trackDownloadResult({
+        tool: config.tool.kind,
+        file_type: "application/zip",
+        file_size_mb: bytesToMb(blob.size),
+        file_count: results.length,
+        output_size_mb: bytesToMb(blob.size),
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -647,11 +655,19 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
                   className="btn btn-download resize-dl-btn"
                   download={r.downloadName}
                   href={r.downloadUrl}
-                  onClick={() =>
+                  onClick={() => {
                     trackEvent("convert_image_download_single", {
                       to_format: toFormat,
-                    })
-                  }
+                    });
+                    trackDownloadResult({
+                      tool: config.tool.kind,
+                      file_type: r.outputBlob.type || "(unknown)",
+                      file_size_mb: bytesToMb(r.outputBytes),
+                      from_format: fromFormat === AUTO ? "unknown" : fromFormat,
+                      to_format: toFormat,
+                      output_size_mb: bytesToMb(r.outputBytes),
+                    });
+                  }}
                 >
                   Download
                 </a>

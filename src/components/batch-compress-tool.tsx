@@ -10,7 +10,7 @@ import {
 } from "@/compression";
 import type { PageConfig } from "@/core/types";
 import { formatBytes, buildOutputName } from "@/lib/format";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackDownloadResult, bytesToMb } from "@/lib/analytics";
 
 const MAX_FILES = LIMITS.maxFiles;
 const MAX_FILE_SIZE = LIMITS.maxFileSizeBytes;
@@ -232,6 +232,13 @@ export function BatchCompressTool({ config }: BatchCompressToolProps) {
       }
 
       const blob = await zip.generateAsync({ type: "blob" });
+      trackDownloadResult({
+        tool: config.tool.kind,
+        file_type: "application/zip",
+        file_size_mb: bytesToMb(blob.size),
+        file_count: results.length,
+        output_size_mb: bytesToMb(blob.size),
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -548,11 +555,17 @@ export function BatchCompressTool({ config }: BatchCompressToolProps) {
                     className="btn btn-download resize-dl-btn"
                     download={r.downloadName}
                     href={r.downloadUrl}
-                    onClick={() =>
+                    onClick={() => {
                       trackEvent("download_single", {
                         file_name: r.downloadName,
-                      })
-                    }
+                      });
+                      trackDownloadResult({
+                        tool: config.tool.kind,
+                        file_type: r.result.outputBlob.type || "(unknown)",
+                        file_size_mb: bytesToMb(r.result.stats.outputBytes),
+                        output_size_mb: bytesToMb(r.result.stats.outputBytes),
+                      });
+                    }}
                   >
                     Download
                   </a>

@@ -9,6 +9,7 @@ import {
   trackProcessingStarted,
   trackProcessingCompleted,
   trackErrorShown,
+  trackDownloadResult,
   bytesToMb,
 } from "@/lib/analytics";
 
@@ -548,14 +549,23 @@ export function RotateTool({ config }: RotateToolProps) {
     if (zipBusyRef.current) return;
     zipBusyRef.current = true;
     try {
-      trackEvent("download_all", {
-        tool: TOOL_KIND,
-        file_count: results.length,
-      });
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
       for (const r of results) zip.file(r.downloadName, r.blob);
       const blob = await zip.generateAsync({ type: "blob" });
+      trackEvent("download_all_zip", {
+        tool: TOOL_KIND,
+        page_slug: config.slug,
+        file_count: results.length,
+      });
+      trackDownloadResult({
+        tool: TOOL_KIND,
+        page_slug: config.slug,
+        file_type: "application/zip",
+        file_size_mb: bytesToMb(blob.size),
+        file_count: results.length,
+        output_size_mb: bytesToMb(blob.size),
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -926,12 +936,20 @@ export function RotateTool({ config }: RotateToolProps) {
                   className="btn btn-download resize-dl-btn"
                   download={r.downloadName}
                   href={r.downloadUrl}
-                  onClick={() =>
+                  onClick={() => {
                     trackEvent("download_single", {
                       tool: TOOL_KIND,
+                      page_slug: config.slug,
                       file_name: r.downloadName,
-                    })
-                  }
+                    });
+                    trackDownloadResult({
+                      tool: TOOL_KIND,
+                      page_slug: config.slug,
+                      file_type: r.blob.type || r.original.file.type || "(unknown)",
+                      file_size_mb: bytesToMb(r.original.file.size),
+                      output_size_mb: bytesToMb(r.blob.size),
+                    });
+                  }}
                 >
                   Download
                 </a>

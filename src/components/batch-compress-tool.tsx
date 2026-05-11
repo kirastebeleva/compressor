@@ -223,7 +223,11 @@ export function BatchCompressTool({ config }: BatchCompressToolProps) {
     zipBusyRef.current = true;
 
     try {
-      trackEvent("download_all_zip", { file_count: results.length });
+      trackEvent("download_all_zip", {
+        tool: config.tool.kind,
+        page_slug: config.slug,
+        file_count: results.length,
+      });
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
 
@@ -234,6 +238,7 @@ export function BatchCompressTool({ config }: BatchCompressToolProps) {
       const blob = await zip.generateAsync({ type: "blob" });
       trackDownloadResult({
         tool: config.tool.kind,
+        page_slug: config.slug,
         file_type: "application/zip",
         file_size_mb: bytesToMb(blob.size),
         file_count: results.length,
@@ -557,12 +562,15 @@ export function BatchCompressTool({ config }: BatchCompressToolProps) {
                     href={r.downloadUrl}
                     onClick={() => {
                       trackEvent("download_single", {
+                        tool: config.tool.kind,
+                        page_slug: config.slug,
                         file_name: r.downloadName,
                       });
                       trackDownloadResult({
                         tool: config.tool.kind,
+                        page_slug: config.slug,
                         file_type: r.result.outputBlob.type || "(unknown)",
-                        file_size_mb: bytesToMb(r.result.stats.outputBytes),
+                        file_size_mb: bytesToMb(r.result.stats.inputBytes),
                         output_size_mb: bytesToMb(r.result.stats.outputBytes),
                       });
                     }}

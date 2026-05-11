@@ -1005,14 +1005,20 @@ export function CropTool({ config }: CropToolProps) {
               className="btn btn-download"
               download={result.downloadName}
               href={result.downloadUrl}
-              onClick={() =>
+              onClick={() => {
+                trackEvent("download_single", {
+                  tool: TOOL_KIND,
+                  page_slug: config.slug,
+                  file_name: result.downloadName,
+                });
                 trackDownloadResult({
                   tool: TOOL_KIND,
+                  page_slug: config.slug,
                   file_type: file?.type,
-                  file_size_mb: bytesToMb(result.outputBytes),
+                  file_size_mb: bytesToMb(file?.size ?? result.outputBytes),
                   output_size_mb: bytesToMb(result.outputBytes),
-                })
-              }
+                });
+              }}
             >
               Download cropped image
             </a>

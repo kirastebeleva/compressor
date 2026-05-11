@@ -294,6 +294,7 @@ function CompressionToolRuntime({ config }: { config: PageConfig }) {
         toolKind={config.tool.kind}
         toolLabels={{ downloadButton: config.tool.labels.downloadButton }}
         onReset={handleReset}
+        pageSlug={config.slug}
       />
       {ADS_ENABLED && <LazyAdSlot config={config.adSlot} />}
     </>

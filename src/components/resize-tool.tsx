@@ -17,6 +17,7 @@ import {
   trackActionStarted,
   trackActionCompleted,
   trackError,
+  trackDownloadResult,
   bytesToMb,
 } from "@/lib/analytics";
 
@@ -515,7 +516,6 @@ export function ResizeTool({ config }: ResizeToolProps) {
     zipBusyRef.current = true;
 
     try {
-      trackEvent("download_all", { file_count: results.length });
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
 
@@ -524,6 +524,19 @@ export function ResizeTool({ config }: ResizeToolProps) {
       }
 
       const blob = await zip.generateAsync({ type: "blob" });
+      trackEvent("download_all_zip", {
+        tool: config.tool.kind,
+        page_slug: config.slug,
+        file_count: results.length,
+      });
+      trackDownloadResult({
+        tool: config.tool.kind,
+        page_slug: config.slug,
+        file_type: "application/zip",
+        file_size_mb: bytesToMb(blob.size),
+        file_count: results.length,
+        output_size_mb: bytesToMb(blob.size),
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -1053,11 +1066,20 @@ export function ResizeTool({ config }: ResizeToolProps) {
                   className="btn btn-download resize-dl-btn"
                   download={r.downloadName}
                   href={r.downloadUrl}
-                  onClick={() =>
+                  onClick={() => {
                     trackEvent("download_single", {
+                      tool: config.tool.kind,
+                      page_slug: config.slug,
                       file_name: r.downloadName,
-                    })
-                  }
+                    });
+                    trackDownloadResult({
+                      tool: config.tool.kind,
+                      page_slug: config.slug,
+                      file_type: r.result.outputBlob.type || "(unknown)",
+                      file_size_mb: bytesToMb(r.result.inputBytes),
+                      output_size_mb: bytesToMb(r.result.outputBytes),
+                    });
+                  }}
                 >
                   Download
                 </a>

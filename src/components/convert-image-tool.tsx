@@ -325,7 +325,11 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
     if (zipBusyRef.current || results.length < 2) return;
     zipBusyRef.current = true;
     try {
-      trackEvent("convert_image_download_all_zip", { file_count: results.length });
+      trackEvent("convert_image_download_all_zip", {
+        tool: config.tool.kind,
+        page_slug: config.slug,
+        file_count: results.length,
+      });
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
       for (const r of results) {
@@ -334,9 +338,12 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
       const blob = await zip.generateAsync({ type: "blob" });
       trackDownloadResult({
         tool: config.tool.kind,
+        page_slug: config.slug,
         file_type: "application/zip",
         file_size_mb: bytesToMb(blob.size),
         file_count: results.length,
+        from_format: fromFormat === AUTO ? "unknown" : fromFormat,
+        to_format: toFormat,
         output_size_mb: bytesToMb(blob.size),
       });
       const url = URL.createObjectURL(blob);
@@ -657,12 +664,15 @@ export function ConvertImageTool({ config }: ConvertImageToolProps) {
                   href={r.downloadUrl}
                   onClick={() => {
                     trackEvent("convert_image_download_single", {
+                      tool: config.tool.kind,
+                      page_slug: config.slug,
                       to_format: toFormat,
                     });
                     trackDownloadResult({
                       tool: config.tool.kind,
+                      page_slug: config.slug,
                       file_type: r.outputBlob.type || "(unknown)",
-                      file_size_mb: bytesToMb(r.outputBytes),
+                      file_size_mb: bytesToMb(r.inputBytes),
                       from_format: fromFormat === AUTO ? "unknown" : fromFormat,
                       to_format: toFormat,
                       output_size_mb: bytesToMb(r.outputBytes),

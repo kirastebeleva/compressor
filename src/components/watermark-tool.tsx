@@ -749,8 +749,19 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
     zipBusyRef.current = true;
     try {
       const totalBytes = results.reduce((s, r) => s + r.blob.size, 0);
-      trackDownloadResult({ tool: TOOL_KIND, output_size_mb: bytesToMb(totalBytes) });
-      trackEvent("download_all_zip", { tool: TOOL_KIND, file_count: results.length });
+      trackEvent("download_all_zip", {
+        tool: TOOL_KIND,
+        page_slug: config.slug,
+        file_count: results.length,
+      });
+      trackDownloadResult({
+        tool: TOOL_KIND,
+        page_slug: config.slug,
+        file_type: "application/zip",
+        file_size_mb: bytesToMb(totalBytes),
+        file_count: results.length,
+        output_size_mb: bytesToMb(totalBytes),
+      });
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
       for (const r of results) zip.file(r.downloadName, r.blob);
@@ -1271,14 +1282,20 @@ export function WatermarkTool({ config }: WatermarkToolProps) {
                   className="btn btn-download resize-dl-btn"
                   download={r.downloadName}
                   href={r.downloadUrl}
-                  onClick={() =>
+                  onClick={() => {
+                    trackEvent("download_single", {
+                      tool: TOOL_KIND,
+                      page_slug: config.slug,
+                      file_name: r.downloadName,
+                    });
                     trackDownloadResult({
                       tool: TOOL_KIND,
+                      page_slug: config.slug,
                       file_type: r.original.file.type,
                       file_size_mb: bytesToMb(r.original.file.size),
                       output_size_mb: bytesToMb(r.blob.size),
-                    })
-                  }
+                    });
+                  }}
                 >
                   Download
                 </a>

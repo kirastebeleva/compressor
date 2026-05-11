@@ -9,6 +9,7 @@ type ResultsSectionProps = {
   toolLabels: Pick<PageConfig["tool"]["labels"], "downloadButton">;
   result: ToolExecutionResult | null;
   onReset: () => void;
+  pageSlug?: string;
 };
 
 export function ResultsSection({
@@ -17,6 +18,7 @@ export function ResultsSection({
   toolLabels,
   result,
   onReset,
+  pageSlug,
 }: ResultsSectionProps) {
   if (!result) {
     return (
@@ -97,8 +99,9 @@ export function ResultsSection({
           onClick={() =>
             trackDownloadResult({
               tool: toolKind,
+              page_slug: pageSlug,
               file_type: result.downloadName.split(".").pop() ?? "unknown",
-              file_size_mb: bytesToMb(result.stats.outputBytes),
+              file_size_mb: bytesToMb(result.stats.inputBytes),
               output_size_mb: bytesToMb(result.stats.outputBytes),
             })
           }
